@@ -194,3 +194,26 @@ void Dictionary::getStatistics() const
     cout << "Array index usage: " << usagePercent << "%" << endl;
     cout << "Hashing algorithm: FNL-1a 64-bit" << endl;
 }
+
+void Dictionary::writeInfo(string filename) const
+{
+    ofstream outFile(filename);
+    entry storedValue;
+    if (outFile)
+    {
+        for (int i = 0; i < capacity; i++)
+        {
+            while (!dict[i].isEmpty())
+            {
+                dict[i].peekFirst(storedValue);
+                dict[i].delFirst();
+                outFile << storedValue.key << "---" << storedValue.info << endl;
+            }
+        }
+    }
+    else
+    {
+        cout << "The directory needing to be accessed does not exist:" << endl << filename << endl;
+    }
+    outFile.close();
+}

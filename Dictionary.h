@@ -8,6 +8,7 @@ Further, all keys will be strings in this dictionary, and all hashing will be do
 #define DICTIONARY_H
 #include <iostream>
 #include <string>
+#include <fstream>
 #include "EncryptionBox.h"
 #include "LinkedList.h"
 using namespace std;
@@ -41,6 +42,7 @@ private:
 protected:
     void updateLoad();
     void resize(); //increases size to keep load factor below threshold
+    void createDirectory() const; //for hash tables to be stored in
 
 public:
     Dictionary();
@@ -51,6 +53,7 @@ public:
     string search(string key) const; //returns info of value, if found
     void remove(string key);
     void getStatistics() const;
+    void writeInfo(string filename) const;
 };
 
 #include "Dictionary.cpp"
