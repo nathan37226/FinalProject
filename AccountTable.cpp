@@ -214,6 +214,7 @@ void AccountTable::writeInfo(string filename) const
     else
     {
         cerr << "The directory needing to be accessed does not exist:" << endl << filename << endl;
+        abort();
     }
     outFile.close();
 }

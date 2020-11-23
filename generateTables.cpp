@@ -8,7 +8,7 @@ using namespace std;
 
 int main()
 {
-    vector<string> nameList = {}; //can have multiple accts with same name
+    /*vector<string> nameList = {}; //can have multiple accts with same name
     vector<string> phoneNumList = {}; //can have multiple accts with same phone num
     vector<string> acctList = {};
 
@@ -44,7 +44,10 @@ int main()
     string filename = "Tables/AccountTable.txt";
     acctTable.writeInfo(filename);
     nameTable.writeInfo(filename);
-    phoneNumTable.writeInfo(filename);
+    phoneNumTable.writeInfo(filename);*/
+
+    vector<string> vect = {"1", "2", "3"};
+    infoEntry first("First", vect);
 
     return 0;
 }
