@@ -1,40 +1,40 @@
 /*
 Implementation file for the Dictionary object
 */
-#include "Dictionary.h"
+#include "AccountTable.h"
 
 //this allows for 'cout << entry' and 'outFile << entry' to work correctly
-ostream& operator << (ostream& os, const entry obj)
+ostream& operator << (ostream& os, const accountEntry obj)
 {
     os << obj.key;
     return os;
 }
 
-bool entry::operator == (const entry &obj)
+bool accountEntry::operator == (const accountEntry &obj)
 {
     bool status = (key == obj.key) ? true : false;
     return status;
 }
 
-bool entry::operator != (const entry &obj)
+bool accountEntry::operator != (const accountEntry &obj)
 {
     bool status = (key != obj.key) ? true : false;
     return status;
 }
 
-entry::entry()
+accountEntry::accountEntry()
 {
     key = "";
     info = "";
 }
 
-entry::entry(string Key)
+accountEntry::accountEntry(string Key)
 {
     key = Key;
     info = "blah";
 }
 
-entry::entry(string Key, string Info)
+accountEntry::accountEntry(string Key, string Info)
 {
     key = Key;
     info = Info;
@@ -42,7 +42,7 @@ entry::entry(string Key, string Info)
 
 //Start of Dict Implementations
 
-Dictionary::Dictionary()
+AccountTable::AccountTable()
 {
     capacity = 8; //just some default value
     usedIndicies = 0;
@@ -50,27 +50,27 @@ Dictionary::Dictionary()
     loadFactor = 0.0;
     loadThreshhold = .75; //arbitrary number
     maxCollisions = 0;
-    dict = new LinkedList<entry>[capacity];
+    dict = new LinkedList<accountEntry>[capacity];
 }
 
-Dictionary::~Dictionary()
+AccountTable::~AccountTable()
 {
     delete [] dict; //linked list has a valid destructor, so only need to delete the dict containing them
 }
 
-void Dictionary::updateLoad()
+void AccountTable::updateLoad()
 {
     double keys = totalKeys;
     loadFactor = keys / capacity; //cannot divide an int by an int and retain the decimals, so key is a substitute used
 }
 
-bool Dictionary::isEmpty() const
+bool AccountTable::isEmpty() const
 {
     bool status = (totalKeys == 0) ? true : false;
     return status;
 }
 
-void Dictionary::insert(entry newValue)
+void AccountTable::insert(accountEntry newValue)
 {
     unsigned int index = box.getIndex(newValue.key, capacity); //hashing the entry's key % dict size to find where it belongs
 
@@ -93,10 +93,10 @@ void Dictionary::insert(entry newValue)
     }
 }
 
-string Dictionary::search(string key) const
+string AccountTable::search(string key) const
 {
     unsigned int index = box.getIndex(key, capacity);
-    entry value(key);
+    accountEntry value(key);
     bool didFind = dict[index].search(value);
     if (!didFind)
     {
@@ -109,7 +109,7 @@ string Dictionary::search(string key) const
     }
 }
 
-void Dictionary::remove(string key)
+void AccountTable::remove(string key)
 {
     if (isEmpty())
     {
@@ -118,7 +118,7 @@ void Dictionary::remove(string key)
     else
     {
         unsigned int index = box.getIndex(key, capacity); //hashing the entry's key % dict size to find where it belongs
-        entry toRemove(key);
+        accountEntry toRemove(key);
 
         int currentSize = dict[index].size();
         dict[index].remove(toRemove);
@@ -129,17 +129,17 @@ void Dictionary::remove(string key)
     }
 }
 
-void Dictionary::resize()
+void AccountTable::resize()
 {
-    LinkedList<entry> *tempDict = new LinkedList<entry>[capacity * 2];
+    LinkedList<accountEntry> *tempDict = new LinkedList<accountEntry>[capacity * 2];
     unsigned int tempUsedIndicies = 0;
     int tempMaxCollisions = 0;
 
-    for (int i = 0; i < capacity; i++)
+    for (int i = 0; i < capacity; i++) //for each index in array
     {
-        while (!dict[i].isEmpty())
+        while (!dict[i].isEmpty()) //if not empty, need to rehash each entry into tempDict
         {
-            entry value;
+            accountEntry value;
             dict[i].peekFirst(value); //value takes on first element in linked list's value
             dict[i].delFirst();
             
@@ -166,7 +166,7 @@ void Dictionary::resize()
     updateLoad();
 }
 
-void Dictionary::display() const
+void AccountTable::display() const
 {
     for (int i = 0; i < capacity; i++)
     {
@@ -178,7 +178,7 @@ void Dictionary::display() const
     }
 }
 
-void Dictionary::getStatistics() const
+void AccountTable::getStatistics() const
 {
     unsigned int avaliableKeys = (loadThreshhold * capacity) - totalKeys;
     double indicies = usedIndicies;
@@ -195,10 +195,10 @@ void Dictionary::getStatistics() const
     cout << "Hashing algorithm: FNL-1a 64-bit" << endl;
 }
 
-void Dictionary::writeInfo(string filename) const
+void AccountTable::writeInfo(string filename) const
 {
     ofstream outFile(filename);
-    entry storedValue;
+    accountEntry storedValue;
     if (outFile)
     {
         for (int i = 0; i < capacity; i++)
@@ -213,7 +213,7 @@ void Dictionary::writeInfo(string filename) const
     }
     else
     {
-        cout << "The directory needing to be accessed does not exist:" << endl << filename << endl;
+        cerr << "The directory needing to be accessed does not exist:" << endl << filename << endl;
     }
     outFile.close();
 }

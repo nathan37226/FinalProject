@@ -2,13 +2,14 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "Dictionary.h"
+#include "AccountTable.h"
+#include "InfoTable.h"
 using namespace std;
 
 int main()
 {
-    vector<string> nameList = {};
-    vector<string> phoneNumList = {};
+    vector<string> nameList = {}; //can have multiple accts with same name
+    vector<string> phoneNumList = {}; //can have multiple accts with same phone num
     vector<string> acctList = {};
 
     for (int i = 0; i < 100; i++)
@@ -24,25 +25,26 @@ int main()
         phoneNumList.push_back(num);
     }
 
-    Dictionary acctTable, phoneNumTable, nameTable;
+    AccountTable acctTable, phoneNumTable, nameTable;
     for (int i = 0; i < nameList.size(); i++)
     {
         string acctInfo = nameList[i] + " " + phoneNumList[i];
-        entry acctTableEntry(acctList[i], acctInfo); //creates an entry for the acctTable
+        accountEntry acctTableEntry(acctList[i], acctInfo); //creates an entry for the acctTable
         acctTable.insert(acctTableEntry);
 
-        entry nameEntry(nameList[i], acctList[i]);
+        accountEntry nameEntry(nameList[i], acctList[i]);
         nameTable.insert(nameEntry);
 
-        entry phoneNumEntry(phoneNumList[i], acctList[i]);
+        accountEntry phoneNumEntry(phoneNumList[i], acctList[i]);
         phoneNumTable.insert(phoneNumEntry);
     }
 
     //acctTable.display();
     acctTable.getStatistics();
-    acctTable.writeInfo("Tables/AccountTable.txt");
-    nameTable.writeInfo("Tables/NameTable.txt");
-    phoneNumTable.writeInfo("Tables/PhoneTable.txt");
+    string filename = "Tables/AccountTable.txt";
+    acctTable.writeInfo(filename);
+    nameTable.writeInfo(filename);
+    phoneNumTable.writeInfo(filename);
 
     return 0;
 }
