@@ -1,8 +1,11 @@
 /*
-This is a header file for a dictionary ADT. This dictionary will be an array-based implementation.
-Each index of the array will implement seperate chainging through a linked list. A given key will
-hash to a specific index, or really linked list, that contains both the key and info related to the key.
-Further, all keys will be strings in this dictionary, and all hashing will be done by the EncryptionBox
+This is a header file for a dictionary ADT, named AccountTable. This dictionary will be an array-based 
+implementation. Each index of the array will implement seperate chainging through a linked list. A given 
+key will hash to a specific index, or really linked list, that contains both the key and info related to 
+the key. Further, all keys will be strings in this dictionary, and all hashing will be done by the 
+EncryptionBox.
+The keys for this will be accountNums, and the info string will be the general info about the account,
+which includes account holder name, phone num, address, etc.
 */
 #ifndef ACCOUNTTABLE_H
 #define ACCOUNTTABLE_H
