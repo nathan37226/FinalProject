@@ -11,6 +11,7 @@ struct node
 {
     T value;
     vector<T> list; //where to store each occurence of the value
+    int height;
     node *left;
     node *right;
 
@@ -27,6 +28,7 @@ node<T>::node(T obj)
     left = nullptr;
     right = nullptr;
     vector<T> list = {}; //nothing initially
+    height = 1;
 }
 
 template <class T>
@@ -36,5 +38,6 @@ node<T>::node(T obj, T mappedItem)
     left = nullptr;
     right = nullptr;
     vector<T> list = {mappedItem};
+    height = 1;
 }
 #endif
