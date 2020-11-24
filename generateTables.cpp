@@ -2,10 +2,17 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "AccountTable.h"
+#include "Data Structures/AccountTable.h"
+#include "Data Structures/AVL.h"
 using namespace std;
 
+
 int main()
+{
+    
+}
+
+/*int main()
 {
     vector<string> nameList = {}; //can have multiple accts with same name
     vector<string> phoneNumList = {}; //can have multiple accts with same phone num
@@ -44,5 +51,9 @@ int main()
     nameTable.writeInfo("Tables/NameTable.txt");
     phoneNumTable.writeInfo("Tables/PhoneTable.txt");
 
+
+
+
     return 0;
-}
+} */
+

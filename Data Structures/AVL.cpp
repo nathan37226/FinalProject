@@ -108,6 +108,11 @@ void AVLTree<T>::display(int option) const
                 displayInOrderWithHeight(root);
                 break;
             }
+            case 5:
+            {
+                displayInOrderWithMappedItems(root);
+                break;
+            }
         }
     }
 }
@@ -153,6 +158,22 @@ void AVLTree<T>::displayInOrderWithHeight(node<T> *subRoot) const
         displayInOrderWithHeight(subRoot->left);
         cout << subRoot->value << " Height: " << subRoot->height << endl;
         displayInOrderWithHeight(subRoot->right);
+    }
+}
+
+template <class T>
+void AVLTree<T>::displayInOrderWithMappedItems(node<T> *subRoot) const
+{
+    if (subRoot)
+    {
+        displayInOrder(subRoot->left);
+        cout << subRoot->value << endl;
+        for (int i = 0; i < subRoot->list.size(); i++)
+        {
+            cout << subRoot->list[i] << " ";
+        }
+        cout << endl;
+        displayInOrder(subRoot->right);
     }
 }
 
@@ -255,6 +276,60 @@ void AVLTree<T>::insert(T value)
 }
 
 template <class T>
+node<T>* AVLTree<T>::insertWithItemHelper(node<T> *&subRoot, node<T> *&newNode)
+{
+    //inserting the newNode
+    if (!subRoot) 
+    {
+        return newNode; 
+    } 
+    else if (newNode->value < subRoot->value)
+    {
+        subRoot->left = insertHelper(subRoot->left, newNode);  
+    }
+    else if (newNode->value > subRoot->value) 
+    { 
+        subRoot->right = insertHelper(subRoot->right, newNode);  
+    }
+    else //equal values, so new mappedItem into list, if not there. If there, say that
+    {
+        bool isNewValue = true;
+        for (int i = 0; i < subRoot->list.size(); i++)
+        {
+            if (newNode->list[0] == subRoot->list[i]) //newNode will only have the one value, subRoot could have multiple
+            {
+                cout << "Duplicate entries inside a node's list are not allowed. Insertion terminated." << endl;
+                isNewValue = false;
+                break; //terminate loop since found to be there
+            }
+        }
+        if (isNewValue)
+        {
+            subRoot->list.push_back(newNode->list[0]); //is not inside subRoot's list already, then 
+            mappedItemCount++; //increase counter
+        }
+
+        nodeCount--; //counteract node count increment in insert
+    }
+    
+    //setting new height of each subRoot
+    subRoot->height = max(height(subRoot->left), height(subRoot->right)) + 1;
+
+    //now to do rotations
+    performRotations(subRoot);
+
+    return subRoot; //returning root node
+}
+
+template <class T>
+void AVLTree<T>::insertWithItem(T value, T mappedItem)
+{
+    node<T> *newNode = new node<T>(value, mappedItem);
+    root = insertWithItemHelper(root, newNode);
+    nodeCount++;
+}
+
+template <class T>
 bool AVLTree<T>::isBalanced() const
 {
     int bal = getNodeBalance(root);
@@ -344,6 +419,104 @@ node<T>* AVLTree<T>::delHelper(node<T> *&subRoot, T value)
 }
 
 template <class T>
+void AVLTree<T>::delMappedItem(T value, T mappedItem)
+{
+    root = delMappedItemHelper(root, value, mappedItem);
+    nodeCount--;
+}
+
+template <class T>
+node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedItem)
+{
+    //NOTE: most of this code is the same as delHelper. The exception being if there is more than one item in node's list
+    if (value < subRoot->value)
+    {
+        if (subRoot->left)
+        {
+            subRoot->left = delHelper(subRoot->left, value);
+        }
+        else
+        {
+            cout << "No value found to delete" << endl;
+            nodeCount++;
+        }
+    }
+    else if (value > subRoot->value)
+    {
+        if (subRoot->right)
+        {
+            subRoot->right = delHelper(subRoot->right, value);
+        }
+        else
+        {
+            cout << "No value found to delete" << endl;
+            nodeCount++; //counter act lowering of node count in del
+        }
+    }
+    else  //the values are equal, so need to start deleting either mappedItem or entire node
+    {
+        bool isPresent = false;
+        int index = -1;
+
+        for (int i = 0; i < subRoot->list.size(); i++) //checking to see if the mapped item exists in the entry
+        {
+            if (mappedItem == subRoot->list[i])
+            {
+                isPresent = true;
+                index = i; //which index the mappedValue is at
+                break;
+            }
+        }
+
+        if (isPresent) 
+        {
+            if (subRoot->list.size() == 1) //only the single mappedItem present in list, so need to delete the entire node
+            {
+                //NOTE: this following code is straight out of deleting the entire node from delHelper
+                //Not necessary to read through again
+
+                if (subRoot->left && subRoot->right) //two children present
+                {
+                    node<T> *largestLeftNode = rightmost(subRoot->left); //finding max value in left subtree of del node
+                    subRoot->value = largestLeftNode->value; //copying value over
+                    subRoot->left = delHelper(subRoot->left, largestLeftNode->value); //delete max value in left subtree
+                }
+
+                else if (!subRoot->left && !subRoot->right) //is a leaf
+                {
+                    delete subRoot;  //deallocating memory
+                    subRoot = nullptr; //node takes on nullptr since no further nodes down the tree exist
+                    return subRoot; //since leaf, we just need to return back to previous function call
+                }
+
+                else  //only one child exists
+                {
+                    node<T>* child = (subRoot->right) ? subRoot->right : subRoot->left; //makes child either left or right, since we don't know
+                    delete subRoot; //deallocating parent
+                    subRoot = child; //takes on child's value so that returning will be correct
+                }
+
+            }
+            
+            else //there are more than one entry inside the list, so can just remove item from vector
+            {
+                subRoot->list.erase( subRoot->list.begin() + index ); //iterator for which position the mappedValue is at
+            }
+            mappedItemCount--;
+        }
+    }
+
+    //updating height of each node we went to, from bottom up
+    subRoot->height = max(height(subRoot->left), height(subRoot->right)) + 1;
+
+    //performing rotations, if need be
+    performRotations(subRoot);
+
+    //at the very end, this will return the root, the first node entered this function
+    return subRoot;
+}
+
+template <class T>
 void AVLTree<T>::performRotations(node<T> *&subRoot)
 {
     int bal = getNodeBalance(subRoot);
@@ -415,6 +588,11 @@ void AVLTree<T>::saveHelper(node<T> *traversalNode, ofstream &outFile) const
     {
         saveHelper(traversalNode->left, outFile);
         outFile << traversalNode->value << endl;
+        for (int i = 0; i < traversalNode->list.size(); i++)
+        {
+            outFile << traversalNode->list[i] << " ";
+        }
+        outFile << endl;
         saveHelper(traversalNode->right, outFile);
     }
 }
