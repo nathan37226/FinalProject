@@ -49,7 +49,7 @@ public:
     
     bool isBalanced() const;
     int getLeaves() const;
-    void display(int option = 1) const;
+    void display(int option = 5) const;
     void insert(T value); //inserts the node
     void insertWithItem(T value, T mappedItem); //inserts a node with an item associated with the value. Like, phoneNum -> acct
     void search(T value) const;

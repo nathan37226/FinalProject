@@ -6,17 +6,7 @@
 #include "Data Structures/AVL.h"
 using namespace std;
 
-
 int main()
-{
-    AVLTree<string> tree;
-    tree.insertWithItem("Nathan", "made this work");
-    tree.insertWithItem("Nathan", "and is very proud of it");
-    tree.del("Nathan");
-    tree.display(5);
-}
-
-/*int main()
 {
     vector<string> nameList = {}; //can have multiple accts with same name
     vector<string> phoneNumList = {}; //can have multiple accts with same phone num
@@ -24,40 +14,40 @@ int main()
 
     for (int i = 0; i < 100; i++)
     {
-        string name = "Name" + to_string(i);
         string acctNum = "C000" + to_string(i);
-        nameList.push_back(name);
         acctList.push_back(acctNum);
     }
-    for (int i = 1000; phoneNumList.size() < 100; i += 2)
+    for (int i = 0; i < 50; i++)
+    {
+        string name = "Name" + to_string(i);
+        nameList.push_back(name);
+    }
+
+    for (int i = 1000; phoneNumList.size() < 50; i += 2)
     {
         string num = "417-555-" + to_string(i);
         phoneNumList.push_back(num);
     }
 
-    AccountTable acctTable, phoneNumTable, nameTable;
+    AccountTable acctTable;
+    AVLTree<string> phoneTable, nameTable;
+
     for (int i = 0; i < nameList.size(); i++)
     {
-        string acctInfo = nameList[i] + " " + phoneNumList[i];
-        accountEntry acctTableEntry(acctList[i], acctInfo); //creates an entry for the acctTable
-        acctTable.insert(acctTableEntry);
-
-        accountEntry nameEntry(nameList[i], acctList[i]);
-        nameTable.insert(nameEntry);
-
-        accountEntry phoneNumEntry(phoneNumList[i], acctList[i]);
-        phoneNumTable.insert(phoneNumEntry);
+        accountEntry firEntry(acctList[i], nameList[i] + " " + phoneNumList[i]);
+        accountEntry secEntry(acctList[acctList.size() - i - 1], nameList[i] + " " + phoneNumList[i]);
+        acctTable.insert(firEntry);
+        acctTable.insert(secEntry);
+        nameTable.insertWithItem(nameList[i], acctList[i]);
+        nameTable.insertWithItem(nameList[i], acctList[acctList.size() - i - 1]);
+        phoneTable.insertWithItem(phoneNumList[i], acctList[i]);
+        phoneTable.insertWithItem(phoneNumList[i], acctList[acctList.size() - i - 1]);
     }
 
-    //acctTable.display();
-    acctTable.getStatistics();
-    acctTable.writeInfo("Tables/AccountTable.txt");
-    nameTable.writeInfo("Tables/NameTable.txt");
-    phoneNumTable.writeInfo("Tables/PhoneTable.txt");
-
-
-
+    phoneTable.saveInfo("Tables/PhoneTable.txt");
+    nameTable.saveInfo("Tables/NameTable.txt");
+    acctTable.saveInfo("Tables/AccountTable.txt");
 
     return 0;
-} */
+}
 

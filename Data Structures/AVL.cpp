@@ -166,14 +166,14 @@ void AVLTree<T>::displayInOrderWithMappedItems(node<T> *subRoot) const
 {
     if (subRoot)
     {
-        displayInOrder(subRoot->left);
+        displayInOrderWithMappedItems(subRoot->left);
         cout << subRoot->value << endl;
         for (int i = 0; i < subRoot->list.size(); i++)
         {
             cout << subRoot->list[i] << " ";
         }
         cout << endl;
-        displayInOrder(subRoot->right);
+        displayInOrderWithMappedItems(subRoot->right);
     }
 }
 
@@ -285,11 +285,11 @@ node<T>* AVLTree<T>::insertWithItemHelper(node<T> *&subRoot, node<T> *&newNode)
     } 
     else if (newNode->value < subRoot->value)
     {
-        subRoot->left = insertHelper(subRoot->left, newNode);  
+        subRoot->left = insertWithItemHelper(subRoot->left, newNode);  
     }
     else if (newNode->value > subRoot->value) 
     { 
-        subRoot->right = insertHelper(subRoot->right, newNode);  
+        subRoot->right = insertWithItemHelper(subRoot->right, newNode);  
     }
     else //equal values, so new mappedItem into list, if not there. If there, say that
     {
@@ -433,7 +433,7 @@ node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedIte
     {
         if (subRoot->left)
         {
-            subRoot->left = delHelper(subRoot->left, value);
+            subRoot->left = delMappedItemHelper(subRoot->left, value);
         }
         else
         {
@@ -445,7 +445,7 @@ node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedIte
     {
         if (subRoot->right)
         {
-            subRoot->right = delHelper(subRoot->right, value);
+            subRoot->right = delMappedItemHelper(subRoot->right, value);
         }
         else
         {
@@ -557,7 +557,12 @@ void AVLTree<T>::search(T value) const
     node<T> *nodePtr = searchHelper(value, root);
     if (nodePtr)
     {
-        cout << "That record exists!" << endl << nodePtr->value << endl;
+        cout << "That record exists!" << endl;
+        for (int i = 0; i < nodePtr->list.size(); i++)
+        {
+            cout << nodePtr->list[i] << " ";
+        }
+        cout << endl; 
     }
     else
     {
@@ -595,10 +600,14 @@ void AVLTree<T>::saveHelper(node<T> *traversalNode, ofstream &outFile) const
     if (traversalNode)
     {
         saveHelper(traversalNode->left, outFile);
-        outFile << traversalNode->value << endl;
+        outFile << traversalNode->value << "--";
         for (int i = 0; i < traversalNode->list.size(); i++)
         {
-            outFile << traversalNode->list[i] << " ";
+            outFile << traversalNode->list[i];
+            if (i < traversalNode->list.size() - 1)
+            {
+                outFile << ", ";
+            }
         }
         outFile << endl;
         saveHelper(traversalNode->right, outFile);

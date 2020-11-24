@@ -43,18 +43,18 @@ protected:
     int maxCollisions;
 
     void updateLoad();
-    virtual void resize(); //increases size to keep load factor below threshold
+    void resize(); //increases size to keep load factor below threshold
 
 public:
     AccountTable();
     ~AccountTable();
-    virtual void insert(accountEntry newValue);
-    virtual void display() const;
+    void insert(accountEntry newValue);
+    void display() const;
     bool isEmpty() const;
     string search(string key) const; //returns all info of value, if found
     void remove(string key);
     void getStatistics() const;
-    virtual void writeInfo(string filename) const;
+    void saveInfo(string filename) const;
 };
 
 #include "AccountTable.cpp"

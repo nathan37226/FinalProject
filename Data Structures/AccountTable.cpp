@@ -6,7 +6,7 @@ Implementation file for the Dictionary object
 //this allows for 'cout << entry' and 'outFile << entry' to work correctly
 ostream& operator << (ostream& os, const accountEntry obj)
 {
-    os << obj.key;
+    os << obj.key << ": " << obj.info;
     return os;
 }
 
@@ -195,7 +195,7 @@ void AccountTable::getStatistics() const
     cout << "Hashing algorithm: FNL-1a 64-bit" << endl;
 }
 
-void AccountTable::writeInfo(string filename) const
+void AccountTable::saveInfo(string filename) const
 {
     ofstream outFile(filename);
     accountEntry storedValue;
