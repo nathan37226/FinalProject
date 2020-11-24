@@ -172,7 +172,7 @@ void AccountTable::display() const
     {
         if (!dict[i].isEmpty())
         {
-            cout << "Index: " << i << " Size: " << dict[i].size() << endl;
+            cout << "Index: " << i << ". Size: " << dict[i].size() << endl;
             dict[i].displayList();
         }
     }
@@ -217,4 +217,28 @@ void AccountTable::saveInfo(string filename) const
         abort();
     }
     outFile.close();
+}
+
+void AccountTable::buildTable(string filename)
+{
+    ifstream inFile;
+    inFile.open(filename);
+    if (inFile)
+    {
+        string text = "";
+        while (getline(inFile, text))
+        {
+            text = text.substr(0, text.rfind("\r")); //removing carriage return from .txt file
+            string delim = "^|";
+            string key = text.substr(0, text.find(delim));
+            text = text.substr(text.find(delim) + delim.length(), string::npos);
+            accountEntry entry(key, text);
+            insert(entry);
+        }
+    }
+    else
+    {
+        cout << "The file could not be found at:" << endl << filename << endl;
+    }
+    inFile.close();
 }

@@ -55,6 +55,8 @@ public:
     void remove(string key);
     void getStatistics() const;
     void saveInfo(string filename) const;
+    void buildTable(string filename);
+    
 };
 
 #include "AccountTable.cpp"

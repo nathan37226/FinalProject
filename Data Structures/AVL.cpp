@@ -635,6 +635,11 @@ void AVLTree<T>::buildTree(string filename)
     ifstream inFile(filename);
     if (inFile)
     {
+        //ensuring tree is destroyed before building new one
+        nodeCount = 0;
+        mappedItemCount = 0;
+        destroySubRoot(root);
+
         string text = "";
         while (getline(inFile, text))
         {
@@ -657,12 +662,12 @@ void AVLTree<T>::buildTree(string filename)
                 entry = text.substr(pos1 + entryDelim.length(), pos2 - pos1 - entryDelim.length()); 
                 pos1 = pos2; 
                 entries.push_back(entry); 
-                cout << entry << endl;
             }
 
             //vector entries is now ready to be inserted along with the key into the tree!
             node<T> *toBeInserted = new node<T>(key, entries); //creating node to store key and assoiated entries
             root = insertHelper(root, toBeInserted); //does the actual insertion
+            nodeCount++;
         }
     }
     else

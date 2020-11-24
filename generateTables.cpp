@@ -44,9 +44,11 @@ int main()
         phoneTable.insertWithItem(phoneNumList[i], acctList[acctList.size() - i - 1]);
     }
 
-    phoneTable.saveInfo("Tables/PhoneTable.txt");
-    nameTable.saveInfo("Tables/NameTable.txt");
-    acctTable.saveInfo("Tables/AccountTable.txt");
-
+    //phoneTable.saveInfo("Tables/PhoneTable.txt");
+    //nameTable.saveInfo("Tables/NameTable.txt");
+    //acctTable.saveInfo("Tables/AccountTable.txt");
+    AVLTree<string> newTree;
+    newTree.buildTree("Tables/NameTable.txt");
+    newTree.display();
     return 0;
 }
