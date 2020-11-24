@@ -11,9 +11,8 @@ int main()
 {
     AVLTree<string> tree;
     tree.insertWithItem("Nathan", "made this work");
-    cout << "Done inserting" << endl;
-    tree.display(5);
     tree.insertWithItem("Nathan", "and is very proud of it");
+    tree.del("Nathan");
     tree.display(5);
 }
 

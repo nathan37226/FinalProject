@@ -501,9 +501,17 @@ node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedIte
             else //there are more than one entry inside the list, so can just remove item from vector
             {
                 subRoot->list.erase( subRoot->list.begin() + index ); //iterator for which position the mappedValue is at
+                nodeCount++; //counteracting decrement earlier on
             }
             mappedItemCount--;
         }
+
+        else
+        {
+            nodeCount++;
+            cout << "The mapped item could not be found to delete." << endl;
+        }
+        
     }
 
     //updating height of each node we went to, from bottom up
