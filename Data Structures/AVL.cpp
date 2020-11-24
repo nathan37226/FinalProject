@@ -433,7 +433,7 @@ node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedIte
     {
         if (subRoot->left)
         {
-            subRoot->left = delMappedItemHelper(subRoot->left, value);
+            subRoot->left = delMappedItemHelper(subRoot->left, value, mappedItem);
         }
         else
         {
@@ -445,7 +445,7 @@ node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedIte
     {
         if (subRoot->right)
         {
-            subRoot->right = delMappedItemHelper(subRoot->right, value);
+            subRoot->right = delMappedItemHelper(subRoot->right, value, mappedItem);
         }
         else
         {
@@ -479,7 +479,7 @@ node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedIte
                 {
                     node<T> *largestLeftNode = rightmost(subRoot->left); //finding max value in left subtree of del node
                     subRoot->value = largestLeftNode->value; //copying value over
-                    subRoot->left = delHelper(subRoot->left, largestLeftNode->value); //delete max value in left subtree
+                    subRoot->left = delMappedItemHelper(subRoot->left, largestLeftNode->value, mappedItem); //delete max value in left subtree
                 }
 
                 else if (!subRoot->left && !subRoot->right) //is a leaf
