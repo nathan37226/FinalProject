@@ -307,7 +307,7 @@ node<T>* AVLTree<T>::insertWithItemHelper(node<T> *&subRoot, node<T> *&newNode)
         {
             subRoot->list.push_back(newNode->list[0]); //is not inside subRoot's list already, then 
             mappedItemCount++; //increase counter
-        }
+        }       
 
         nodeCount--; //counteract node count increment in insert
     }

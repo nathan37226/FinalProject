@@ -27,7 +27,7 @@ node<T>::node(T obj)
     value = obj;
     left = nullptr;
     right = nullptr;
-    vector<T> list = {}; //nothing initially
+    list = {}; //nothing initially
     height = 1;
 }
 
@@ -37,7 +37,7 @@ node<T>::node(T obj, T mappedItem)
     value = obj;
     left = nullptr;
     right = nullptr;
-    vector<T> list = {mappedItem};
+    list = {mappedItem};
     height = 1;
 }
 #endif
