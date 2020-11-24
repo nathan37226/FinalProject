@@ -1,6 +1,9 @@
 /*
 Nathan Obert
 AVL tree implementations
+Writing to and building from text files brougt up the need for special delimiter characters.
+Since this is essentially a dictionary, mapping a key to an entry, there exists a need for
+a delimiter between the key and entry as well as consecutive entry information.
 */
 
 template <class T>
@@ -600,13 +603,13 @@ void AVLTree<T>::saveHelper(node<T> *traversalNode, ofstream &outFile) const
     if (traversalNode)
     {
         saveHelper(traversalNode->left, outFile);
-        outFile << traversalNode->value << "--";
+        outFile << traversalNode->value << "^|";
         for (int i = 0; i < traversalNode->list.size(); i++)
         {
             outFile << traversalNode->list[i];
             if (i < traversalNode->list.size() - 1)
             {
-                outFile << ", ";
+                outFile << "^_";
             }
         }
         outFile << endl;
@@ -624,6 +627,48 @@ void AVLTree<T>::saveInfo(string filename) const
     saveHelper(traversalNode, outFile); //prints to .txt file with in order traversal starting at root
 
     outFile.close();
+}
+
+template <class T>
+void AVLTree<T>::buildTree(string filename)
+{
+    ifstream inFile(filename);
+    if (inFile)
+    {
+        string text = "";
+        while (getline(inFile, text))
+        {
+            string keyDelim = "^|";
+            string entryDelim = "^_";
+
+            text = text.substr(0, text.rfind("\r")); //getting rid of carriage return at the end from .txt file
+            string key = text.substr(0, text.find(keyDelim));
+            text = text.substr(key.length() + keyDelim.length(), string::npos);
+
+            vector<string> entries = {};
+            string entry = "";
+            int pos1 = -entryDelim.length();
+            int pos2 = 0;
+
+            while (pos2 != string::npos) //while not reached end of string
+            {
+                //essentially, pos1 and pos2 move thru the string to get each entry out
+                pos2 = text.find(entryDelim, pos1 + entryDelim.length()); 
+                entry = text.substr(pos1 + entryDelim.length(), pos2 - pos1 - entryDelim.length()); 
+                pos1 = pos2; 
+                entries.push_back(entry); 
+                cout << entry << endl;
+            }
+
+            //vector entries is now ready to be inserted along with the key into the tree!
+            node<T> *toBeInserted = new node<T>(key, entries); //creating node to store key and assoiated entries
+            root = insertHelper(root, toBeInserted); //does the actual insertion
+        }
+    }
+    else
+    {
+        cout << "Could not access file at:" << endl << filename << endl;
+    }
 }
 
 template <class T>

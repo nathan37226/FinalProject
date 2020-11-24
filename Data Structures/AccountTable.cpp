@@ -207,7 +207,7 @@ void AccountTable::saveInfo(string filename) const
             {
                 dict[i].peekFirst(storedValue);
                 dict[i].delFirst();
-                outFile << storedValue.key << "---" << storedValue.info << endl;
+                outFile << storedValue.key << "^|" << storedValue.info << endl;
             }
         }
     }

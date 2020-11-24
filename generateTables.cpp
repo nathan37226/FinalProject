@@ -44,14 +44,9 @@ int main()
         phoneTable.insertWithItem(phoneNumList[i], acctList[acctList.size() - i - 1]);
     }
 
-    //nameTable.delMappedItem("Name0", "C0000");
-    nameTable.delMappedItem("Name0", "C00099");
-    //nameTable.display();
-    nameTable.search("Name0");
-    //phoneTable.saveInfo("Tables/PhoneTable.txt");
-    //nameTable.saveInfo("Tables/NameTable.txt");
-    //acctTable.saveInfo("Tables/AccountTable.txt");
+    phoneTable.saveInfo("Tables/PhoneTable.txt");
+    nameTable.saveInfo("Tables/NameTable.txt");
+    acctTable.saveInfo("Tables/AccountTable.txt");
 
     return 0;
 }
-

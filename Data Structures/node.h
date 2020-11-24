@@ -19,6 +19,7 @@ struct node
     node(){}
     node(T obj);
     node(T obj, T mappedItem);
+    node(T obj, vector<T> mappedItems);
 };
 
 template <class T>
@@ -38,6 +39,16 @@ node<T>::node(T obj, T mappedItem)
     left = nullptr;
     right = nullptr;
     list = {mappedItem};
+    height = 1;
+}
+
+template <class T>
+node<T>::node(T obj, vector<T> mappedItems)
+{
+    value = obj;
+    left = nullptr;
+    right = nullptr;
+    list = mappedItems;
     height = 1;
 }
 #endif

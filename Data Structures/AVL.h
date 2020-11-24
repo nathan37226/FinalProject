@@ -41,6 +41,7 @@ protected:
     node<T>* rightRotation(node<T> *&x); //returned node is new root of subtree
     node<T>* leftRotation(node<T> *&y);
     void saveHelper(node<T> *traversalNode, ofstream &outFile) const;
+    node<T>* buildHelper(string entries);
 
 public:
     AVLTree();
@@ -56,6 +57,7 @@ public:
     void del(T value);
     void delMappedItem(T value, T mappedItem); //deletes a specific item out of list in node. If nothing left after, deletes node.
     void saveInfo(string filename) const;
+    void buildTree(string filename);
     int getHeight() const;
     int getNodeCount() const;
 };
