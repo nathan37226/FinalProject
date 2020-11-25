@@ -14,9 +14,11 @@ int main()
 
     AVLTree<string> nameTable, phoneTable;
     AccountTable accountTable;
+
     accountTable.buildTable("Tables/AccountTable.txt");
     nameTable.buildTree("Tables/NameTable.txt");
     phoneTable.buildTree("Tables/PhoneTable.txt");
+    
     cout << endl << "Start of Account Table:" << endl;
     accountTable.display();
     cout << endl << "Start of Name Table:" << endl;
