@@ -614,7 +614,7 @@ void AVLTree<T>::saveHelper(node<T> *traversalNode, ofstream &outFile) const
                 toWrite += "^_";
             }
         }
-        outFile << EncryptionBox().encrypt(toWrite) << endl;
+        outFile << EncryptionBox::encrypt(toWrite) << endl;
         saveHelper(traversalNode->right, outFile);
     }
 }
@@ -654,7 +654,7 @@ void AVLTree<T>::buildTree(string filename)
             string entryDelim = "^_";
 
             text = text.substr(0, text.rfind("\r")); //getting rid of carriage return at the end from .txt file
-            text = EncryptionBox().decrypt(text); //decrypting text to further parse and store inside the tree
+            text = EncryptionBox::decrypt(text); //decrypting text to further parse and store inside the tree
             string key = text.substr(0, text.find(keyDelim));
             text = text.substr(key.length() + keyDelim.length(), string::npos);
 

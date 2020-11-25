@@ -22,6 +22,5 @@ int main()
     cout << endl << "Start of Phone Table:" << endl;
     phoneTable.display();
     
-    
     return 0;
 }
