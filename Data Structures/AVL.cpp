@@ -597,22 +597,24 @@ node<T>* AVLTree<T>::searchHelper(T val, node<T> *subRoot) const
     }
 }
 
+//this specific save only works for class string, not any type T
+//it was added for the purposes of the final project
 template <class T>
 void AVLTree<T>::saveHelper(node<T> *traversalNode, ofstream &outFile) const
 {
     if (traversalNode)
     {
         saveHelper(traversalNode->left, outFile);
-        outFile << traversalNode->value << "^|";
+        string toWrite = traversalNode->value + "^|";
         for (int i = 0; i < traversalNode->list.size(); i++)
         {
-            outFile << traversalNode->list[i];
+            toWrite += traversalNode->list[i];
             if (i < traversalNode->list.size() - 1)
             {
-                outFile << "^_";
+                toWrite += "^_";
             }
         }
-        outFile << endl;
+        outFile << EncryptionBox().encrypt(toWrite) << endl;
         saveHelper(traversalNode->right, outFile);
     }
 }
@@ -622,10 +624,15 @@ void AVLTree<T>::saveInfo(string filename) const
 {
     ofstream outFile;
     outFile.open(filename);
-
-    node<T> *traversalNode = root;
-    saveHelper(traversalNode, outFile); //prints to .txt file with in order traversal starting at root
-
+    if (outFile)
+    {
+        node<T> *traversalNode = root;
+        saveHelper(traversalNode, outFile); //prints to .txt file with in order traversal starting at root
+    }
+    else
+    {
+        cout << "The info could not be saved at:" << endl << filename << endl;
+    }
     outFile.close();
 }
 
@@ -647,6 +654,7 @@ void AVLTree<T>::buildTree(string filename)
             string entryDelim = "^_";
 
             text = text.substr(0, text.rfind("\r")); //getting rid of carriage return at the end from .txt file
+            text = EncryptionBox().decrypt(text); //decrypting text to further parse and store inside the tree
             string key = text.substr(0, text.find(keyDelim));
             text = text.substr(key.length() + keyDelim.length(), string::npos);
 

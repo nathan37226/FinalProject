@@ -207,7 +207,8 @@ void AccountTable::saveInfo(string filename) const
             {
                 dict[i].peekFirst(storedValue);
                 dict[i].delFirst();
-                outFile << storedValue.key << "^|" << storedValue.info << endl;
+                string toWrite = storedValue.key + "^|" + storedValue.info;
+                outFile << box.encrypt(toWrite) << endl;
             }
         }
     }
@@ -229,6 +230,7 @@ void AccountTable::buildTable(string filename)
         while (getline(inFile, text))
         {
             text = text.substr(0, text.rfind("\r")); //removing carriage return from .txt file
+            text = box.decrypt(text); //decrypting in order to read from
             string delim = "^|";
             string key = text.substr(0, text.find(delim));
             text = text.substr(text.find(delim) + delim.length(), string::npos);

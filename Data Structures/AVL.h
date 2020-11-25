@@ -10,6 +10,7 @@ My AVL Tree implementation
 #include <string>
 #include <vector>
 #include <fstream>
+#include "EncryptionBox.h"
 using namespace std;
 
 template <class T>
