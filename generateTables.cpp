@@ -12,13 +12,18 @@ int main()
     //nameTable.saveInfo("Tables/NameTable.txt");
     //acctTable.saveInfo("Tables/AccountTable.txt");
 
-    AVLTree<string> nameTree, phoneTree;
-    nameTree.buildTree("Tables/NameTable - Copy.txt");
-    phoneTree.buildTree("Tables/PhoneTable - Copy.txt");
-    nameTree.display();
-    phoneTree.display();
-    nameTree.saveInfo("Tables/NameTable.txt");
-    phoneTree.saveInfo("Tables/PhoneTable.txt");
+    AVLTree<string> nameTable, phoneTable;
+    AccountTable accountTable;
+    accountTable.buildTable("Tables/AccountTable.txt");
+    nameTable.buildTree("Tables/NameTable.txt");
+    phoneTable.buildTree("Tables/PhoneTable.txt");
+    cout << endl << "Start of Account Table:" << endl;
+    accountTable.display();
+    cout << endl << "Start of Name Table:" << endl;
+    nameTable.display();
+    cout << endl << "Start of Phone Table:" << endl;
+    phoneTable.display();
+    
 
     
     return 0;
