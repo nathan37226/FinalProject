@@ -8,17 +8,13 @@ using namespace std;
 
 int main()
 {
-    //phoneTable.saveInfo("Tables/PhoneTable.txt");
-    //nameTable.saveInfo("Tables/NameTable.txt");
-    //acctTable.saveInfo("Tables/AccountTable.txt");
-
     AVLTree<string> nameTable, phoneTable;
     AccountTable accountTable;
 
     accountTable.buildTable("Tables/AccountTable.txt");
     nameTable.buildTree("Tables/NameTable.txt");
     phoneTable.buildTree("Tables/PhoneTable.txt");
-    
+
     cout << endl << "Start of Account Table:" << endl;
     accountTable.display();
     cout << endl << "Start of Name Table:" << endl;
@@ -26,7 +22,6 @@ int main()
     cout << endl << "Start of Phone Table:" << endl;
     phoneTable.display();
     
-
     
     return 0;
 }
