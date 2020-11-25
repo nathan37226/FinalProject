@@ -597,7 +597,7 @@ node<T>* AVLTree<T>::searchHelper(T val, node<T> *subRoot) const
     }
 }
 
-//this specific save only works for class string, not any type T
+//Building and saving the tree is specific to type string. Any other 'class T' will not work as designed!
 //it was added for the purposes of the final project
 template <class T>
 void AVLTree<T>::saveHelper(node<T> *traversalNode, ofstream &outFile) const
