@@ -170,7 +170,7 @@ void AVLTree<T>::displayInOrderWithMappedItems(node<T> *subRoot) const
     if (subRoot)
     {
         displayInOrderWithMappedItems(subRoot->left);
-        cout << subRoot->value << endl;
+        cout << "Key: " << subRoot->value << endl << "Value: ";
         for (int i = 0; i < subRoot->list.size(); i++)
         {
             cout << subRoot->list[i] << " ";

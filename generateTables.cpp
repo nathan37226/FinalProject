@@ -8,6 +8,14 @@ using namespace std;
 
 int main()
 {
+    AVLTree<string> tree;
+    tree.insertWithItem("1", "2");
+    tree.display();
+}
+
+/*
+int main()
+{
     AVLTree<string> nameTable, phoneTable;
     AccountTable accountTable;
 
@@ -24,3 +32,4 @@ int main()
     
     return 0;
 }
+*/
