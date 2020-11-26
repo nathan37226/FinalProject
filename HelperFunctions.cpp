@@ -14,7 +14,7 @@ int main()
     cout << "Old Account Number: " << oldAcctNum << endl << "New Account Number: " << newAcctNum << endl << endl;
 
     double num = 105.68532;
-    double roundedNum = roundNum(num, 2); //for money, we round to the 2nd decimal
+    double roundedNum = roundNum(num, 2); //for money, we round to the 2nd decimal; if you write this number to a file, it wll have 105.690000, so need to format it!
     string formattedNum = getDisplayNum(roundedNum);
     cout << "Original num: " << num << endl << "Rounded num: " << roundedNum << endl << "Num formatted to display: $" << formattedNum << endl;
     return 0;
