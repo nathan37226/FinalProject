@@ -2,8 +2,8 @@
 Implementation of the EncryptionBox object
 
 The encryption algorithm is to find the ascii value of a char,
-add 133 to it, then offset it by a certain amount, 0 thru 4.
-The 133 comes from the ascii table: the valid characters expected
+add 129 to it, then offset it by a certain amount, 0 thru 4.
+The 129 comes from the ascii table: the valid characters expected
 to be encrypted range from 32 to 122. The range of 161 to 255, which
 text files support (I checked by printing to one), are valid characters.
 
