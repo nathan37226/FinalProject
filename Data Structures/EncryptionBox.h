@@ -35,6 +35,7 @@ protected:
 
 public:
     EncryptionBox(){}
+    static size_t positionInFile;
 
     static string encrypt(string text);
     static string decrypt(string encryptedText);
@@ -43,7 +44,10 @@ public:
     static unsigned int getIndex(string input, unsigned int tableSize);
 };
 
+size_t EncryptionBox::positionInFile = 0;
 string EncryptionBox::salt = "8%a4/.B&cT"; //initalizing salt since static
+//valid thru 32 and 122 - range of 90
+//want between 165 and 255 - range of 90
 vector<int> EncryptionBox::offsetKey = {1,3,1,0,4,2,3,1,4,2,0}; //random numbers to offset the entered text's ascii value
 //these are between 0 and 4 because that ensures a character wont map to any ascii values that won't display in a text file, like DEL or some of the seperators
 

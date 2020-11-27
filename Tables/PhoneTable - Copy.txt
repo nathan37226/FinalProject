@@ -1,50 +1,0 @@
-Xc|\IKr 73	ea]IB{
-Xc|\IKp 73	ea]IBz
-Xc|\IKv 73	ea]IBu
-Xc|\IKt 73	ea]IBt
-Xc|\IKz 73	ea]IBw
-Xc|\IJr 73	ea]IBv
-Xc|\IJp 73	ea]IBq
-Xc|\IJv 73	ea]IBp
-Xc|\IJt 73	ea]IBs
-Xc|\IJz 73	ea]IBr
-Xc|\IIr 7]y]IKzG
-Xc|\IIp 7\y]IKzF
-Xc|\IIv 7_y]IKzI
-Xc|\IIt 7^y]IKzH
-Xc|\IIz 7Yy]IKzK
-Xc|\IHr 7Xy]IKzJ
-Xc|\IHp 7[y]IKzM
-Xc|\IHv 7Zy]IKzL
-Xc|\IHt 7Uy]IKzO
-Xc|\IHz 7Ty]IKzN
-Xc|\IOr 7]y]IKuG
-Xc|\IOp 7\y]IKuF
-Xc|\IOv 7_y]IKuI
-Xc|\IOt 7^y]IKuH
-Xc|\IOz 7Yy]IKuK
-Xc|\INr 7Xy]IKuJ
-Xc|\INp 7[y]IKuM
-Xc|\INv 7Zy]IKuL
-Xc|\INt 7Uy]IKuO
-Xc|\INz 7Ty]IKuN
-Xc|\IMr 7]y]IKtG
-Xc|\IMp 7\y]IKtF
-Xc|\IMv 7_y]IKtI
-Xc|\IMt 7^y]IKtH
-Xc|\IMz 7Yy]IKtK
-Xc|\ILr 7Xy]IKtJ
-Xc|\ILp 7[y]IKtM
-Xc|\ILv 7Zy]IKtL
-Xc|\ILt 7Uy]IKtO
-Xc|\ILz 7Ty]IKtN
-Xc|\ICr 7]y]IKwG
-Xc|\ICp 7\y]IKwF
-Xc|\ICv 7_y]IKwI
-Xc|\ICt 7^y]IKwH
-Xc|\ICz 7Yy]IKwK
-Xc|\IBr 7Xy]IKwJ
-Xc|\IBp 7[y]IKwM
-Xc|\IBv 7Zy]IKwL
-Xc|\IBt 7Uy]IKwO
-Xc|\IBz 7Ty]IKwN

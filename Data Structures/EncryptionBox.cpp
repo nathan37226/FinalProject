@@ -8,11 +8,11 @@ string EncryptionBox::encrypt(string text)
 
     for (int i = 0; i < text.length(); i++)
     {
-        int asciiValue = text[i] + offsetKey[i % offsetKey.size()];
+        int asciiValue = text[i] + 133 + offsetKey[positionInFile % offsetKey.size()];
+        positionInFile++;
         char newChar = asciiValue;
         encryptedText += newChar;
     }
-
     return encryptedText;
 }
 
@@ -22,11 +22,11 @@ string EncryptionBox::decrypt(string text)
 
     for (int i = 0; i < text.length(); i++)
     {
-        int asciiValue = text[i] - offsetKey[i % offsetKey.size()];
+        int asciiValue = text[i] - 133 - offsetKey[positionInFile % offsetKey.size()];
+        positionInFile++;
         char newChar = asciiValue;
         decryptedText += newChar;
     }
-
     return decryptedText;
 }
 

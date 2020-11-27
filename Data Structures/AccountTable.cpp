@@ -198,6 +198,7 @@ void AccountTable::getStatistics() const
 
 void AccountTable::saveInfo(string filename) const
 {
+    EncryptionBox::positionInFile = 0;
     ofstream outFile(filename);
     accountEntry storedValue;
     if (outFile)
@@ -223,6 +224,7 @@ void AccountTable::saveInfo(string filename) const
 
 void AccountTable::buildTable(string filename)
 {
+    EncryptionBox::positionInFile = 0;
     ifstream inFile;
     inFile.open(filename);
     if (inFile)

@@ -595,6 +595,7 @@ void AVLTree<T>::saveHelper(node<T> *traversalNode, ofstream &outFile) const
 template <class T>
 void AVLTree<T>::saveInfo(string filename) const
 {
+    EncryptionBox::positionInFile = 0;
     ofstream outFile;
     outFile.open(filename);
     if (outFile)
@@ -612,6 +613,7 @@ void AVLTree<T>::saveInfo(string filename) const
 template <class T>
 void AVLTree<T>::buildTree(string filename)
 {
+    EncryptionBox::positionInFile = 0;
     ifstream inFile(filename);
     if (inFile)
     {
