@@ -130,6 +130,14 @@ void AccountTable::remove(string key)
     }
 }
 
+bool AccountTable::doesExist(string key) const
+{
+    unsigned int index = box.getIndex(key, capacity);
+    accountEntry value(key);
+    bool isPresent = dict[index].search(value);
+    return isPresent;
+}
+
 void AccountTable::resize()
 {
     LinkedList<accountEntry> *tempDict = new LinkedList<accountEntry>[capacity * 2];

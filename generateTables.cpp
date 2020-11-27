@@ -8,7 +8,7 @@ using namespace std;
 
 int main()
 {
-    vector<string> nameList = {}; //can have multiple accts with same name
+    /*vector<string> nameList = {}; //can have multiple accts with same name
     vector<string> phoneNumList = {}; //can have multiple accts with same phone num
     vector<string> acctList = {};
 
@@ -46,11 +46,24 @@ int main()
 
     acctTable.saveInfo("Tables/AccountTable.txt");
     nameTable.saveInfo("Tables/NameTable.txt");
-    phoneTable.saveInfo("Tables/PhoneTable.txt");
+    phoneTable.saveInfo("Tables/PhoneTable.txt");*/
 
     AccountTable newTable;
     newTable.buildTable("Tables/AccountTable.txt");
     newTable.display();
     newTable.getStatistics();
+
+    bool isPresent = newTable.doesExist("C00051");
+
+    if (isPresent)
+    {
+        cout << newTable.search("C00051") << endl;
+    }
+    else
+    {
+        cout << "The value could not be found" << endl;
+    }
+    
+
     return 0;
 }
