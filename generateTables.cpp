@@ -44,7 +44,7 @@ int main()
         phoneTable.insertWithItem(phoneNumList[i], acctList[acctList.size() - i - 1]);
     }
 
-    //acctTable.saveInfo("Tables/AccountTable.txt");
+    acctTable.saveInfo("Tables/AccountTable.txt");
     nameTable.saveInfo("Tables/NameTable.txt");
     phoneTable.saveInfo("Tables/PhoneTable.txt");
 
