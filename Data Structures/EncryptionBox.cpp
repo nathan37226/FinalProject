@@ -11,6 +11,8 @@ text files support (I checked by printing to one), are valid characters.
 161 to 255 - range of 90 + up to 4 from offset vector
 At minimum, " " will map to "¡"
 At maximum, "z" will map to "ÿ".
+The offset ensures that a single char will have 5 potential outputs when encrypted, 
+which means a string with n chars will have n^5 possible combinations.
 */
 
 string EncryptionBox::encrypt(string text) 
