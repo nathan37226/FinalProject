@@ -1,9 +1,6 @@
 /*
 Nathan Obert
 AVL tree implementations
-Writing to and building from text files brougt up the need for special delimiter characters.
-Since this is essentially a dictionary, mapping a key to an entry, there exists a need for
-a delimiter between the key and entry as well as consecutive entry information.
 */
 
 template <class T>
@@ -14,46 +11,18 @@ AVLTree<T>::AVLTree()
 }
 
 template <class T>
-AVLTree<T>::AVLTree(string filename)
-{
-    //initial constructor
-    root = nullptr;
-    nodeCount = 0;
-
-    //adding everything from file, if possible
-    vector<T> valueList = {};
-    ifstream inFile(filename);
-
-    if (inFile)
-    {
-        string fileLine;
-
-        while (getline(inFile, fileLine))
-        {
-            T newItem(fileLine); //creates the item from the line line in file
-            valueList.push_back(newItem); //adds to a vector from which we will create the minimum height tree
-        }
-        
-        addMidpoints(valueList, 0, valueList.size() - 1); //adding items such that tree has min height
-    }
-    else
-    {
-        cout << "No prior records were found" << endl;
-    }
-    inFile.close();
-}
-
-template <class T>
-void AVLTree<T>::addMidpoints(vector<T> &valueList, int start, int end)
+void AVLTree<T>::addMidpoints(vector<node<T>*> &nodeList, int start, int end)
 {
     if (end - start >= 0) //as soon as the distance between the upper and lower number is negative, we have finished finding all midpoints
     {
         int midpoint = start + ( (end - start) / 2); //this will round down, if needed
 
-        insert( valueList[midpoint] ); 
+        root = insertHelper(root, nodeList[midpoint] );
+        nodeCount++;
+        mappedItemCount += nodeList[midpoint]->list.size(); 
 
-        addMidpoints(valueList, start, midpoint- 1); //all values to the left of given mid
-        addMidpoints(valueList, midpoint + 1, end); //all values to the right of given mid
+        addMidpoints(nodeList, start, midpoint- 1); //all values to the left of given mid
+        addMidpoints(nodeList, midpoint + 1, end); //all values to the right of given mid
     }
 }
 
@@ -173,7 +142,11 @@ void AVLTree<T>::displayInOrderWithMappedItems(node<T> *subRoot) const
         cout << "Key: " << subRoot->value << endl << "Value: ";
         for (int i = 0; i < subRoot->list.size(); i++)
         {
-            cout << subRoot->list[i] << " ";
+            cout << subRoot->list[i];
+            if (i + 1 < subRoot->list.size())
+            {
+                cout << " -- ";
+            }
         }
         cout << endl;
         displayInOrderWithMappedItems(subRoot->right);
@@ -605,13 +578,13 @@ void AVLTree<T>::saveHelper(node<T> *traversalNode, ofstream &outFile) const
     if (traversalNode)
     {
         saveHelper(traversalNode->left, outFile);
-        string toWrite = traversalNode->value + "^|";
+        string toWrite = traversalNode->value + "%#";
         for (int i = 0; i < traversalNode->list.size(); i++)
         {
             toWrite += traversalNode->list[i];
             if (i < traversalNode->list.size() - 1)
             {
-                toWrite += "^_";
+                toWrite += "%&";
             }
         }
         outFile << EncryptionBox::encrypt(toWrite) << endl;
@@ -648,10 +621,12 @@ void AVLTree<T>::buildTree(string filename)
         destroySubRoot(root);
 
         string text = "";
+        vector<node<T>*> nodes = {};
+
         while (getline(inFile, text))
         {
-            string keyDelim = "^|";
-            string entryDelim = "^_";
+            string keyDelim = "%#";
+            string entryDelim = "%&";
 
             text = text.substr(0, text.rfind("\r")); //getting rid of carriage return at the end from .txt file
             text = EncryptionBox::decrypt(text); //decrypting text to further parse and store inside the tree
@@ -674,9 +649,10 @@ void AVLTree<T>::buildTree(string filename)
 
             //vector entries is now ready to be inserted along with the key into the tree!
             node<T> *toBeInserted = new node<T>(key, entries); //creating node to store key and assoiated entries
-            root = insertHelper(root, toBeInserted); //does the actual insertion
-            nodeCount++;
+            nodes.push_back(toBeInserted);
         }
+
+        addMidpoints(nodes, 0, nodes.size() - 1); //adding items such that tree has min height
     }
     else
     {
@@ -718,4 +694,16 @@ template <class T>
 int AVLTree<T>::getNodeCount() const
 {
     return nodeCount;
+}
+
+template <class T>
+void AVLTree<T>::getStatistics() const
+{
+    unsigned int minHeight = log2(2 * nodeCount);
+    cout << endl;
+    cout << "Total keys stored: " << nodeCount << endl;
+    cout << "Total items mapped to keys: " << mappedItemCount << endl;
+    cout << "Height of tree: " << getHeight() << endl;
+    cout << "Theoretical minimum height: " << minHeight << endl;
+    cout << "Total leaf count: " << getLeaves() << endl;
 }

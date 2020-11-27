@@ -56,6 +56,7 @@ AccountTable::AccountTable()
 AccountTable::~AccountTable()
 {
     delete [] dict; //linked list has a valid destructor, so only need to delete the dict containing them
+    dict = nullptr;
 }
 
 void AccountTable::updateLoad()
@@ -207,7 +208,7 @@ void AccountTable::saveInfo(string filename) const
             {
                 dict[i].peekFirst(storedValue);
                 dict[i].delFirst();
-                string toWrite = storedValue.key + "^|" + storedValue.info;
+                string toWrite = storedValue.key + "%#" + storedValue.info;
                 outFile << box.encrypt(toWrite) << endl;
             }
         }
@@ -231,7 +232,7 @@ void AccountTable::buildTable(string filename)
         {
             text = text.substr(0, text.rfind("\r")); //removing carriage return from .txt file
             text = box.decrypt(text); //decrypting in order to read from
-            string delim = "^|";
+            string delim = "%#";
             string key = text.substr(0, text.find(delim));
             text = text.substr(text.find(delim) + delim.length(), string::npos);
             accountEntry entry(key, text);

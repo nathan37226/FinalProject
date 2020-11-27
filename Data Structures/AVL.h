@@ -1,6 +1,13 @@
 /*
 Nathan Obert M03134502
-My AVL Tree implementation
+This AVL Tree implementation functions as a dictionary. The node has inside a vector, which means
+the same key can be inserted with different associated values, and this vector will hold all of the
+values. For the bank, this means the name "Nathan" can be inserted and the associated values can be
+all of the accounts with the first name "Nathan" on it. 
+
+While this tree is of a template type, not all functions will work as such. For the purposes of this
+project, this tree will only ever be of type string. The saving and building functions are heavily
+related to the objects being of type string, and other types may cause it to break.
 */
 #ifndef AVL_H
 #define AVL_H
@@ -10,6 +17,7 @@ My AVL Tree implementation
 #include <string>
 #include <vector>
 #include <fstream>
+#include <cmath>
 #include "EncryptionBox.h"
 using namespace std;
 
@@ -22,7 +30,7 @@ private:
     int mappedItemCount;
 
 protected:
-    void addMidpoints(vector<T> &valueList, int start, int end); //used in creating from file
+    void addMidpoints(vector<node<T>*> &nodeList, int start, int end); //used in creating from file
     void destroySubRoot(node<T> *&subRoot); //used in the destructor
     int height(node<T> *&subRoot) const; //returns height attribute of a given node, or 0 if applicable
     int getNodeBalance(node<T> *subRoot) const; //whether node's subtrees are balanced
@@ -46,7 +54,6 @@ protected:
 
 public:
     AVLTree();
-    AVLTree(string filename);
     ~AVLTree();
     
     bool isBalanced() const;
@@ -61,6 +68,7 @@ public:
     void buildTree(string filename);
     int getHeight() const;
     int getNodeCount() const;
+    void getStatistics() const;
 };
 
 #include "AVL.cpp" //implementation file

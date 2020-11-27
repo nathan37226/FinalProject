@@ -4,6 +4,9 @@ implementation. Each index of the array will implement seperate chainging throug
 key will hash to a specific index, or really linked list, that contains both the key and info related to 
 the key. Further, all keys will be strings in this dictionary, and all hashing will be done by the 
 EncryptionBox.
+As the array has a linked list in each index, an object needed to be created to be inserted into the list.
+This is why the 'accountEntry' object was created. Further, in AccountTable.cpp, the << operator was
+overloaded so that the accountEntry object could be directly displayed by the linkedlist.
 The keys for this will be accountNums, and the info string will be the general info about the account,
 which includes account holder name, phone num, address, etc.
 */

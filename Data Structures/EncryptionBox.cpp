@@ -4,22 +4,30 @@ Implementation of the EncryptionBox object
 
 string EncryptionBox::encrypt(string text) 
 {
-    string encyptedText = text;
+    string encryptedText = "";
+
     for (int i = 0; i < text.length(); i++)
     {
-        encyptedText[i] = encyptedText[i] ^ key[i % key.length()]; //performs xor on 8 bits that make up a char
-    }                                                              //mod ensures the key is never out of range
-    return encyptedText;
+        int asciiValue = text[i] + offsetKey[i % offsetKey.size()];
+        char newChar = asciiValue;
+        encryptedText += newChar;
+    }
+
+    return encryptedText;
 }
 
-string EncryptionBox::decrypt(string encryptedText) 
+string EncryptionBox::decrypt(string text) 
 {
-    string text = encryptedText;
+    string decryptedText = "";
+
     for (int i = 0; i < text.length(); i++)
     {
-        text[i] = text[i] ^ key[i % key.length()];
+        int asciiValue = text[i] - offsetKey[i % offsetKey.size()];
+        char newChar = asciiValue;
+        decryptedText += newChar;
     }
-    return text;
+
+    return decryptedText;
 }
 
 string EncryptionBox::hash(string input) 
