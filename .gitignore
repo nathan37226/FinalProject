@@ -4,3 +4,4 @@ testing.exe
 goals.txt
 testing.exe.stackdump
 test.cpp
+/.vscode
