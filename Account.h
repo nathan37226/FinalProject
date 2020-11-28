@@ -8,32 +8,35 @@ using namespace std;
 class AccountType
 {
 private:
-    string accountNumber;
+    string accountTypeName;
     double monthlyFee;
     double serviceFee;
     static double penaltyFee;
     double interestRate;
     double minimumBalance;
 
+protected:
+    double roundNum(double amount, int precision);
+
 public:
-    void setAccountHolderFirstName(string name);
-    void setAccountHolderLastName(string name);
-    void setAccountHolderPhoneNumber(string phoneNum);
-    void setAccountHolderAddress(string address);
-    string getAccountHolderInfo();
-    string getAccountNumber();
     void setMonthlyFee(double fee);
-    double getMothlyFee();
+    double getMonthlyFee();
     void setServiceFee(double fee);
     double getServiceFee();
+    static void setPenaltyFee(double fee);
+    static double getPenaltyFee();
     bool setInterestRate(double rate);
     double getInterestRate();
+    void setMinimumBalance(double amount);
+    double getMinimumBalance();
 
 };
 
 class Account : public AccountType
 {
 private:
+    static const string routingNumber;
+    string accountNumber;
     string accountHolderFirstName;
     string accountHolderLastName;
     string accountHolderPhoneNumber;
@@ -45,21 +48,29 @@ private:
     bool restrictedStatus;
     bool openStatus;
 
-    void setAccountBalance(double amount);
+    static string nextCheckingAccountNumber;
+    static string nextSavingsAccountNumber;
+    static string nextCDAccountNumber;
+    static string nextUniqueAccountNumber;
 
-protected:
-    double roundNum(double amount, int precision);
-    string convertTimeToString();
-    time_t displayHistoryHelper(string date);
+    void setAccountBalance(double amount);
+    string convertTimeToString(time_t inputTime);
+    string incrementAcctNum(string lastAcctNum);
 
 public:
+    string getAccountNumber();
     void setAccountHolderFirstName(string name);
+    string getAccountHolderFirstName();
     void setAccountHolderLastName(string name);
+    string getAccountHolderLastName();
+    string getAccountHolderFullName();
     void setAccountHolderPhoneNumber(string phoneNum);
+    string getAccountHolderPhoneNumber();
     void setAccountHolderAddress(string address);
+    string getAccountHolderAddress();
     string getAccountHolderInfo();
     time_t getOpenDate();
-    time_t setCloseDate(); // same as just closing?
+    void setCloseDate(time_t date); // same as just closing?
     time_t getMaturityDate();
     time_t getTermLength();
     double getAccountBalance();
@@ -70,6 +81,7 @@ public:
     string deposit(double amount); // returns string of what happened
     string withdraw(double amount);
     void displayHistory(string beginning, string ending);
+    static time_t displayHistoryHelper(string date);
 
 };
 #endif
