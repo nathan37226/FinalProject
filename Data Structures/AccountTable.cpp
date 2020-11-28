@@ -73,7 +73,7 @@ bool AccountTable::isEmpty() const
 
 void AccountTable::insert(accountEntry newValue)
 {
-    unsigned int index = box.getIndex(newValue.key, capacity); //hashing the entry's key % dict size to find where it belongs
+    unsigned int index = EncryptionBox::getIndex(newValue.key, capacity); //hashing the entry's key % dict size to find where it belongs
 
     if (dict[index].isEmpty())
     {
@@ -96,7 +96,7 @@ void AccountTable::insert(accountEntry newValue)
 
 string AccountTable::search(string key) const
 {
-    unsigned int index = box.getIndex(key, capacity);
+    unsigned int index = EncryptionBox::getIndex(key, capacity);
     accountEntry value(key);
     bool didFind = dict[index].search(value);
     if (!didFind)
@@ -118,7 +118,7 @@ void AccountTable::remove(string key)
     }
     else
     {
-        unsigned int index = box.getIndex(key, capacity); //hashing the entry's key % dict size to find where it belongs
+        unsigned int index = EncryptionBox::getIndex(key, capacity); //hashing the entry's key % dict size to find where it belongs
         accountEntry toRemove(key);
 
         int currentSize = dict[index].size();
@@ -132,7 +132,7 @@ void AccountTable::remove(string key)
 
 bool AccountTable::doesExist(string key) const
 {
-    unsigned int index = box.getIndex(key, capacity);
+    unsigned int index = EncryptionBox::getIndex(key, capacity);
     accountEntry value(key);
     bool isPresent = dict[index].search(value);
     return isPresent;
@@ -152,7 +152,7 @@ void AccountTable::resize()
             dict[i].peekFirst(value); //value takes on first element in linked list's value
             dict[i].delFirst();
             
-            unsigned int index = box.getIndex(value.key, capacity * 2); //finding where value needs to go in new dict
+            unsigned int index = EncryptionBox::getIndex(value.key, capacity * 2); //finding where value needs to go in new dict
             if (tempDict[index].isEmpty())
             {
                 tempUsedIndicies++;
@@ -218,7 +218,7 @@ void AccountTable::saveInfo(string filename) const
                 dict[i].peekFirst(storedValue);
                 dict[i].delFirst();
                 string toWrite = storedValue.key + "%#" + storedValue.info;
-                outFile << box.encrypt(toWrite) << endl;
+                outFile << EncryptionBox::encrypt(toWrite) << endl;
             }
         }
     }
@@ -241,7 +241,7 @@ void AccountTable::buildTable(string filename)
         while (getline(inFile, text))
         {
             text = text.substr(0, text.rfind("\r")); //removing carriage return from .txt file
-            text = box.decrypt(text); //decrypting in order to read from
+            text = EncryptionBox::decrypt(text); //decrypting in order to read from
             string delim = "%#";
             string key = text.substr(0, text.find(delim));
             text = text.substr(text.find(delim) + delim.length(), string::npos);

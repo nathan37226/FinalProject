@@ -35,7 +35,6 @@ class AccountTable
 {
 protected:
     LinkedList<accountEntry> *dict;
-    EncryptionBox box; //performs all hashing and encrypting
 
     //Used for statistics of list and hashing
     unsigned int capacity;
