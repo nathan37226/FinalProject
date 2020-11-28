@@ -3,8 +3,6 @@ This file runs the Bear Bank program!
 */
 #include <iostream>
 #include <string>
-#include <iomanip>
-#include <stdio.h>
 #include "Data Structures/AllDataStructures.h" //include all classes into this header! ensure all classes are in that folder, too
 #include "driverOS.cpp" //all functs used to run driver are placed in here to reduce clutter
 using namespace std;
@@ -23,11 +21,10 @@ int main()
             addressTable -- Address -> acct nums with that address
             userTable -- User ID -> {hashed password, userType}
     */
-    AVLTree<string> firstNameTable, lastNameTable, phoneNumTable, addressTable, userTable;
-    AccountTable accountTable;
+    tableSet allTables; //still need to build the tables!
     
 
-    //Put entire structure of main inside a while loop at the end!
+    //Put inside a while loop at the end!
     string loginScreen = "Welcome to BearBank!\n";
     string loginPrompt = "[1] Login To An Existing Account\n[2] Forgot User ID / Password\n[3] Open An Account";
     cout << loginScreen << endl << loginPrompt << endl << "Option: ";
@@ -44,10 +41,12 @@ int main()
             cout << "Password: ";
             getline(cin, password);
 
-            vector<string> userInfo = userTable.returnMappedItems(username);
-            hashedInputPassword = EncryptionBox::hash(password);
+            vector<string> userInfo = allTables.userTable.returnMappedItems(username);
+            if (userInfo.size() == 0)
+                cout << "Something went wrong" << endl; break;
             savedHashPassword = userInfo[0];
             userType = userInfo[1];
+            hashedInputPassword = EncryptionBox::hash(password);
 
             if (savedHashPassword == hashedInputPassword)
             {
@@ -74,7 +73,7 @@ int main()
         }
         case 2:
         {
-            cout << "Connecting you with a Bear Bank Representative... Connected." << endl;
+            cout << "Connecting you with a Bear Bank Administrator... Connected." << endl;
             cout << "So, I'm hearing that you're having trouble logging into your account. Is this true?" << endl << endl;
             cout << "[1] Yes, I need help logging in\n[2] No, I was mistaken" << endl << "Option: ";
             int wantsHelp = getUserOption(2);
@@ -92,6 +91,10 @@ int main()
         }
         case 3:
         {
+            cout << "Connecting you with a Bear Bank Official... Connected." << endl;
+            /*
+            Simulate an official helping someone create a new acct
+            */
             break;
         }
     }

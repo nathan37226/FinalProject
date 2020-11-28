@@ -3,12 +3,20 @@ Implementation file for driver.cpp
 This is a way of seperating functions that are used inside the driver to manipulate
 the user, account, and object data.
 */
+
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
 void memberLogin();
 void officialLogin();
 void adminLogin();
+
+//allows for easy passing of all tables, best to do by reference since they can get large!
+struct tableSet
+{
+    AVLTree<string> firstNameTable, lastNameTable, phoneNumTable, addressTable, userTable;
+    AccountTable accountTable;
+};
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
 bool isValidOption(string input, int upperBound)
