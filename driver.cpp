@@ -4,12 +4,8 @@ This file runs the Bear Bank program!
 #include <iostream>
 #include <string>
 #include "Data Structures/AllDataStructures.h" //include all classes into this header! ensure all classes are in that folder, too
+#include "driverOS.cpp" //all functs used to run driver are placed in here to reduce clutter
 using namespace std;
-
-bool isValidOption(string input, int upperBound);
-int getUserOption(int upperBound);
-void userLoginReset();
-#include "driverOS.cpp" //contains implementations of above functions! keep all funct prototypes inside driver!
 
 int main()
 {
@@ -17,13 +13,13 @@ int main()
     Perform intial start-up of all related tables and bank accounts!
     Tables Needed:
         AccountTable:
-            AcctNum -> info about acct
+            accountTable -- AcctNum -> info about acct
         AVLTree<string>:
-            First name -> acct nums with that first name
-            Last name -> acct nums with that last name
-            Phone num -> acct nums with that phone num
-            Address -> acct nums with that address
-            User ID -> hashed password
+            firstNameTable -- First name -> acct nums with that first name
+            lastNameTable -- Last name -> acct nums with that last name
+            phoneNumTable -- Phone num -> acct nums with that phone num
+            addressTable -- Address -> acct nums with that address
+            userTable -- User ID -> hashed password
     */
 
     //Put entire structure of main inside a while loop at the end!

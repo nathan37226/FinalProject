@@ -4,6 +4,10 @@ This is a way of seperating functions that are used inside the driver to manipul
 the user, account, and object data.
 */
 
+bool isValidOption(string input, int upperBound);
+int getUserOption(int upperBound);
+void userLoginReset();
+
 //validates the user's input is within a range of options; max possible range is 1-9, for now
 bool isValidOption(string input, int upperBound)
 {
