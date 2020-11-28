@@ -25,8 +25,8 @@ struct accountEntry
     string info; //this is where info associated with the key would be stored
 
     accountEntry();
-    accountEntry(string Key);
-    accountEntry(string Key, string Info);
+    accountEntry(string keyValue);
+    accountEntry(string keyValue, string infoValue);
     bool operator == (const accountEntry &obj);
     bool operator != (const accountEntry &obj); //so that can be inserted and removed from linked list, compares based on key value
 };

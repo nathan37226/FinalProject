@@ -28,16 +28,16 @@ accountEntry::accountEntry()
     info = "";
 }
 
-accountEntry::accountEntry(string Key)
+accountEntry::accountEntry(string keyValue)
 {
-    key = Key;
+    key = keyValue;
     info = "blah";
 }
 
-accountEntry::accountEntry(string Key, string Info)
+accountEntry::accountEntry(string keyValue, string infoValue)
 {
-    key = Key;
-    info = Info;
+    key = keyValue;
+    info = infoValue;
 }
 
 //Start of Dict Implementations
