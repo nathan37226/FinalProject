@@ -4,7 +4,7 @@
 #include <iostream>
 
 using namespace std;
-
+/*
 int main()
 {
     cout << "Enter start date in the format: 'MM/DD/YYYY'" << endl;
@@ -12,7 +12,7 @@ int main()
     cin >> date;
     cout << Account::displayHistoryHelper(date + " 00:00:00") << endl;
 }
-
+*/
 /**********************************************************
 / AccountType
 *//////////////////////////////////////////////////////////
