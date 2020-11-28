@@ -50,19 +50,9 @@ int main()
 
     AccountTable newTable;
     newTable.buildTable("Tables/AccountTable.txt");
+    
+    newTable.updateInfo("C00091", "Here is some new info");
     newTable.display();
-    newTable.getStatistics();
-
-    bool isPresent = newTable.doesExist("C00051");
-
-    if (isPresent)
-    {
-        cout << newTable.search("C00051") << endl;
-    }
-    else
-    {
-        cout << "The value could not be found" << endl;
-    }
     
 
     return 0;

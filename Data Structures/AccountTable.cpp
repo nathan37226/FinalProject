@@ -130,6 +130,14 @@ void AccountTable::remove(string key)
     }
 }
 
+void AccountTable::updateInfo(string key, string newInfo)
+{
+    unsigned int index = EncryptionBox::getIndex(key, capacity); //hashing the entry's key % dict size to find where it belongs
+    accountEntry oldEntry(key), newEntry(key, newInfo);
+    dict[index].remove(oldEntry);
+    dict[index].append(newEntry);
+}
+
 bool AccountTable::doesExist(string key) const
 {
     unsigned int index = EncryptionBox::getIndex(key, capacity);

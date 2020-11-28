@@ -56,6 +56,7 @@ public:
     bool isEmpty() const;
     string search(string key) const; //returns all info of value, if found
     void remove(string key);
+    void updateInfo(string key, string newInfo);
     bool doesExist(string key) const; //if just needing to check if a value is present
     void getStatistics() const;
     void saveInfo(string filename) const;
