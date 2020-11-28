@@ -61,6 +61,7 @@ public:
     void display(int option = 5) const;
     void insert(T value); //inserts the node
     void insertWithItem(T value, T mappedItem); //inserts a node with an item associated with the value. Like, phoneNum -> acct
+    vector<T> returnMappedItems(T value) const;
     void search(T value) const;
     void del(T value);
     void delMappedItem(T value, T mappedItem); //deletes a specific item out of list in node. If nothing left after, deletes node.

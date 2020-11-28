@@ -528,6 +528,21 @@ void AVLTree<T>::performRotations(node<T> *&subRoot)
 }
 
 template <class T>
+vector<T> AVLTree<T>::returnMappedItems(T value) const
+{
+    node<T> *nodePtr = searchHelper(value, root);
+    if (nodePtr)
+    {
+        return nodePtr->list;
+    }
+    else
+    {
+        vector<T> badValue = {};
+        return badValue; //will be able to determine if good or bad based on size
+    }
+}
+
+template <class T>
 void AVLTree<T>::search(T value) const
 {
     node<T> *nodePtr = searchHelper(value, root);
