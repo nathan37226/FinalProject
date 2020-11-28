@@ -33,7 +33,7 @@ struct accountEntry
 
 class AccountTable
 {
-protected:
+private:
     LinkedList<accountEntry> *dict;
 
     //Used for statistics of list and hashing
@@ -41,9 +41,10 @@ protected:
     unsigned int usedIndicies;
     unsigned int totalKeys;
     double loadFactor; //will be determined based off of totalKeys / capacity
-    float loadThreshhold;
+    float loadThreshold;
     int maxCollisions;
 
+protected:
     void updateLoad();
     void resize(); //increases size to keep load factor below threshold
 

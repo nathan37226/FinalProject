@@ -48,7 +48,7 @@ AccountTable::AccountTable()
     usedIndicies = 0;
     totalKeys = 0;
     loadFactor = 0.0;
-    loadThreshhold = .75; //arbitrary number
+    loadThreshold = .75; //arbitrary number
     maxCollisions = 0;
     dict = new LinkedList<accountEntry>[capacity];
 }
@@ -88,7 +88,7 @@ void AccountTable::insert(accountEntry newValue)
         maxCollisions = dict[index].size();
     }
 
-    if (loadFactor > loadThreshhold)
+    if (loadFactor > loadThreshold)
     {
         resize();
     }
@@ -189,7 +189,7 @@ void AccountTable::display() const
 
 void AccountTable::getStatistics() const
 {
-    unsigned int avaliableKeys = (loadThreshhold * capacity) - totalKeys;
+    unsigned int avaliableKeys = (loadThreshold * capacity) - totalKeys;
     double indicies = usedIndicies;
     double usagePercent = (indicies / capacity) * 100;
     cout << endl;
@@ -197,7 +197,7 @@ void AccountTable::getStatistics() const
     cout << "Total keys stored: " << totalKeys << endl;
     cout << "Total indicies used: " << usedIndicies << endl;
     cout << "Load factor: " << loadFactor << endl;
-    cout << "Load threshold: " << loadThreshhold << endl;
+    cout << "Load threshold: " << loadThreshold << endl;
     cout << "Avaliable entries before resizing: " << avaliableKeys << endl;
     cout << "Max Collisions in a single index: " << maxCollisions << endl;
     cout << "Array index usage: " << usagePercent << "%" << endl;
