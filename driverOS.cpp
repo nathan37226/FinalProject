@@ -3,10 +3,12 @@ Implementation file for driver.cpp
 This is a way of seperating functions that are used inside the driver to manipulate
 the user, account, and object data.
 */
-
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
+void memberLogin();
+void officialLogin();
+void adminLogin();
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
 bool isValidOption(string input, int upperBound)
@@ -132,4 +134,19 @@ void userLoginReset()
             break;
         }
     }
+}
+
+void memberLogin()
+{
+    string memberInterface = "";
+}
+
+void officialLogin()
+{
+    string officialInterface = "";
+}
+
+void adminLogin()
+{
+    string adminInterface = "";
 }

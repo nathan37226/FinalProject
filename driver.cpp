@@ -3,6 +3,8 @@ This file runs the Bear Bank program!
 */
 #include <iostream>
 #include <string>
+#include <iomanip>
+#include <stdio.h>
 #include "Data Structures/AllDataStructures.h" //include all classes into this header! ensure all classes are in that folder, too
 #include "driverOS.cpp" //all functs used to run driver are placed in here to reduce clutter
 using namespace std;
@@ -19,8 +21,11 @@ int main()
             lastNameTable -- Last name -> acct nums with that last name
             phoneNumTable -- Phone num -> acct nums with that phone num
             addressTable -- Address -> acct nums with that address
-            userTable -- User ID -> hashed password
+            userTable -- User ID -> {hashed password, userType}
     */
+    AVLTree<string> firstNameTable, lastNameTable, phoneNumTable, addressTable, userTable;
+    AccountTable accountTable;
+    
 
     //Put entire structure of main inside a while loop at the end!
     string loginScreen = "Welcome to BearBank!\n";
@@ -33,6 +38,38 @@ int main()
     {
         case 1:
         {
+            string username = "", password = "", hashedInputPassword = "", savedHashPassword = "", userType = "";
+            cout << "Username: ";
+            getline(cin, username);
+            cout << "Password: ";
+            getline(cin, password);
+
+            vector<string> userInfo = userTable.returnMappedItems(username);
+            hashedInputPassword = EncryptionBox::hash(password);
+            savedHashPassword = userInfo[0];
+            userType = userInfo[1];
+
+            if (savedHashPassword == hashedInputPassword)
+            {
+                if (userType == "Member")
+                {
+                    memberLogin();
+                }    
+                else if (userType == "Official")
+                {
+                    officialLogin();
+                }
+                else
+                {
+                    adminLogin();
+                }
+            }
+
+            else
+            {
+                cout << "Invalid User ID Or Password!" << endl;
+            }
+            
             break;
         }
         case 2:
