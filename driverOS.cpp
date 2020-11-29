@@ -4,34 +4,12 @@ This is a way of seperating functions that are used inside the driver to manipul
 the user, account, and object data.
 */
 
-void initialBankSetup(tableSet &allTables);
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
-void userLoginReset(tableSet &allTables);
-void memberLogin(tableSet &allTables);
-void officialLogin(tableSet &allTables);
-void adminLogin(tableSet &allTables);
-
-void initialBankSetup(tableSet &allTables)
-{
-    allTables.accountTable.buildTable("Tables/AccountTable.txt");
-    allTables.firstNameTable.buildTree("Tables/FirstNameTable.txt");
-    allTables.lastNameTable.buildTree("Tables/LastNameTable.txt");
-    allTables.phoneNumTable.buildTree("Tables/PhoneTable.txt");
-    allTables.addressTable.buildTree("Tables/AddressTable.txt");
-    allTables.userTable.buildTree("Tables/UserTable.txt");
-
-    allTables.accountTable.refreshInfo(); //need to finish function, but will do the interest computation
-
-    //ensuring hard coded user account types of each; if already saved in .txt file, will have no effect
-    string hashedPw = EncryptionBox::hash("password1");
-    vector<string> adminInfo = {hashedPw, "admin"};
-    vector<string> offInfo = {hashedPw, "official"};
-    vector<string> memInfo = {hashedPw, "member"};
-    allTables.userTable.insertWithList("admin", adminInfo);
-    allTables.userTable.insertWithList("official", offInfo);
-    allTables.userTable.insertWithList("house", memInfo);
-}
+void userLoginReset();
+void memberLogin();
+void officialLogin();
+void adminLogin();
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
 bool isValidOption(string input, int upperBound)
@@ -77,7 +55,7 @@ int getUserOption(int upperBound)
     return stoi(userInput);
 }
 
-void userLoginReset(tableSet &allTables)
+void userLoginReset()
 {
     cout << "Is your User ID or Password causing the issue?" << endl << endl;
     string resetOptions = "[1] The User ID\n[2] The Password";
@@ -103,7 +81,7 @@ void userLoginReset(tableSet &allTables)
                 getline(cin, accountNum);
                 cout << endl;
 
-                accountInfo = allTables.accountTable.search(accountNum);
+                accountInfo = DataHandler::allTables.accountTable.search(accountNum);
                 if (accountInfo != "false")
                 {
                     //give user the username seperated out from info!
@@ -130,13 +108,13 @@ void userLoginReset(tableSet &allTables)
             getline(cin, userID);
             cout << endl;
 
-            vector<string> userLoginInfo = allTables.userTable.returnMappedItems(userID);
+            vector<string> userLoginInfo = DataHandler::allTables.userTable.returnMappedItems(userID);
             if (userLoginInfo.size() > 0)
             {
                 cout << "Enter your new hashedPw: ";
                 getline(cin, newPassword);
                 /*userLoginInfo[0] = EncryptionBox::hash(newPassword);
-                allTables.userTable.swapMappedItems(userID, userLoginInfo); //adds new list of login info to AVLTree
+                DataHander::allTables.userTable.swapMappedItems(userID, userLoginInfo); //adds new list of login info to AVLTree
 
                 Have an admin function to do something similiar to above*/
             }
@@ -151,7 +129,7 @@ void userLoginReset(tableSet &allTables)
     }
 }
 
-void memberLogin(tableSet &allTables)
+void memberLogin()
 {
     //Display last login date up here!
 
@@ -159,12 +137,12 @@ void memberLogin(tableSet &allTables)
     cout << memberInterface << endl << "Option: ";
 }
 
-void officialLogin(tableSet &allTables)
+void officialLogin()
 {
     string officialInterface = "";
 }
 
-void adminLogin(tableSet &allTables)
+void adminLogin()
 {
     string adminInterface = "";
 }

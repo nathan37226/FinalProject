@@ -9,6 +9,8 @@
 class DataHandler
 {
 public:
+	static tableSet allTables;
+
 	static DataHandler* GetInstance();
 
 	//admin operation
@@ -41,10 +43,7 @@ public:
 	bool adminLogin(string number, string password);
 
 	//data interface
-	vector<Admin> getAdminData();//do it later
-	vector<Official> getOfficialData();
-	vector<Client> getClientData();
-	vector<Account> getAccountData();
+	static void initialSetup();
 	vector<AccountType> getTypeData();
 
 private:
@@ -52,13 +51,11 @@ private:
 	~DataHandler();
 
 private:
-	vector<Admin> adminList; //do it later
-	vector<Official> officialList;
-	vector<Client> clientList;
-	vector<Account> accountList;
 	vector<AccountType> accountTypeList;
 	
 };
+
+tableSet DataHandler::allTables = tableSet(); //static initialization
 
 #include "DataHandler.cpp"
 #endif

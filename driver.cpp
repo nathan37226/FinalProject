@@ -26,8 +26,7 @@ int main()
     /*
     Perform intial start-up of all related tables and bank accounts!
     */
-    tableSet allTables; //still need to build the tables!
-    initialBankSetup(allTables);
+    DataHandler::initialSetup();
     
 
     //Put inside a while loop at the end!
@@ -48,7 +47,7 @@ int main()
             getline(cin, password);
             cout << endl;
 
-            vector<string> userInfo = allTables.userTable.returnMappedItems(username);   //userInfo is formatted: username -> {hashedPassword, userType}
+            vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(username);   //userInfo is formatted: username -> {hashedPassword, userType}
             if (userInfo.size() == 0) //i.e. no info returned from userTable for that username
             {
                 cout << "Invalid User ID Or Password!" << endl; //really just invalid username, but no hints will be given
@@ -66,15 +65,15 @@ int main()
                     cout << "type : " << userType << endl;
                     if (userType == "member")
                     {
-                        memberLogin(allTables);
+                        memberLogin();
                     }    
                     else if (userType == "official")
                     {
-                        officialLogin(allTables);
+                        officialLogin();
                     }
                     else
                     {
-                        adminLogin(allTables);
+                        adminLogin();
                     }
                 }
                 else
@@ -93,7 +92,7 @@ int main()
             cout << endl;
             if (wantsHelp == 1)
             {
-                userLoginReset(allTables); //needs finishing work!
+                userLoginReset(); //needs finishing work!
             }
             else
             {

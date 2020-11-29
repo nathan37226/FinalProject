@@ -6,6 +6,7 @@ DataHandler* DataHandler::GetInstance()
 	return &instance;
 }
 
+/*
 void DataHandler::createOfficialAccount(string userName, string userID, string userPassword, string lastLogin)
 {
 	Official newOfficial;
@@ -41,6 +42,7 @@ bool DataHandler::deleteOfficialAccount(string userID)
 	}
 	return false;
 }
+*/
 
 DataHandler::DataHandler()
 {
@@ -50,26 +52,12 @@ DataHandler::~DataHandler()
 {
 }
 
-vector<Official> DataHandler::getOfficialData()
-{
-	return officialList;
-}
-
-vector<Client> DataHandler::getClientData()
-{
-	return clientList;
-}
-
-vector<Account> DataHandler::getAccountData()
-{
-	return accountList;
-}
-
 vector<AccountType> DataHandler::getTypeData()
 {
 	return accountTypeList;
 }
 
+/*
 bool DataHandler::alterUserPassword(string userID, string userPassword)
 {
 	for (int i = 0; i < clientList.size(); i++)
@@ -122,6 +110,7 @@ vector<Account> DataHandler::searchForPhone(string phoneNumber)
 	return searchResult;
 }
 
+
 bool DataHandler::changeClientPassword(string clientID, string newPassword)
 {
 	for (int i = 0; i < clientList.size(); i++)
@@ -144,4 +133,26 @@ void DataHandler::queryAccountHistory(string clientID, string beginning, string 
 			accountList[i].displayHistory(beginning, ending);
 		}
 	}
+}
+*/
+
+void DataHandler::initialSetup()
+{
+    allTables.accountTable.buildTable("Tables/AccountTable.txt");
+    allTables.firstNameTable.buildTree("Tables/FirstNameTable.txt");
+    allTables.lastNameTable.buildTree("Tables/LastNameTable.txt");
+    allTables.phoneNumTable.buildTree("Tables/PhoneTable.txt");
+    allTables.addressTable.buildTree("Tables/AddressTable.txt");
+    allTables.userTable.buildTree("Tables/UserTable.txt");
+
+    allTables.accountTable.refreshInfo(); //need to finish function, but will do the interest computation
+
+    //ensuring hard coded user account types of each; if already saved in .txt file, will have no effect
+    string hashedPw = EncryptionBox::hash("password1");
+    vector<string> adminInfo = {hashedPw, "admin"};
+    vector<string> offInfo = {hashedPw, "official"};
+    vector<string> memInfo = {hashedPw, "member"};
+    allTables.userTable.insertWithList("admin", adminInfo);
+    allTables.userTable.insertWithList("official", offInfo);
+    allTables.userTable.insertWithList("house", memInfo);
 }
