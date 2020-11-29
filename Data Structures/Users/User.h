@@ -28,4 +28,5 @@ private:
 	string mostRecentLogin;
 };
 
+#include "User.cpp"
 #endif // !_USER_H_

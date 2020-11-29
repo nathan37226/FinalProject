@@ -1,7 +1,10 @@
+#ifndef DATAHANDLER_H
+#define DATAHANDLER_H
+
 #include "Admin.h"
 #include "Official.h"
 #include "Client.h"
-#include "Account.h"
+#include "Account/Account.h"
 
 class DataHandler
 {
@@ -56,3 +59,6 @@ private:
 	vector<AccountType> accountTypeList;
 	
 };
+
+#include "DataHandler.cpp"
+#endif

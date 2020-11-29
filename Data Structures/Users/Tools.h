@@ -1,3 +1,6 @@
+#ifndef TOOLS_H
+#define TOOLS_H
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -68,3 +71,6 @@ private:
 	int _Month;
 	int _Day;
 };
+
+#include "Tools.cpp"
+#endif

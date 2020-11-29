@@ -1,3 +1,6 @@
+#ifndef OFFICIAL_H
+#define OFFICIAL_H
+
 #include "User.h"
 
 class Official : public User
@@ -9,3 +12,6 @@ public:
 private:
 	string officialState;
 };
+
+#include "Official.cpp"
+#endif

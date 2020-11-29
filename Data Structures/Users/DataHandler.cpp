@@ -139,7 +139,7 @@ void DataHandler::queryAccountHistory(string clientID, string beginning, string 
 {
 	for (int i = 0; i < accountList.size(); i++)
 	{
-		if (accountList[i].getAccountHolderID() == clientID)
+		if (accountList[i].getAccountHolderFullName() == clientID)
 		{
 			accountList[i].displayHistory(beginning, ending);
 		}
