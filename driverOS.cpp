@@ -4,12 +4,25 @@ This is a way of seperating functions that are used inside the driver to manipul
 the user, account, and object data.
 */
 
+void initialBankSetup(tableSet &allTables);
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset(tableSet &allTables);
-void memberLogin();
-void officialLogin();
-void adminLogin();
+void memberLogin(tableSet &allTables);
+void officialLogin(tableSet &allTables);
+void adminLogin(tableSet &allTables);
+
+void initialBankSetup(tableSet &allTables)
+{
+    allTables.accountTable.buildTable("Tables/AccountTable.txt");
+    allTables.firstNameTable.buildTree("Tables/FirstNameTable.txt");
+    allTables.lastNameTable.buildTree("Tables/LastNameTable.txt");
+    allTables.phoneNumTable.buildTree("Tables/PhoneTable.txt");
+    allTables.addressTable.buildTree("Tables/AddressTable.txt");
+    allTables.userTable.buildTree("Tables/UserTable.txt");
+
+    allTables.accountTable.refreshInfo();
+}
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
 bool isValidOption(string input, int upperBound)
@@ -65,7 +78,7 @@ void userLoginReset(tableSet &allTables)
 
     switch (userResetOption)
     {
-        case 1:
+        case 1: //User ID reset
         {
             cout << "In order to provide you with your User ID, one of your Account Numbers is required." << endl;
             cout << "Do you know any of your Account Numbers?" << endl << endl;
@@ -100,7 +113,7 @@ void userLoginReset(tableSet &allTables)
             
             break;
         }
-        case 2:
+        case 2: //Password Reset
         {
             cout << "To reset your password, your User ID is required." << endl;
             cout << "Please enter your User ID: ";
@@ -113,8 +126,10 @@ void userLoginReset(tableSet &allTables)
             {
                 cout << "Enter your new password: ";
                 getline(cin, newPassword);
-                userLoginInfo[0] = EncryptionBox::hash(newPassword);
+                /*userLoginInfo[0] = EncryptionBox::hash(newPassword);
                 allTables.userTable.swapMappedItems(userID, userLoginInfo); //adds new list of login info to AVLTree
+
+                Have an admin function to do something similiar to above*/
             }
             else
             {
@@ -127,17 +142,17 @@ void userLoginReset(tableSet &allTables)
     }
 }
 
-void memberLogin()
+void memberLogin(tableSet &allTables)
 {
     string memberInterface = "";
 }
 
-void officialLogin()
+void officialLogin(tableSet &allTables)
 {
     string officialInterface = "";
 }
 
-void adminLogin()
+void adminLogin(tableSet &allTables)
 {
     string adminInterface = "";
 }

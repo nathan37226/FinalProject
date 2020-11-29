@@ -22,6 +22,7 @@ int main()
             userTable -- User ID -> {hashed password, userType}
     */
     tableSet allTables; //still need to build the tables!
+    initialBankSetup();
     
 
     //Put inside a while loop at the end!
@@ -58,15 +59,15 @@ int main()
                 {
                     if (userType == "Member")
                     {
-                        memberLogin();
+                        memberLogin(allTables);
                     }    
                     else if (userType == "Official")
                     {
-                        officialLogin();
+                        officialLogin(allTables);
                     }
                     else
                     {
-                        adminLogin();
+                        adminLogin(allTables);
                     }
                 }
             }

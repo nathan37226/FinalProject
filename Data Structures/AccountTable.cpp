@@ -263,3 +263,28 @@ void AccountTable::buildTable(string filename)
     }
     inFile.close();
 }
+
+void AccountTable::refreshInfo()
+{
+    for (int i = 0; i < capacity; i++)
+    {
+        const int size = dict[i].size(); //so that it doesnt change in the for loop
+        LinkedList<accountEntry> newList;
+
+        for (int k = 0; k < size; k++)
+        {
+            accountEntry oldAcctEntry;
+            dict[i].peekFirst(oldAcctEntry); //takes on value
+            dict[i].delFirst();
+            /*
+            Account acctObj;
+            acctObj.buildFromFile(oldAcctEntry.key);
+            string acctInfo = ""; //here is where needs work!!!!
+            accountEntry newAcctEntry(oldAcctEntry.key, acctInfo);
+            newList.append(newAcctEntry);
+            */
+        }
+        
+        dict[i] = newList; //will deep copy new values over
+    }
+}

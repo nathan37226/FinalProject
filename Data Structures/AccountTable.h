@@ -61,7 +61,7 @@ public:
     void getStatistics() const;
     void saveInfo(string filename) const;
     void buildTable(string filename);
-    
+    void refreshInfo(); //goes through each acct in array/linked lists and builds them again - where interest will get computed!
 };
 
 #include "AccountTable.cpp"
