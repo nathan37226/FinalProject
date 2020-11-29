@@ -22,7 +22,7 @@ int main()
             userTable -- User ID -> {hashed password, userType}
     */
     tableSet allTables; //still need to build the tables!
-    initialBankSetup();
+    initialBankSetup(allTables);
     
 
     //Put inside a while loop at the end!
