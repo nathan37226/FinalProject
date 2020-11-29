@@ -172,8 +172,8 @@ void userLoginReset()
             getline(cin, userID);
             cout << endl;
 
-            vector<string> userLoginInfo = DataHandler::allTables.userTable.returnMappedItems(userID); // {hashedPW, user type} is returned
-            if (userLoginInfo.size() > 0)
+            vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(userID); // {hashedPW, user type, accts...} is returned
+            if (userInfo.size() > 0)
             {
                 cout << "Enter your new password: ";
                 getline(cin, newPassword);
@@ -181,7 +181,7 @@ void userLoginReset()
                 Admin admin; //creating the Automated Admin obj to change the password
                 admin.buildUser("UserData/admin.txt");
                 admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
-                admin.resetPassword(userID, newPassword, userLoginInfo[1]);
+                admin.resetPassword(userID, newPassword, userInfo);
 
                 User user;
                 user.buildUser("UserData/"+userID+".txt");
@@ -207,11 +207,36 @@ void clientLogin(string userID)
     cout << "Welcome, " << user.getName() << endl;
     cout << "Last Activity: " << user.getRecentActivity() << endl;
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentDate().ToString());
+    user.setRecentLogin(DateTools().getCurrentDate().ToString()); //since we just logged in, now need to update time
     //Display last login date up here!
 
-    string clientInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] View Account History\n[6] Change Information";
+    string clientInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] Change Information";
     cout << clientInterface << endl << "Option: ";
+    int initialOption = getUserOption(5);
+
+    switch (initialOption)
+    {
+        case 1:
+        {
+            break;
+        }
+        case 2:
+        {
+            break;
+        }
+        case 3:
+        {
+            break;
+        }
+        case 4:
+        {
+            break;
+        }
+        case 5:
+        {
+            break;
+        }
+    }
 }
 
 void officialLogin(string userID)

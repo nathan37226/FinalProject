@@ -11,7 +11,7 @@ public:
 	Admin(string name, string ID, string pw, string type);
 	~Admin();
 
-	void resetPassword(string userID, string newPassword, string userType);
+	void resetPassword(string userID, string newPassword, vector<string> userInfo);
 	string returnUserID(string acctNum);
 
 private:

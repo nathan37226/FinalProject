@@ -8,7 +8,7 @@ Tables Needed:
         lastNameTable -- Last name -> acct nums with that last name
         phoneNumTable -- Phone num -> acct nums with that phone num
         addressTable -- Address -> acct nums with that address
-        userTable -- User ID -> {hashed password, userType}
+        userTable -- User ID -> {hashed password, userType, accts...}, if accts are applicable to the user type
 
 Default User Accounts:
     Admin: admin - password1
