@@ -9,6 +9,7 @@ bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
 void clientLogin(string userID);
+void makeClientAccountChanges(Client &user, int option);
 void officialLogin(string userID);
 void adminLogin(string userID);
 
@@ -210,29 +211,92 @@ void clientLogin(string userID)
     user.setRecentLogin(DateTools().getCurrentDate().ToString()); //since we just logged in, now need to update time
     //Display last login date up here!
 
-    string clientInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] Change Information";
-    cout << clientInterface << endl << "Option: ";
-    int initialOption = getUserOption(5);
-
-    switch (initialOption)
+    string clientInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] Change Information\n[6] Exit";
+    bool wantsToExit = false;
+    
+    while (!wantsToExit)
     {
-        case 1:
+        cout << clientInterface << endl << "Option: ";
+        int initialOption = getUserOption(6);
+        cout << endl;
+
+        switch (initialOption)
+        {
+            case 1:
+            {
+                break;
+            }
+            case 2:
+            {
+                break;
+            }
+            case 3:
+            {
+                break;
+            }
+            case 4:
+            {
+                break;
+            }
+            case 5:
+            {
+                cout << "Which piece of information would you like to change?" << endl;
+                cout << "[1] First Name\n[2] Last Name\n[3] Address\n[4] Phone Number\n[5] Password\n[6] Go Back" << endl;
+                cout << "Option: ";
+                int option = getUserOption(6);
+                if (option != 6)
+                {
+                    cout << endl;
+                    makeClientAccountChanges(user, option);
+                }
+                break;
+            }
+            case 6:
+            {
+                wantsToExit = true;
+            }
+            cout << endl;
+        }
+    }
+}
+
+void makeClientAccountChanges(Client &user, int option)
+{
+    switch (option)
+    {
+        case 1: //change first name
+        {
+            string name = "", lastName = user.getName();
+            lastName = lastName.substr(lastName.find(" ") + 1, string::npos);
+            cout << "Enter your new first name: ";
+            getline(cin, name);
+            name = name + " " + lastName;
+            user.setName(name);
+            user.setRecentActivity("Changed First Name");
+            user.saveUser();
+            break;
+        }
+        case 2: //change last name
+        {
+            string firstName = user.getName(), name = "";
+            firstName = firstName.substr(0, firstName.find(" "));
+            cout << "Enter your new last name: ";
+            getline(cin, name);
+            name = firstName + " " + name;
+            user.setName(name);
+            user.setRecentActivity("Changed First Name");
+            user.saveUser();
+            break;
+        }
+        case 3: //change address
         {
             break;
         }
-        case 2:
+        case 4: //change phone number
         {
             break;
         }
-        case 3:
-        {
-            break;
-        }
-        case 4:
-        {
-            break;
-        }
-        case 5:
+        case 5: //change password
         {
             break;
         }
