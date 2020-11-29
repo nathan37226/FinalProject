@@ -387,7 +387,7 @@ string Account::saveToFile()
 {
     ofstream outFile;
 
-    if(outFile.open(accountNumber+".txt", ofstream::trunc)) // attempt to open file with intent to overwirite existing data
+    if(outFile.open("AccountData/"+accountNumber+".txt", ofstream::trunc)) // attempt to open file with intent to overwirite existing data
     {
         outFile << accountNumber << endl;
         outFile << routingNumber << endl;
