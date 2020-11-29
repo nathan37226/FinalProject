@@ -11,9 +11,9 @@ Tables Needed:
         userTable -- User ID -> {hashed password, userType}
 
 Default User Accounts:
-    admin - password1
-    official - password1
-    house - password1
+    Admin: admin - password1
+    Official: official - password1
+    Client: house - password1
 */
 #include <iostream>
 #include <string>
@@ -26,8 +26,7 @@ int main()
     /*
     Perform intial start-up of all related tables and bank accounts!
     */
-    tableSet allTables; //still need to build the tables!
-    initialBankSetup(allTables);
+    initialSetup(); //not finished--need to do interest on accounts
     
 
     //Put inside a while loop at the end!
@@ -41,45 +40,31 @@ int main()
     {
         case 1:
         {
-            string username = "", password = "", hashedInputPassword = "", savedHashPassword = "", userType = "";
+            string userID = "", password = "", userType = "";
             cout << "Username: ";
-            getline(cin, username);
+            getline(cin, userID);
             cout << "Password: ";
             getline(cin, password);
             cout << endl;
 
-            vector<string> userInfo = allTables.userTable.returnMappedItems(username);   //userInfo is formatted: username -> {hashedPassword, userType}
-            if (userInfo.size() == 0) //i.e. no info returned from userTable for that username
+            userType = DataHandler::isValidLogin(userID, password); //returns the type if successful, else "false"
+            if (userType == "false")
             {
-                cout << "Invalid User ID Or Password!" << endl; //really just invalid username, but no hints will be given
+                cout << "Invalid User ID or Password." << endl;
             }
-
-            else //found info for a username
-            {            
-                savedHashPassword = userInfo[0]; 
-                userType = userInfo[1];
-                hashedInputPassword = EncryptionBox::hash(password); 
-
-                if (savedHashPassword == hashedInputPassword) //successful login!
+            else
+            {
+                if (userType == "client")
                 {
-                    cout << "Logging into your accout... Welcome!" << endl << endl;
-                    cout << "type : " << userType << endl;
-                    if (userType == "member")
-                    {
-                        memberLogin(allTables);
-                    }    
-                    else if (userType == "official")
-                    {
-                        officialLogin(allTables);
-                    }
-                    else
-                    {
-                        adminLogin(allTables);
-                    }
+                    clientLogin(userID);
+                }    
+                else if (userType == "official")
+                {
+                    officialLogin(userID);
                 }
                 else
                 {
-                    cout << "Invalid User ID Or Password!" << endl; //just invalid pw, but no hints will be given
+                    adminLogin(userID);
                 }
             }
             break;
@@ -93,7 +78,7 @@ int main()
             cout << endl;
             if (wantsHelp == 1)
             {
-                userLoginReset(allTables); //needs finishing work!
+                userLoginReset(); //needs finishing work!
             }
             else
             {

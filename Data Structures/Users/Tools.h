@@ -1,0 +1,76 @@
+#ifndef TOOLS_H
+#define TOOLS_H
+
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+#include <string.h>
+#include <stdlib.h>
+#include <Windows.h>
+using namespace std;
+
+//The tools of date
+//for this final project, not all of these will be used, after finishing user part, maybe I will delete some.
+class DateTools
+{
+public:
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		Constructor and Destructor
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	DateTools();
+	DateTools(int year, int month, int day);
+	DateTools(string date);
+	DateTools(int date);
+	~DateTools();
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	 Getter
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	int GetYear();
+	int GetMonth();
+	int GetDay();
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	 Setter
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void SetYear(int year);
+	void SetMonth(int month);
+	void SetDay(int day);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//	 Check LeapYear
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	bool IsLeapYear();
+	bool IsLeapYear(int year);
+
+
+	int GetMouthDay(int month);
+	int GetDateRank();
+	int DateToInt();
+	int CalculateGapDay(DateTools& date);
+	DateTools GetDaysAfter(int dayCount);
+	void DaysAfter(int dayCount);
+	string ToString();
+	string IntToString(int number);
+	int StringToInt(string number);
+	friend istream& operator >> (istream& in, DateTools& date);
+	friend ostream& operator << (ostream& out, DateTools& date);
+	void splitString(string srcString, char splitFlag, vector<string>& stringVector);
+	string getCurrentTime();
+	DateTools getCurrentDate();
+
+private:
+	int _Year;
+	int _Month;
+	int _Day;
+};
+
+#include "Tools.cpp"
+#endif
