@@ -11,9 +11,10 @@ public:
 	~Admin();
 
 	void resetPassword(string userID, string newPassword, string userType);
+	string returnUserID(string acctNum);
 
 private:
-
+	
 };
 
 #include "Admin.cpp"

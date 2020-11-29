@@ -26,7 +26,7 @@ int main()
     /*
     Perform intial start-up of all related tables and bank accounts!
     */
-    initialSetup();
+    initialSetup(); //not finished--need to do interest on accounts
     
 
     //Put inside a while loop at the end!

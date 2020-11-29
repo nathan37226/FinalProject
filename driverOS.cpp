@@ -112,19 +112,27 @@ void userLoginReset()
                 cout << endl;
 
                 accountInfo = DataHandler::allTables.accountTable.search(accountNum);
-                if (accountInfo != "false")
+                if (accountInfo != "false") //i.e. found valid account info from the acctNum
                 {
-                    //give user the username seperated out from info!
+                    Admin admin;
+                    admin.buildUser("UserData/admin.txt");
+                    admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
+
+                    string userID = admin.returnUserID(accountNum); //implement later!!!
+
+                    string description = "Provided user '" + userID + "' the User ID to the online account.";
+                    admin.setRecentActivity(description);
+                    admin.saveUser();
                 }
                 else
                 {
                     cout << "The Account Number could not be found." << endl << endl;
-                    cout << "We apologize for the automated system not being able to assist you further.\nPlease seek further help at your nearest branch office." << endl;
+                    cout << "We apologize for the Automated System Administrator not being able to assist you further.\nPlease seek further help at your nearest branch office." << endl;
                 }
             }
             else
             {
-                cout << "The Automated System requires the Account Number to provide you with the User ID." << endl;
+                cout << "The Automated System Administrator requires the Account Number to provide you with the User ID." << endl;
                 cout << "Please visit a branch office for further assistence." << endl;
             }
             

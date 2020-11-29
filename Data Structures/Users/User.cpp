@@ -11,35 +11,41 @@ User::User(string name, string ID, string pw, string type, string login)
 	userPassword = pw;
 	userType = type;
 	mostRecentLogin = login;
+	recentActivity = "No recent activity";
 }
 
 User::~User()
 {
 }
 
-string User::getName()
+string User::getName() const
 {
 	return userName;
 }
 
-string User::getID()
+string User::getID() const
 {
 	return userID;
 }
 
-string User::getPassword()
+string User::getPassword() const
 {
 	return userPassword;
 }
 
-string User::getRecentLogin()
+string User::getRecentLogin() const
 {
 	return mostRecentLogin;
 }
 
-string User::getUserType()
+string User::getUserType() const
 {
 	return userType;
+}
+
+string User::getRecentActivity() const
+{
+	return recentActivity;
 }
 
 void User::setName(string newName)
@@ -67,6 +73,11 @@ void User::setUserType(string type)
 	userType = type;
 }
 
+void User::setRecentActivity(string description)
+{
+	recentActivity = description;
+}
+
 bool User::isValidLogin(string newName, string newPassword, string loginTime)
 {
 	if (userName == newName && userPassword == newPassword)
@@ -88,6 +99,7 @@ void User::saveUser() const
 	outFile << EncryptionBox::encrypt(userPassword) << endl;
 	outFile << EncryptionBox::encrypt(userType) << endl;
 	outFile << EncryptionBox::encrypt(mostRecentLogin) << endl;
+	outFile << EncryptionBox::encrypt(recentActivity) << endl;
 	}
 	else
 	{
@@ -119,6 +131,7 @@ void User::buildUser(string filename)
 		userPassword = userInfo[2];
 		userType = userInfo[3];
 		mostRecentLogin = userInfo[4];
+		recentActivity = userInfo[5];
 	}
 	else
 	{

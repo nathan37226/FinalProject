@@ -11,17 +11,19 @@ public:
 	User(string name, string ID, string pw, string type, string login);
 	virtual ~User();
 
-	string getName();
-	string getID();
-	string getPassword();
-	string getRecentLogin();
-	string getUserType();
+	string getName() const;
+	string getID() const;
+	string getPassword() const;
+	string getRecentLogin() const;
+	string getUserType() const;
+	string getRecentActivity() const;
 
 	void setName(string newName);
 	void setID(string newID);
 	void setPassword(string newPassword);
 	void setRecentLogin(string RecentLogin);
 	void setUserType(string type);
+	void setRecentActivity(string description);
 
 	bool isValidLogin(string newName, string newPassword, string loginTime);
 
@@ -34,6 +36,7 @@ private:
 	string userPassword;
 	string userType;
 	string mostRecentLogin;
+	string recentActivity;
 };
 
 #include "User.cpp"
