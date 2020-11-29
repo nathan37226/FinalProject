@@ -8,7 +8,7 @@ void initialSetup();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
-void memberLogin();
+void clientLogin();
 void officialLogin();
 void adminLogin();
 
@@ -27,13 +27,18 @@ void initialSetup()
     string hashedPw = EncryptionBox::hash("password1");
     vector<string> adminInfo = {hashedPw, "admin"};
     vector<string> offInfo = {hashedPw, "official"};
-    vector<string> memInfo = {hashedPw, "member"};
+    vector<string> clientInfo = {hashedPw, "client"};
     DataHandler::allTables.userTable.insertWithList("admin", adminInfo);
     DataHandler::allTables.userTable.insertWithList("official", offInfo);
-    DataHandler::allTables.userTable.insertWithList("house", memInfo);
+    DataHandler::allTables.userTable.insertWithList("house", clientInfo);
 
-	//creating record of these default users
-	Admin admin;
+	//creating record of these default users, i.e. saving to .txt files
+	Admin admin("Automated Admin", "admin", EncryptionBox::hash("password1"), "admin", DateTools().getCurrentDate().ToString());
+    Official official("Automated Official", "official", EncryptionBox::hash("password1"), "official", DateTools().getCurrentDate().ToString());
+    Client house("House Account", "client", EncryptionBox::hash("password1"), "client", DateTools().getCurrentDate().ToString());
+    admin.saveUser();
+    official.saveUser();
+    house.saveUser();
 }
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
@@ -154,12 +159,12 @@ void userLoginReset()
     }
 }
 
-void memberLogin()
+void clientLogin()
 {
     //Display last login date up here!
 
-    string memberInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] View Account History\n[6] Change Information";
-    cout << memberInterface << endl << "Option: ";
+    string clientInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] View Account History\n[6] Change Information";
+    cout << clientInterface << endl << "Option: ";
 }
 
 void officialLogin()

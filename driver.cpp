@@ -11,9 +11,9 @@ Tables Needed:
         userTable -- User ID -> {hashed password, userType}
 
 Default User Accounts:
-    admin - password1
-    official - password1
-    house - password1
+    Admin: admin - password1
+    Official: official - password1
+    Client: house - password1
 */
 #include <iostream>
 #include <string>
@@ -63,9 +63,9 @@ int main()
                 {
                     cout << "Logging into your accout... Welcome!" << endl << endl;
                     cout << "type : " << userType << endl;
-                    if (userType == "member")
+                    if (userType == "client")
                     {
-                        memberLogin();
+                        clientLogin();
                     }    
                     else if (userType == "official")
                     {
