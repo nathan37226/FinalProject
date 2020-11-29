@@ -8,6 +8,7 @@ class Official : public User
 public:
 	Official();
 	Official(string name, string ID, string pw, string type, string login);
+	Official(string name, string ID, string pw, string type);
 	~Official();
 
 	string getState();

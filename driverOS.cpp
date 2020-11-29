@@ -8,9 +8,9 @@ void initialSetup();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
-void clientLogin();
-void officialLogin();
-void adminLogin();
+void clientLogin(string userID);
+void officialLogin(string userID);
+void adminLogin(string userID);
 
 //must add chking for house account!!
 void initialSetup()
@@ -29,14 +29,32 @@ void initialSetup()
     vector<string> adminInfo = {hashedPw, "admin"};
     vector<string> offInfo = {hashedPw, "official"};
     vector<string> clientInfo = {hashedPw, "client"};
-    DataHandler::allTables.userTable.insertWithList("admin", adminInfo);
+    DataHandler::allTables.userTable.insertWithList("admin", adminInfo); //rewrites the admin acct to have the pw as password1
     DataHandler::allTables.userTable.insertWithList("official", offInfo);
     DataHandler::allTables.userTable.insertWithList("house", clientInfo);
 
 	//creating record of these default users, i.e. saving to .txt files
-	Admin admin("Automated Admin", "admin", EncryptionBox::hash("password1"), "admin", DateTools().getCurrentDate().ToString());
-    Official official("Automated Official", "official", EncryptionBox::hash("password1"), "official", DateTools().getCurrentDate().ToString());
-    Client house("House Account", "client", EncryptionBox::hash("password1"), "client", DateTools().getCurrentDate().ToString());
+	Admin admin;
+    admin.buildUser("UserData/admin.txt");
+    admin.setName("Automated Admin");
+    admin.setID("admin");
+    admin.setPassword(EncryptionBox::hash("password1"));
+    admin.setUserType("admin");
+
+    Official official;
+    official.buildUser("UserData/official.txt");
+    official.setName("Automated Official");
+    official.setID("official");
+    official.setPassword(EncryptionBox::hash("password1"));
+    official.setUserType("official");
+
+    Client house;
+    house.buildUser("UserData/house.txt");
+    house.setName("House Account");
+    house.setID("house");
+    house.setPassword(EncryptionBox::hash("password1"));
+    house.setUserType("client");
+
     admin.saveUser();
     official.saveUser();
     house.saveUser();
@@ -96,7 +114,7 @@ void userLoginReset()
 
     switch (userResetOption)
     {
-        case 1: //User ID reset
+        case 1: //User ID display
         {
             cout << "In order to provide you with your User ID, one of your Account Numbers is required." << endl;
             cout << "Do you know any of your Account Numbers?" << endl << endl;
@@ -182,20 +200,40 @@ void userLoginReset()
     }
 }
 
-void clientLogin()
+void clientLogin(string userID)
 {
+    Client user;
+    user.buildUser("UserData/" + userID + ".txt");
+    cout << "Welcome, " << user.getName() << endl;
+    cout << "Last Activity: " << user.getRecentActivity() << endl;
+    cout << "Last Login: " << user.getRecentLogin() << endl << endl;
+    user.setRecentLogin(DateTools().getCurrentDate().ToString());
     //Display last login date up here!
 
     string clientInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] View Account History\n[6] Change Information";
     cout << clientInterface << endl << "Option: ";
 }
 
-void officialLogin()
+void officialLogin(string userID)
 {
+    Official user;
+    user.buildUser("UserData/" + userID + ".txt");
+    cout << "Welcome, " << user.getName() << endl;
+    cout << "Last Activity: " << user.getRecentActivity() << endl;
+    cout << "Last Login: " << user.getRecentLogin() << endl << endl;
+    user.setRecentLogin(DateTools().getCurrentDate().ToString());
+
     string officialInterface = "";
 }
 
-void adminLogin()
+void adminLogin(string userID)
 {
+    Admin user;
+    user.buildUser("UserData/" + userID + ".txt");
+    cout << "Welcome, " << user.getName() << endl;
+    cout << "Last Activity: " << user.getRecentActivity() << endl;
+    cout << "Last Login: " << user.getRecentLogin() << endl << endl;
+    user.setRecentLogin(DateTools().getCurrentDate().ToString());
+
     string adminInterface = "";
 }

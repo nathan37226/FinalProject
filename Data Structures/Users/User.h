@@ -9,6 +9,7 @@ class User
 public:
 	User();
 	User(string name, string ID, string pw, string type, string login);
+	User(string name, string ID, string pw, string type);
 	virtual ~User();
 
 	string getName() const;

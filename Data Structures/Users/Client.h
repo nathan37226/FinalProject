@@ -9,6 +9,7 @@ class Client : public User
 public:
 	Client();
 	Client(string name, string ID, string pw, string type, string login);
+	Client(string name, string ID, string pw, string type);
 	~Client();
 private:
 };

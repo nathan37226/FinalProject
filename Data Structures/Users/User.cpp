@@ -14,6 +14,14 @@ User::User(string name, string ID, string pw, string type, string login)
 	recentActivity = "No recent activity";
 }
 
+User::User(string name, string ID, string pw, string type)
+{
+	userName = name;
+	userID = ID;
+	userPassword = pw;
+	userType = type;
+}
+
 User::~User()
 {
 }

@@ -56,15 +56,15 @@ int main()
             {
                 if (userType == "client")
                 {
-                    clientLogin();
+                    clientLogin(userID);
                 }    
                 else if (userType == "official")
                 {
-                    officialLogin();
+                    officialLogin(userID);
                 }
                 else
                 {
-                    adminLogin();
+                    adminLogin(userID);
                 }
             }
             break;

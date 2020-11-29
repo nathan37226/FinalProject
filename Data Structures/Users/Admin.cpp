@@ -2,16 +2,22 @@
 
 Admin::Admin()
 {
-	setRecentLogin(DateTools().getCurrentDate().ToString());
+	;
 }
 
 Admin::Admin(string name, string ID, string pw, string type, string login) : User(name, ID, pw, type, login)
 {
-	setRecentLogin(DateTools().getCurrentDate().ToString());
+	;
+}
+
+Admin::Admin(string name, string ID, string pw, string type) : User(name, ID, pw, type)
+{
+	;
 }
 
 Admin::~Admin()
 {
+	;
 }
  
 //requires userType so that searching through table is not required again to find it
