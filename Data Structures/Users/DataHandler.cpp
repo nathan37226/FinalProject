@@ -108,3 +108,29 @@ void DataHandler::queryAccountHistory(string clientID, string beginning, string 
 	}
 }
 */
+
+string DataHandler::isValidLogin(string userID, string password)
+{
+	vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(userID);   //userInfo is formatted: username -> {hashedPassword, userType}
+	string hashedInputPassword = "", savedHashPassword = "", userType = "";
+	if (userInfo.size() == 0) //i.e. no info returned from userTable for that username
+	{
+		return "false";
+	}
+	else
+	{
+		savedHashPassword = userInfo[0]; 
+		userType = userInfo[1];
+		hashedInputPassword = EncryptionBox::hash(password); 
+
+		if (savedHashPassword == hashedInputPassword) //successful login!
+		{
+			return userType;
+		}
+		else
+		{
+			return "false";
+		}
+		
+	}
+}

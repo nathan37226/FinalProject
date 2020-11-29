@@ -32,7 +32,7 @@ public:
 	void queryAccountHistory(string clientID, string beginning, string ending);
 
 	//login function
-	bool adminLogin(string number, string password);
+	static string isValidLogin(string userID, string password); //success, returns user type, failure, returns "false"
 
 	//data interface
 	vector<AccountType> getTypeData();
