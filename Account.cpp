@@ -2,6 +2,7 @@
 #include "Account.h"
 #include <cmath>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 /*
@@ -370,4 +371,26 @@ time_t Account::displayHistoryHelper(string date)
     timeinfo->tm_hour = hour; // fix hour if daylight saving time
     // call mktime to convert to time_t
     return mktime(timeinfo);
+}
+
+/**********************************************************
+/ saveToFile (private) save the account to file. Returns
+/ a string saying what happened.
+/
+/ parameters:
+/   none
+/
+/ returns:
+/   string
+*//////////////////////////////////////////////////////////
+string Account::saveToFile()
+{
+    ofstream outFile;
+
+    if(outFile.open(accountNumber+".txt", ofstream::trunc)) // attempt to open file with intent to overwirite existing data
+    {
+        outFile << accountNumber << endl;
+        outFile << routingNumber << endl;
+    }
+
 }

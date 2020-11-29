@@ -56,8 +56,12 @@ private:
     void setAccountBalance(double amount);
     string convertTimeToString(time_t inputTime);
     string incrementAcctNum(string lastAcctNum);
+    string saveToFile();
 
 public:
+    Account();
+    Account(string accountNumber);
+    ~Account();
     string getAccountNumber();
     void setAccountHolderFirstName(string name);
     string getAccountHolderFirstName();
@@ -82,6 +86,5 @@ public:
     string withdraw(double amount);
     void displayHistory(string beginning, string ending);
     static time_t displayHistoryHelper(string date);
-
 };
 #endif
