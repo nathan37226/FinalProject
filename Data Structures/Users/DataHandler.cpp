@@ -58,19 +58,6 @@ vector<AccountType> DataHandler::getTypeData()
 }
 
 /*
-bool DataHandler::alterUserPassword(string userID, string userPassword)
-{
-	for (int i = 0; i < clientList.size(); i++)
-	{
-		if (clientList[i].getID() == userID)
-		{
-			clientList[i].setPassword(userPassword);
-			return true;
-		}
-	}
-	return false;
-}
-
 vector<Account> DataHandler::searchForNumber(string accountNumber)
 {
 	vector<Account> searchResult;
@@ -108,20 +95,6 @@ vector<Account> DataHandler::searchForPhone(string phoneNumber)
 		}
 	}
 	return searchResult;
-}
-
-
-bool DataHandler::changeClientPassword(string clientID, string newPassword)
-{
-	for (int i = 0; i < clientList.size(); i++)
-	{
-		if (clientList[i].getID() == clientID)
-		{
-			clientList[i].setPassword(newPassword);
-			return true;
-		}
-	}
-	return false;
 }
 
 void DataHandler::queryAccountHistory(string clientID, string beginning, string ending)

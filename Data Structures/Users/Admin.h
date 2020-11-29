@@ -9,6 +9,8 @@ public:
 	Admin();
 	~Admin();
 
+	void resetPassword(string userID, string newPassword, string userType);
+
 private:
 
 };

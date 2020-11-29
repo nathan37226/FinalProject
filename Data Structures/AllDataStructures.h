@@ -15,10 +15,10 @@ struct tableSet
 };
 
 #include "Users/Tools.h"
+#include "Users/DataHandler.h"
 #include "Users/User.h"
 #include "Users/Admin.h"
 #include "Users/Official.h"
 #include "Users/Client.h"
-#include "Users/DataHandler.h"
 
 #endif

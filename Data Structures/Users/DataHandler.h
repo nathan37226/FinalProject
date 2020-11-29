@@ -1,10 +1,7 @@
 #ifndef DATAHANDLER_H
 #define DATAHANDLER_H
 
-#include "Admin.h"
-#include "Official.h"
-#include "Client.h"
-#include "Account/Account.h"
+
 
 class DataHandler
 {
@@ -22,8 +19,6 @@ public:
 	void deleteAccountType(string typeName);
 	void alterAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
 
-	bool alterUserPassword(string userID, string userPassword);
-
 	//official operation
 	void openMemberAccount(string accountType);
 	bool closeMemberAccount(string accountNumber);
@@ -36,7 +31,6 @@ public:
 	void saveAccount();
 
 	//client operation
-	bool changeClientPassword(string clientID, string newPassword);
 	void queryAccountHistory(string clientID, string beginning, string ending);
 
 	//login function

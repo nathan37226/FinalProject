@@ -11,3 +11,9 @@ Admin::Admin() //now just one admin
 Admin::~Admin()
 {
 }
+
+void Admin::resetPassword(string userID, string newPassword, string userType)
+{
+	vector<string> userLoginInfo = {EncryptionBox::hash(newPassword), userType};
+	DataHandler::allTables.userTable.insertWithList(userID, userLoginInfo); //adds new list of login info to AVLTree
+}
