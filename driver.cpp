@@ -63,6 +63,7 @@ int main()
                 if (savedHashPassword == hashedInputPassword) //successful login!
                 {
                     cout << "Logging into your accout... Welcome!" << endl << endl;
+                    cout << "type : " << userType << endl;
                     if (userType == "member")
                     {
                         memberLogin(allTables);

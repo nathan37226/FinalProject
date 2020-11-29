@@ -368,6 +368,7 @@ node<T>* AVLTree<T>::delHelper(node<T> *&subRoot, T value)
         {
             node<T> *largestLeftNode = rightmost(subRoot->left); //finding max value in left subtree of del node
             subRoot->value = largestLeftNode->value; //copying value over
+            subRoot->list = largestLeftNode->list; //deep copy of list
             subRoot->left = delHelper(subRoot->left, largestLeftNode->value); //delete max value in left subtree
         }
 
@@ -458,6 +459,7 @@ node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedIte
                 {
                     node<T> *largestLeftNode = rightmost(subRoot->left); //finding max value in left subtree of del node
                     subRoot->value = largestLeftNode->value; //copying value over
+                    subRoot->list = largestLeftNode->list; //copying list over, deep
                     subRoot->left = delMappedItemHelper(subRoot->left, largestLeftNode->value, mappedItem); //delete max value in left subtree
                 }
 
@@ -546,7 +548,7 @@ vector<T> AVLTree<T>::returnMappedItems(T value) const
 }
 
 template <class T>
-void AVLTree<T>::swapMappedItems(T value, vector<T> mappedItems)
+void AVLTree<T>::insertWithList(T value, vector<T> mappedItems)
 {
     del(value); //delete old node that has bad values
     node<T> *newNode = new node<T>(value, mappedItems); //create node to replace

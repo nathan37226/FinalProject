@@ -24,13 +24,13 @@ void initialBankSetup(tableSet &allTables)
     allTables.accountTable.refreshInfo(); //need to finish function, but will do the interest computation
 
     //ensuring hard coded user account types of each; if already saved in .txt file, will have no effect
-    string pw = EncryptionBox::hash("password1");
-    vector<string> adminInfo = {pw, "admin"};
-    vector<string> offInfo = {pw, "official"};
-    vector<string> memInfo = {pw, "member"};
-    allTables.userTable.swapMappedItems("admin", adminInfo);
-    allTables.userTable.swapMappedItems("official", offInfo);
-    allTables.userTable.swapMappedItems("house", memInfo);
+    string hashedPw = EncryptionBox::hash("password1");
+    vector<string> adminInfo = {hashedPw, "admin"};
+    vector<string> offInfo = {hashedPw, "official"};
+    vector<string> memInfo = {hashedPw, "member"};
+    allTables.userTable.insertWithList("admin", adminInfo);
+    allTables.userTable.insertWithList("official", offInfo);
+    allTables.userTable.insertWithList("house", memInfo);
 }
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
@@ -124,7 +124,7 @@ void userLoginReset(tableSet &allTables)
         }
         case 2: //Password Reset
         {
-            cout << "To reset your password, your User ID is required." << endl;
+            cout << "To reset your hashedPw, your User ID is required." << endl;
             cout << "Please enter your User ID: ";
             string userID = "", newPassword = "";
             getline(cin, userID);
@@ -133,7 +133,7 @@ void userLoginReset(tableSet &allTables)
             vector<string> userLoginInfo = allTables.userTable.returnMappedItems(userID);
             if (userLoginInfo.size() > 0)
             {
-                cout << "Enter your new password: ";
+                cout << "Enter your new hashedPw: ";
                 getline(cin, newPassword);
                 /*userLoginInfo[0] = EncryptionBox::hash(newPassword);
                 allTables.userTable.swapMappedItems(userID, userLoginInfo); //adds new list of login info to AVLTree
