@@ -1,5 +1,19 @@
 /*
 This file runs the Bear Bank program!
+Tables Needed:
+    AccountTable:
+        accountTable -- AcctNum -> info about acct
+    AVLTree<string>:
+        firstNameTable -- First name -> acct nums with that first name
+        lastNameTable -- Last name -> acct nums with that last name
+        phoneNumTable -- Phone num -> acct nums with that phone num
+        addressTable -- Address -> acct nums with that address
+        userTable -- User ID -> {hashed password, userType}
+
+Default User Accounts:
+    admin - password1
+    official - password1
+    house - password1
 */
 #include <iostream>
 #include <string>
@@ -11,15 +25,6 @@ int main()
 {
     /*
     Perform intial start-up of all related tables and bank accounts!
-    Tables Needed:
-        AccountTable:
-            accountTable -- AcctNum -> info about acct
-        AVLTree<string>:
-            firstNameTable -- First name -> acct nums with that first name
-            lastNameTable -- Last name -> acct nums with that last name
-            phoneNumTable -- Phone num -> acct nums with that phone num
-            addressTable -- Address -> acct nums with that address
-            userTable -- User ID -> {hashed password, userType}
     */
     tableSet allTables; //still need to build the tables!
     initialBankSetup(allTables);
@@ -41,27 +46,28 @@ int main()
             getline(cin, username);
             cout << "Password: ";
             getline(cin, password);
+            cout << endl;
 
-            vector<string> userInfo = allTables.userTable.returnMappedItems(username);
-            if (userInfo.size() == 0)
+            vector<string> userInfo = allTables.userTable.returnMappedItems(username);   //userInfo is formatted: username -> {hashedPassword, userType}
+            if (userInfo.size() == 0) //i.e. no info returned from userTable for that username
             {
-                cout << "Invalid User ID Or Password!" << endl;
-                break;
+                cout << "Invalid User ID Or Password!" << endl; //really just invalid username, but no hints will be given
             }
 
-            else
+            else //found info for a username
             {            
-                savedHashPassword = userInfo[0];
+                savedHashPassword = userInfo[0]; 
                 userType = userInfo[1];
-                hashedInputPassword = EncryptionBox::hash(password);
+                hashedInputPassword = EncryptionBox::hash(password); 
 
-                if (savedHashPassword == hashedInputPassword)
+                if (savedHashPassword == hashedInputPassword) //successful login!
                 {
-                    if (userType == "Member")
+                    cout << "Logging into your accout... Welcome!" << endl << endl;
+                    if (userType == "member")
                     {
                         memberLogin(allTables);
                     }    
-                    else if (userType == "Official")
+                    else if (userType == "official")
                     {
                         officialLogin(allTables);
                     }
@@ -70,8 +76,11 @@ int main()
                         adminLogin(allTables);
                     }
                 }
+                else
+                {
+                    cout << "Invalid User ID Or Password!" << endl; //just invalid pw, but no hints will be given
+                }
             }
-            
             break;
         }
         case 2:

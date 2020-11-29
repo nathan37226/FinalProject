@@ -316,8 +316,11 @@ bool AVLTree<T>::isBalanced() const
 template <class T>
 void AVLTree<T>::del(T value)
 {
-    root = delHelper(root, value);
-    nodeCount--;
+    if (root)
+    {
+        root = delHelper(root, value);
+        nodeCount--;
+    }    
 }
 
 template <class T>
@@ -341,7 +344,7 @@ node<T>* AVLTree<T>::delHelper(node<T> *&subRoot, T value)
         }
         else
         {
-            cout << "No value found to delete" << endl;
+            //cout << "No value found to delete" << endl;
             nodeCount++;
         }
     }
@@ -353,7 +356,7 @@ node<T>* AVLTree<T>::delHelper(node<T> *&subRoot, T value)
         }
         else
         {
-            cout << "No value found to delete" << endl;
+            //cout << "No value found to delete" << endl;
             nodeCount++; //counter act lowering of node count in del
         }
     }
@@ -413,7 +416,7 @@ node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedIte
         }
         else
         {
-            cout << "No value found to delete" << endl;
+            //cout << "No value found to delete" << endl;
             nodeCount++;
         }
     }
@@ -425,7 +428,7 @@ node<T>* AVLTree<T>::delMappedItemHelper(node<T> *&subRoot, T value, T mappedIte
         }
         else
         {
-            cout << "No value found to delete" << endl;
+            //cout << "No value found to delete" << endl;
             nodeCount++; //counter act lowering of node count in del
         }
     }
@@ -548,6 +551,7 @@ void AVLTree<T>::swapMappedItems(T value, vector<T> mappedItems)
     del(value); //delete old node that has bad values
     node<T> *newNode = new node<T>(value, mappedItems); //create node to replace
     root = insertHelper(root, newNode); //insert node to replace
+    nodeCount++;
 }
 
 template <class T>

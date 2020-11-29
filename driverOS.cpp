@@ -21,7 +21,16 @@ void initialBankSetup(tableSet &allTables)
     allTables.addressTable.buildTree("Tables/AddressTable.txt");
     allTables.userTable.buildTree("Tables/UserTable.txt");
 
-    allTables.accountTable.refreshInfo();
+    allTables.accountTable.refreshInfo(); //need to finish function, but will do the interest computation
+
+    //ensuring hard coded user account types of each; if already saved in .txt file, will have no effect
+    string pw = EncryptionBox::hash("password1");
+    vector<string> adminInfo = {pw, "admin"};
+    vector<string> offInfo = {pw, "official"};
+    vector<string> memInfo = {pw, "member"};
+    allTables.userTable.swapMappedItems("admin", adminInfo);
+    allTables.userTable.swapMappedItems("official", offInfo);
+    allTables.userTable.swapMappedItems("house", memInfo);
 }
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
@@ -144,7 +153,10 @@ void userLoginReset(tableSet &allTables)
 
 void memberLogin(tableSet &allTables)
 {
-    string memberInterface = "";
+    //Display last login date up here!
+
+    string memberInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] View Account History\n[6] Change Information";
+    cout << memberInterface << endl << "Option: ";
 }
 
 void officialLogin(tableSet &allTables)
