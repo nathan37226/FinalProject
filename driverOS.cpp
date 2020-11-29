@@ -12,6 +12,7 @@ void clientLogin();
 void officialLogin();
 void adminLogin();
 
+//must add chking for house account!!
 void initialSetup()
 {
     DataHandler::allTables.accountTable.buildTable("Tables/AccountTable.txt");
@@ -114,15 +115,22 @@ void userLoginReset()
                 accountInfo = DataHandler::allTables.accountTable.search(accountNum);
                 if (accountInfo != "false") //i.e. found valid account info from the acctNum
                 {
-                    Admin admin;
+                    Admin admin; //creating the Automated Admin obj to change the password
                     admin.buildUser("UserData/admin.txt");
                     admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
 
                     string userID = admin.returnUserID(accountNum); //implement later!!!
+                    cout << "Your User ID is: " << userID << endl;
 
-                    string description = "Provided user '" + userID + "' the User ID to the online account.";
+                    string description = "Provided user '" + userID + "' the User ID to the online account";
                     admin.setRecentActivity(description);
-                    admin.saveUser();
+                    admin.saveUser(); //saving change to file
+
+                    //now to reflect changes made in user account!
+                    User user; //doesn't matter which type of user!
+                    user.buildUser("UserData/"+userID+".txt");
+                    user.setRecentActivity("Recieved User ID from Automated System Administrator");
+                    user.saveUser();
                 }
                 else
                 {
@@ -140,21 +148,28 @@ void userLoginReset()
         }
         case 2: //Password Reset
         {
-            cout << "To reset your hashedPw, your User ID is required." << endl;
+            cout << "To reset your password, your User ID is required." << endl;
             cout << "Please enter your User ID: ";
             string userID = "", newPassword = "";
             getline(cin, userID);
             cout << endl;
 
-            vector<string> userLoginInfo = DataHandler::allTables.userTable.returnMappedItems(userID);
+            vector<string> userLoginInfo = DataHandler::allTables.userTable.returnMappedItems(userID); // {hashedPW, user type} is returned
             if (userLoginInfo.size() > 0)
             {
-                cout << "Enter your new hashedPw: ";
+                cout << "Enter your new password: ";
                 getline(cin, newPassword);
-                /*userLoginInfo[0] = EncryptionBox::hash(newPassword);
-                DataHander::allTables.userTable.swapMappedItems(userID, userLoginInfo); //adds new list of login info to AVLTree
 
-                Have an admin function to do something similiar to above*/
+                Admin admin; //creating the Automated Admin obj to change the password
+                admin.buildUser("UserData/admin.txt");
+                admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
+                admin.resetPassword(userID, newPassword, userLoginInfo[1]);
+
+                User user;
+                user.buildUser("UserData/"+userID+".txt");
+                user.setRecentActivity("Password was Reset by the Automated System Administrator");
+                user.saveUser();
+                cout << "Your password has been reset." << endl;
             }
             else
             {

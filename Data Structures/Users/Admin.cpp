@@ -13,7 +13,8 @@ Admin::Admin(string name, string ID, string pw, string type, string login) : Use
 Admin::~Admin()
 {
 }
-
+ 
+//requires userType so that searching through table is not required again to find it
 void Admin::resetPassword(string userID, string newPassword, string userType)
 {
 	vector<string> userLoginInfo = {EncryptionBox::hash(newPassword), userType};
