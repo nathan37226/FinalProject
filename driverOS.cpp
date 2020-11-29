@@ -266,7 +266,8 @@ void makeClientAccountChanges(Client &user, int option)
     {
         case 1: //change first name
         {
-            string name = "", lastName = user.getName();
+            string name = "", oldName = user.getName(), lastName = user.getName(), userID = user.getID();
+            oldName = oldName.substr(0, oldName.find(" "));
             lastName = lastName.substr(lastName.find(" ") + 1, string::npos);
             cout << "Enter your new first name: ";
             getline(cin, name);
@@ -274,18 +275,27 @@ void makeClientAccountChanges(Client &user, int option)
             user.setName(name);
             user.setRecentActivity("Changed First Name");
             user.saveUser();
+
+            //need to reflect changes on all accts and tables as well
+            DataHandler::changeClientFirstName(userID, oldName, name);
+
             break;
         }
         case 2: //change last name
         {
-            string firstName = user.getName(), name = "";
+            string firstName = user.getName(), name = "", oldName = user.getName(), userID = user.getID();
             firstName = firstName.substr(0, firstName.find(" "));
+            oldName = oldName.substr(oldName.find(" ") + 1, string::npos);
             cout << "Enter your new last name: ";
             getline(cin, name);
             name = firstName + " " + name;
             user.setName(name);
-            user.setRecentActivity("Changed First Name");
+            user.setRecentActivity("Changed Last Name");
             user.saveUser();
+
+            //make other changes to accts and tables
+            DataHandler::changeClientLastName(userID, oldName, name);
+
             break;
         }
         case 3: //change address
