@@ -101,7 +101,7 @@ string AccountTable::search(string key) const
     bool didFind = dict[index].search(value);
     if (!didFind)
     {
-        cout << "The key: " << key << " is not present in the dictionary" << endl;
+        //cout << "The key: " << key << " is not present in the dictionary" << endl;
         return "false";
     }
     else

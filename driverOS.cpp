@@ -6,17 +6,10 @@ the user, account, and object data.
 
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
-void userLoginReset();
+void userLoginReset(tableSet &allTables);
 void memberLogin();
 void officialLogin();
 void adminLogin();
-
-//allows for easy passing of all tables, best to do by reference since they can get large!
-struct tableSet
-{
-    AVLTree<string> firstNameTable, lastNameTable, phoneNumTable, addressTable, userTable;
-    AccountTable accountTable;
-};
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
 bool isValidOption(string input, int upperBound)
@@ -49,7 +42,7 @@ int getUserOption(int upperBound)
     while (true)
     {
         getline(cin, userInput);
-        isValid = isValidOption(userInput, 3);
+        isValid = isValidOption(userInput, upperBound);
         if (!isValid)
         {
             cout << "Invalid option! Try again: ";
@@ -62,9 +55,9 @@ int getUserOption(int upperBound)
     return stoi(userInput);
 }
 
-void userLoginReset()
+void userLoginReset(tableSet &allTables)
 {
-    cout << "Is your User ID or Password giving you trouble?" << endl << endl;
+    cout << "Is your User ID or Password causing the issue?" << endl << endl;
     string resetOptions = "[1] The User ID\n[2] The Password";
     cout << resetOptions << endl << "Option: ";
     int userResetOption = getUserOption(2);
@@ -74,7 +67,7 @@ void userLoginReset()
     {
         case 1:
         {
-            cout << "In order for me to provide you with your User ID, I must have one of your Account Numbers." << endl;
+            cout << "In order to provide you with your User ID, one of your Account Numbers is required." << endl;
             cout << "Do you know any of your Account Numbers?" << endl << endl;
             string accountNumPrompt = "[1] Yes I do\n[2] No I don't";
             cout << accountNumPrompt << endl << "Option: ";
@@ -83,62 +76,52 @@ void userLoginReset()
 
             if (knowsAccountNums == 1)
             {
-                string accountNum = "";
-                cout << "Awesome! Please enter your Account Number: ";
+                string accountNum = "", accountInfo = "";
+                cout << "Please enter your Account Number: ";
                 getline(cin, accountNum);
-                /*
-                perform search for User ID based off of accountNum
-                if (account is found)
+                cout << endl;
+
+                accountInfo = allTables.accountTable.search(accountNum);
+                if (accountInfo != "false")
                 {
-                    tell user the corresponding username
+                    //give user the username seperated out from info!
                 }
                 else
                 {
-                    say the account number was not found
-                    give options to try again one time
-                    if (not found second time)
-                        stop helping
-                    else
-                        tell user the corresponding username
+                    cout << "The Account Number could not be found." << endl << endl;
+                    cout << "We apologize for the automated system not being able to assist you further.\nPlease seek further help at your nearest branch office." << endl;
                 }
-                */
             }
             else
             {
-                cout <<  "I regret to inform you that you must know an Account Number for me to provide you with your User ID." << endl;
-                cout << "Please do visit a branch office for further assistence!" << endl;
+                cout << "The Automated System requires the Account Number to provide you with the User ID." << endl;
+                cout << "Please visit a branch office for further assistence." << endl;
             }
             
             break;
         }
         case 2:
         {
-            cout << "Okay, to reset your password, I need your User ID." << endl;
+            cout << "To reset your password, your User ID is required." << endl;
             cout << "Please enter your User ID: ";
             string userID = "", newPassword = "";
             getline(cin, userID);
-            /*
-            Check and see if userID exists!
-            if (exists)
+            cout << endl;
+
+            vector<string> userLoginInfo = allTables.userTable.returnMappedItems(userID);
+            if (userLoginInfo.size() > 0)
             {
-                get new password from user
-                store hashed password in UserName -> Hashed-Password table
+                cout << "Enter your new password: ";
+                getline(cin, newPassword);
+                userLoginInfo[0] = EncryptionBox::hash(newPassword);
+                allTables.userTable.swapMappedItems(userID, userLoginInfo); //adds new list of login info to AVLTree
             }
             else
             {
-                say that username couldn't be found
-                retry getting username one more time
-                if (exists)
-                {
-                    get new password from user
-                    store hashed password in UserName -> Hashed-Password table
-                }
-                else
-                {
-                    tell to go visit branch location for further assistence
-                }
+                cout << "The online account could not be located." << endl << endl;
+                cout << "We apologize for our automated system not being able to assist you further.\nPlease seek further help at your nearest branch office." << endl;
             }
-            */           
+           
             break;
         }
     }

@@ -26,7 +26,7 @@ int main()
 
     //Put inside a while loop at the end!
     string loginScreen = "Welcome to BearBank!\n";
-    string loginPrompt = "[1] Login To An Existing Account\n[2] Forgot User ID / Password\n[3] Open An Account";
+    string loginPrompt = "[1] Login To An Existing Account\n[2] Forgot User ID / Password\n[3] Enroll in Bear Bank";
     cout << loginScreen << endl << loginPrompt << endl << "Option: ";
     int initialOption = getUserOption(3);
     cout << endl;
@@ -43,57 +43,60 @@ int main()
 
             vector<string> userInfo = allTables.userTable.returnMappedItems(username);
             if (userInfo.size() == 0)
-                cout << "Something went wrong" << endl; break;
-            savedHashPassword = userInfo[0];
-            userType = userInfo[1];
-            hashedInputPassword = EncryptionBox::hash(password);
-
-            if (savedHashPassword == hashedInputPassword)
             {
-                if (userType == "Member")
-                {
-                    memberLogin();
-                }    
-                else if (userType == "Official")
-                {
-                    officialLogin();
-                }
-                else
-                {
-                    adminLogin();
-                }
+                cout << "Invalid User ID Or Password!" << endl;
+                break;
             }
 
             else
-            {
-                cout << "Invalid User ID Or Password!" << endl;
+            {            
+                savedHashPassword = userInfo[0];
+                userType = userInfo[1];
+                hashedInputPassword = EncryptionBox::hash(password);
+
+                if (savedHashPassword == hashedInputPassword)
+                {
+                    if (userType == "Member")
+                    {
+                        memberLogin();
+                    }    
+                    else if (userType == "Official")
+                    {
+                        officialLogin();
+                    }
+                    else
+                    {
+                        adminLogin();
+                    }
+                }
             }
             
             break;
         }
         case 2:
         {
-            cout << "Connecting you with a Bear Bank Administrator... Connected." << endl;
-            cout << "So, I'm hearing that you're having trouble logging into your account. Is this true?" << endl << endl;
+            cout << "Connecting you with the Automated Bear Bank Administrator... Connected." << endl;
+            cout << "Do you need help logging into your online account?" << endl << endl;
             cout << "[1] Yes, I need help logging in\n[2] No, I was mistaken" << endl << "Option: ";
             int wantsHelp = getUserOption(2);
             cout << endl;
             if (wantsHelp == 1)
             {
-                userLoginReset(); //needs finishing work!
+                userLoginReset(allTables); //needs finishing work!
             }
             else
             {
-                cout << "Well, that's good news. If you ever do need any help, please contact us anytime!" << endl;
+                cout << "If you ever do need any help, please contact Bear Bank anytime!" << endl;
             }
 
             break;
         }
         case 3:
         {
-            cout << "Connecting you with a Bear Bank Official... Connected." << endl;
+            cout << "Connecting you to the Automated Enrollment System... Connected." << endl;
             /*
-            Simulate an official helping someone create a new acct
+            Create new user
+            Add single basic checking account for new user
             */
             break;
         }

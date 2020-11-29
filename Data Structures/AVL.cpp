@@ -381,7 +381,7 @@ node<T>* AVLTree<T>::delHelper(node<T> *&subRoot, T value)
             delete subRoot; //deallocating parent
             subRoot = child; //takes on child's value so that returning will be correct
         }
-        cout << "The value has been deleted" << endl;
+        //cout << "The value has been deleted" << endl;
     }
 
     //updating height of each node we went to, from bottom up
@@ -540,6 +540,14 @@ vector<T> AVLTree<T>::returnMappedItems(T value) const
         vector<T> badValue = {};
         return badValue; //will be able to determine if good or bad based on size
     }
+}
+
+template <class T>
+void AVLTree<T>::swapMappedItems(T value, vector<T> mappedItems)
+{
+    del(value); //delete old node that has bad values
+    node<T> *newNode = new node<T>(value, mappedItems); //create node to replace
+    root = insertHelper(root, newNode); //insert node to replace
 }
 
 template <class T>
