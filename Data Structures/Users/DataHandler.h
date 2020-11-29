@@ -1,8 +1,6 @@
 #ifndef DATAHANDLER_H
 #define DATAHANDLER_H
 
-
-
 class DataHandler
 {
 public:
@@ -37,7 +35,6 @@ public:
 	bool adminLogin(string number, string password);
 
 	//data interface
-	static void initialSetup();
 	vector<AccountType> getTypeData();
 
 private:

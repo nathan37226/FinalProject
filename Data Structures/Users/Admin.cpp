@@ -1,10 +1,12 @@
 #include "Admin.h"
 
-Admin::Admin() //now just one admin
+Admin::Admin()
 {
-	setName("admin");
-	setID("0000");
-	setPassword("admin");
+	setRecentLogin(DateTools().getCurrentDate().ToString());
+}
+
+Admin::Admin(string name, string ID, string pw, string type, string login) : User(name, ID, pw, type, login)
+{
 	setRecentLogin(DateTools().getCurrentDate().ToString());
 }
 

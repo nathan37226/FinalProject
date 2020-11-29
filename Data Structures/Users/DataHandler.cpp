@@ -108,24 +108,3 @@ void DataHandler::queryAccountHistory(string clientID, string beginning, string 
 	}
 }
 */
-
-void DataHandler::initialSetup()
-{
-    allTables.accountTable.buildTable("Tables/AccountTable.txt");
-    allTables.firstNameTable.buildTree("Tables/FirstNameTable.txt");
-    allTables.lastNameTable.buildTree("Tables/LastNameTable.txt");
-    allTables.phoneNumTable.buildTree("Tables/PhoneTable.txt");
-    allTables.addressTable.buildTree("Tables/AddressTable.txt");
-    allTables.userTable.buildTree("Tables/UserTable.txt");
-
-    allTables.accountTable.refreshInfo(); //need to finish function, but will do the interest computation
-
-    //ensuring hard coded user account types of each; if already saved in .txt file, will have no effect
-    string hashedPw = EncryptionBox::hash("password1");
-    vector<string> adminInfo = {hashedPw, "admin"};
-    vector<string> offInfo = {hashedPw, "official"};
-    vector<string> memInfo = {hashedPw, "member"};
-    allTables.userTable.insertWithList("admin", adminInfo);
-    allTables.userTable.insertWithList("official", offInfo);
-    allTables.userTable.insertWithList("house", memInfo);
-}

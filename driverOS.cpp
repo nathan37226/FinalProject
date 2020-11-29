@@ -4,12 +4,37 @@ This is a way of seperating functions that are used inside the driver to manipul
 the user, account, and object data.
 */
 
+void initialSetup();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
 void memberLogin();
 void officialLogin();
 void adminLogin();
+
+void initialSetup()
+{
+    DataHandler::allTables.accountTable.buildTable("Tables/AccountTable.txt");
+    DataHandler::allTables.firstNameTable.buildTree("Tables/FirstNameTable.txt");
+    DataHandler::allTables.lastNameTable.buildTree("Tables/LastNameTable.txt");
+    DataHandler::allTables.phoneNumTable.buildTree("Tables/PhoneTable.txt");
+    DataHandler::allTables.addressTable.buildTree("Tables/AddressTable.txt");
+    DataHandler::allTables.userTable.buildTree("Tables/UserTable.txt");
+
+    DataHandler::allTables.accountTable.refreshInfo(); //need to finish function, but will do the interest computation
+
+    //ensuring hard coded user account types of each; if already saved in .txt file, will have no effect
+    string hashedPw = EncryptionBox::hash("password1");
+    vector<string> adminInfo = {hashedPw, "admin"};
+    vector<string> offInfo = {hashedPw, "official"};
+    vector<string> memInfo = {hashedPw, "member"};
+    DataHandler::allTables.userTable.insertWithList("admin", adminInfo);
+    DataHandler::allTables.userTable.insertWithList("official", offInfo);
+    DataHandler::allTables.userTable.insertWithList("house", memInfo);
+
+	//creating record of these default users
+	Admin admin;
+}
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
 bool isValidOption(string input, int upperBound)

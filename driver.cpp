@@ -26,7 +26,7 @@ int main()
     /*
     Perform intial start-up of all related tables and bank accounts!
     */
-    DataHandler::initialSetup();
+    initialSetup();
     
 
     //Put inside a while loop at the end!
