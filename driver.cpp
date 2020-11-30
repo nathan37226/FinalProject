@@ -38,7 +38,7 @@ int main()
 
     switch (initialOption)
     {
-        case 1:
+        case 1: //login to acct
         {
             string userID = "", password = "", userType = "";
             cout << "Username: ";
@@ -69,7 +69,7 @@ int main()
             }
             break;
         }
-        case 2:
+        case 2: //reset pw or get userID
         {
             cout << "Connecting you with the Automated Bear Bank Administrator... Connected." << endl;
             cout << "Do you need help logging into your online account?" << endl << endl;
@@ -87,7 +87,7 @@ int main()
 
             break;
         }
-        case 3:
+        case 3: //new user enroll
         {
             cout << "Connecting you to the Automated Enrollment System... Connected." << endl;
             /*

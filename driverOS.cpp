@@ -182,7 +182,7 @@ void userLoginReset()
                 Admin admin; //creating the Automated Admin obj to change the password
                 admin.buildUser("UserData/admin.txt");
                 admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
-                admin.resetPassword(userID, newPassword, userInfo);
+                admin.resetPassword(userID, newPassword);
 
                 User user;
                 user.buildUser("UserData/"+userID+".txt");
@@ -260,6 +260,8 @@ void clientLogin(string userID)
     }
 }
 
+
+//Needs Finishing!
 void makeClientAccountChanges(Client &user, int option)
 {
     switch (option)
@@ -308,6 +310,20 @@ void makeClientAccountChanges(Client &user, int option)
         }
         case 5: //change password
         {
+            string newPassword = "";
+            cout << "Enter your new password: ";
+            getline(cin, newPassword);
+
+            Admin admin; //creating the Automated Admin obj to change the password
+            admin.buildUser("UserData/admin.txt");
+            admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
+            admin.resetPassword(user.getID(), newPassword);
+            admin.setRecentActivity("Assisted Client Change Password in Settings");
+            admin.saveUser();
+
+            user.setRecentActivity("Password was Reset in Settings");
+            user.saveUser();
+            cout << "Your password has been reset." << endl;
             break;
         }
     }
