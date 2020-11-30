@@ -321,7 +321,7 @@ void makeClientAccountChanges(Client &user, int option)
             user.saveUser();
 
             //need to reflect changes on all accts and tables as well
-            DataHandler::changeClientFirstName(userID, oldName, name); //needs to be tested
+            DataHandler::changeClientFirstName(userID, oldName, name); //needs finishing
 
             break;
         }
@@ -340,7 +340,7 @@ void makeClientAccountChanges(Client &user, int option)
             user.saveUser();
 
             //changing name inside the tables
-            DataHandler::changeClientLastName(userID, oldName, name);
+            DataHandler::changeClientLastName(userID, oldName, name); //needs finishing
 
             break;
         }
