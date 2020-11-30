@@ -90,14 +90,64 @@ int main()
         case 3: //new user enroll
         {
             cout << "Connecting you to the Automated Enrollment System... Connected." << endl;
-            /*
-            Create new user
-            Add single basic checking account for new user
-            */
+            cout << "Before an account is created for you, do you wish to proceed enrolling into Bear Bank?" << endl;
+            cout << "[1] Yes, I wish to create an account\n[2] No, I want to cancel enrolling" << endl;
+            cout << "Option: ";
+            int wantsToEnroll = getUserOption(2);
+            cout << endl;
+
+            if (wantsToEnroll == 1)
+            {
+                //getting initial user info
+                string firstName = "", lastName = "", phoneNum = "", address = "", userName = "", password = "";
+                cout << "Your personal information must be gathered to create an account." << endl;
+                cout << "Enter your first name: ";
+                getline(cin, firstName);
+                cout << "Enter your last name: ";
+                getline(cin, lastName);
+                cout << "Enter your phone number: ";
+                getline(cin, phoneNum);
+                cout << "Enter your address: ";
+                getline(cin, address);
+                cout << endl;
+
+                //creating online acct
+                bool isAvailableID = false;
+                cout << "Now, an online account will be created for you." << endl;
+                cout << "Enter your desired user ID: ";
+                getline(cin, userName); //check for non duplicates!!!
+                isAvailableID = isValidUserID(userName);
+
+                while (!isAvailableID) //validation check on userName
+                {
+                    cout << "That user ID is not available." << endl;
+                    cout << "Enter a new user ID: ";
+                    getline(cin, userName);
+                    isAvailableID = isValidUserID(userName);
+                }
+                cout << "Enter your new password: ";
+                getline(cin, password);
+                cout << endl;
+
+                //now to create the Client obj
+                Client user(firstName + " " + lastName, userName, EncryptionBox::hash(password), "client");
+                user.setRecentActivity("Just Enrolled!");
+                user.saveUser(); //creates a .txt file record
+
+                //create Automated Official to register enrolled user inside tables
+                Official official;
+                official.buildUser("UserData/official.txt");
+                official.addNewClientUser(user);
+                official.setRecentActivity("Enrolled new user: " + userName);
+                official.saveUser();
+
+                //create initial savings account!
+            }
             break;
         }
     }
     
+    savingTables(); //saves all stored info accumulated or changed throughout program's runtime
     return 0;
 }
 

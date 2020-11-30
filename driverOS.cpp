@@ -5,9 +5,11 @@ the user, account, and object data.
 */
 
 void initialSetup();
+void savingTables();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
+bool isValidUserID(string userID);
 void clientLogin(string userID);
 void makeClientAccountChanges(Client &user, int option);
 void officialLogin(string userID);
@@ -59,6 +61,16 @@ void initialSetup()
     admin.saveUser();
     official.saveUser();
     house.saveUser();
+}
+
+void savingTables()
+{
+    DataHandler::allTables.accountTable.saveInfo("Tables/AccountTable.txt");
+    DataHandler::allTables.firstNameTable.saveInfo("Tables/FirstNameTable.txt");
+    DataHandler::allTables.lastNameTable.saveInfo("Tables/LastNameTable.txt");
+    DataHandler::allTables.phoneNumTable.saveInfo("Tables/PhoneTable.txt");
+    DataHandler::allTables.addressTable.saveInfo("Tables/AddressTable.txt");
+    DataHandler::allTables.userTable.saveInfo("Tables/UserTable.txt");
 }
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
@@ -201,6 +213,12 @@ void userLoginReset()
     }
 }
 
+bool isValidUserID(string userID)
+{
+    bool value = (DataHandler::allTables.userTable.returnMappedItems(userID).size() == 0) ? true : false;
+    return value;  //above ternary will return a vect of {} is userID not found, so if size == 0 then userID not found, which means the userID is avaliable
+}
+
 void clientLogin(string userID)
 {
     Client user;
@@ -254,6 +272,7 @@ void clientLogin(string userID)
             case 6:
             {
                 wantsToExit = true;
+                user.saveUser();
             }
             cout << endl;
         }
