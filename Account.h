@@ -19,6 +19,7 @@ protected:
     double roundNum(double amount, int precision);
 
 public:
+    AccountType(double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0, string acctTypeName);
     void setMonthlyFee(double fee);
     double getMonthlyFee();
     void setServiceFee(double fee);
@@ -56,12 +57,15 @@ private:
     void setAccountBalance(double amount);
     string convertTimeToString(time_t inputTime);
     string incrementAcctNum(string lastAcctNum);
-    string saveToFile();
 
 public:
-    Account();
-    Account(string accountNumber);
-    ~Account();
+    // Constructor for new account
+    Account(AccountType &acctType, string acctFirstName = "", string acctLastName = "", string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0);
+    // Constructor for existing account
+    Account(string acctNum);
+    //Account(string accountNumber);
+    //~Account();
+    void setAccountNumber(string acctNum);
     string getAccountNumber();
     void setAccountHolderFirstName(string name);
     string getAccountHolderFirstName();
@@ -86,5 +90,7 @@ public:
     string withdraw(double amount);
     void displayHistory(string beginning, string ending);
     static time_t displayHistoryHelper(string date);
+    string saveToFile();
+    static string getDisplayNum(double input);
 };
 #endif

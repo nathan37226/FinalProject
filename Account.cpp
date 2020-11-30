@@ -3,21 +3,39 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include "EncryptionBox.h"
 
 using namespace std;
-/*
+
 int main()
 {
+    /*
     cout << "Enter start date in the format: 'MM/DD/YYYY'" << endl;
     string date;
     cin >> date;
     cout << Account::displayHistoryHelper(date + " 00:00:00") << endl;
+    */
+
+    Account a;
+    a.setAccountNumber("012345678");
+    cout << a.saveToFile() << endl;
 }
-*/
+
 /**********************************************************
 / AccountType
 *//////////////////////////////////////////////////////////
 double AccountType::penaltyFee;
+/**********************************************************
+/ Constructor
+*//////////////////////////////////////////////////////////
+AccountType::AccountType(double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0, string acctTypeName)
+{
+    monthlyFee = monFee;
+    serviceFee = servFee;
+    interestRate = interestR;
+    minimumBalance = minBalance;
+    accountTypeName = acctTypeName;
+}
 /**********************************************************
 / Setters
 *//////////////////////////////////////////////////////////
@@ -51,6 +69,11 @@ void AccountType::setMinimumBalance(double amount)
     minimumBalance = roundNum(amount, 2);
 }
 
+void AccountType::setAccountTypeName(string name)
+{
+    accountTypeName = name;
+}
+
 /**********************************************************
 / Getters
 *//////////////////////////////////////////////////////////
@@ -78,6 +101,11 @@ double AccountType::getInterestRate()
 double AccountType::getMinimumBalance()
 {
     return minimumBalance;
+}
+
+string AccountType::getAccountTypeName()
+{
+    return accountTypeName;
 }
 
 /**********************************************************
@@ -112,8 +140,66 @@ double AccountType::roundNum(double value, int precision)
 *//////////////////////////////////////////////////////////
 const string Account::routingNumber = "133769420";
 /**********************************************************
+/ Constructor for new account
+*//////////////////////////////////////////////////////////
+Account::Account(AccountType &acctType, string acctFirstName = "", string acctLastName = "", string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0)
+: AccountType(acctType.getMonthlyFee(), acctType.getServiceFee(), acctType.getInterestRate(), acctType.getMinimumBalance(), acctType.getAccountTypeName())
+{
+    // Set Account Number
+    switch(acctType.getAccountTypeName())
+    {
+        case "checking":
+            accountNumber = nextCheckingAccountNumber;
+            nextCheckingAccountNumber = incrementAcctNum(nextCheckingAccountNumber);
+            break;
+        case "savings":
+            accountNumber = nextSavingsAccountNumber;
+            nextSavingsAccountNumber = incrementAcctNum(nextSavingsAccountNumber);
+            break;
+        case "CD":
+            accountNumber = nextCDAccountNumber;
+            nextCDAccountNumber = incrementAcctNum(nextCDAccountNumber);
+            break;
+        default:
+            accountNumber = nextUniqueAccountNumber;
+            nextUniqueAccountNumber = incrementAcctNum(nextUniqueAccountNumber);
+            break;
+    }
+
+    // Set account holder info
+    accountHolderFirstName = acctFirstName;
+    accountHolderLastName = acctLastName;
+    accountHolderPhoneNumber = acctPhoneNumber;
+    accountHolderAddress = acctAddress;
+
+    // set dates
+    time(&openDate); // set open date as current time
+    closeDate = 0;
+    maturityDate = mDate;
+
+    // set status
+    restrictedStatus = false;
+    openStatus = true;
+
+    // set accountBalance
+    accountBalance = acctBalance;
+
+
+}
+/**********************************************************
+/ Constructor for existing account
+*//////////////////////////////////////////////////////////
+Account::Account(string acctNum)
+{
+    buildFromFile(acctNum);
+}
+/**********************************************************
 / Setters
 *//////////////////////////////////////////////////////////
+void Account::setAccountNumber(string acctNum)
+{
+    accountNumber = acctNum;
+}
 void Account::setAccountHolderFirstName(string name)
 {
     // possibly add check for valid inputs
@@ -374,6 +460,22 @@ time_t Account::displayHistoryHelper(string date)
 }
 
 /**********************************************************
+/ getDisplayNum (public) convert double to string for
+/ displaying to console and writing to file
+/
+/ parameters:
+/   input : double
+/
+/ returns:
+/   string
+*//////////////////////////////////////////////////////////
+string Account::getDisplayNum(double input)
+{
+    string num = to_string(input);
+    return num.substr(0, num.length() - 4); //cuts off the last 0000 of the double
+}
+
+/**********************************************************
 / saveToFile (private) save the account to file. Returns
 / a string saying what happened.
 /
@@ -387,10 +489,27 @@ string Account::saveToFile()
 {
     ofstream outFile;
 
-    if(outFile.open("AccountData/"+accountNumber+".txt", ofstream::trunc)) // attempt to open file with intent to overwirite existing data
-    {
-        outFile << accountNumber << endl;
-        outFile << routingNumber << endl;
-    }
+    outFile.open("AccountData/"+accountNumber+".txt", ofstream::trunc); // attempt to open file with intent to overwirite existing data
+    
+    outFile << EncryptionBox::encrypt(accountNumber) << endl;
+    outFile << EncryptionBox::encrypt(routingNumber) << endl;
+    outFile << EncryptionBox::encrypt(accountHolderFirstName) << endl;
+    outFile << EncryptionBox::encrypt(accountHolderLastName) << endl;
+    outFile << EncryptionBox::encrypt(accountHolderPhoneNumber) << endl;
+    outFile << EncryptionBox::encrypt(accountHolderAddress) << endl;
+    outFile << EncryptionBox::encrypt(string(openDate)) << endl;
+    outFile << EncryptionBox::encrypt(string(closeDate)) << endl;
+    outFile << EncryptionBox::encrypt(string(maturityDate)) << endl;
+    outFile << EncryptionBox::encrypt(getDisplayNum(accountBalance)) << endl;
+    if(restrictedStatus)
+        outFile << EncryptionBox::encrypt("True") << endl;
+    else
+        outFile << EncryptionBox::encrypt("False") << endl;
+    if(openStatus)
+        outFile << EncryptionBox::encrypt("True") << endl;
+    else
+        outFile << EncryptionBox::encrypt("False") << endl;
+    
 
+    return "Saved";
 }
