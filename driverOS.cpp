@@ -235,13 +235,13 @@ void clientLogin(string userID)
     user.setRecentLogin(DateTools().getCurrentTime()); //since we just logged in, now need to update time
     //Display last login date up here!
 
-    string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Exit";
+    string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Open New Account\n[5] Exit";
     bool wantsToExit = false;
     
     while (!wantsToExit)
     {
         cout << clientInterface << endl << "Option: ";
-        int initialOption = getUserOption(4);
+        int initialOption = getUserOption(5);
         cout << endl;
 
         switch (initialOption)
@@ -294,7 +294,16 @@ void clientLogin(string userID)
                 cout << endl;
                 break;
             }
-            case 4: //exit
+            case 4: //open new acct
+            {
+                //Make sure to display all types of accts currently offered
+                //Upon user choosing, send request off to an official for confirmation!
+                //have all officials be able to access this list of requests!
+                //Each request needs: UserID requesting and acct type
+                //Upon accpeting request or denying request for new acct, update client recent activity message to display the choice
+                break;
+            }
+            case 5: //exit
             {
                 wantsToExit = true;
                 user.saveUser();
