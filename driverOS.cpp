@@ -330,6 +330,8 @@ void makeClientAccountChanges(Client &user, int option)
             string firstName = user.getName(), name = "", oldName = user.getName(), userID = user.getID();
             firstName = firstName.substr(0, firstName.find(" "));
             oldName = oldName.substr(oldName.find(" ") + 1, string::npos);
+
+            //changing name in user obj
             cout << "Enter your new last name: ";
             getline(cin, name);
             name = firstName + " " + name;
@@ -337,13 +339,25 @@ void makeClientAccountChanges(Client &user, int option)
             user.setRecentActivity("Changed Last Name");
             user.saveUser();
 
-            //make other changes to accts and tables
+            //changing name inside the tables
             DataHandler::changeClientLastName(userID, oldName, name);
 
             break;
         }
         case 3: //change address
         {
+            string newAddress = "", oldAddress = user.getAddress();
+
+            //chaning address in user obj
+            cout << "Enter your new address: ";
+            getline(cin, newAddress);
+            user.setAddress(newAddress);
+            user.setRecentActivity("Changed Address");
+            user.saveUser();
+
+            //changing address in table
+            DataHandler::changeClientAddress(user.getID(), oldAddress, newAddress);
+
             break;
         }
         case 4: //change phone number
