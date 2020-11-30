@@ -149,7 +149,7 @@ void userLoginReset()
                 {
                     Admin admin; //creating the Automated Admin obj to change the password
                     admin.buildUser("UserData/admin.txt");
-                    admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
+                    admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
 
                     string userID = admin.returnUserID(accountNum); //implement later!!!
                     cout << "Your User ID is: " << userID << endl;
@@ -194,7 +194,7 @@ void userLoginReset()
 
                 Admin admin; //creating the Automated Admin obj to change the password
                 admin.buildUser("UserData/admin.txt");
-                admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
+                admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
                 admin.resetPassword(userID, newPassword);
                 admin.setRecentActivity("Assisted Client '" + userID + "' Change Password");
                 admin.saveUser();
@@ -229,7 +229,7 @@ void clientLogin(string userID)
     cout << "Welcome, " << user.getName() << endl;
     cout << "Last Activity: " << user.getRecentActivity() << endl;
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentDate().ToString()); //since we just logged in, now need to update time
+    user.setRecentLogin(DateTools().getCurrentTime()); //since we just logged in, now need to update time
     //Display last login date up here!
 
     string clientInterface = "[1] Access Accounts\n[2] Change Information\n[3] Exit";
@@ -349,7 +349,7 @@ void makeClientAccountChanges(Client &user, int option)
 
             Admin admin; //creating the Automated Admin obj to change the password
             admin.buildUser("UserData/admin.txt");
-            admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
+            admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
             admin.resetPassword(user.getID(), newPassword);
             admin.setRecentActivity("Assisted Client '" + user.getID() + "' Change Password in Settings");
             admin.saveUser();
@@ -395,7 +395,7 @@ void officialLogin(string userID)
     cout << "Welcome, " << user.getName() << endl;
     cout << "Last Activity: " << user.getRecentActivity() << endl;
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentDate().ToString());
+    user.setRecentLogin(DateTools().getCurrentTime());
 
     string officialInterface = "";
 }
@@ -408,7 +408,7 @@ void adminLogin(string userID)
     cout << "Welcome, " << user.getName() << endl;
     cout << "Last Activity: " << user.getRecentActivity() << endl;
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentDate().ToString());
+    user.setRecentLogin(DateTools().getCurrentTime());
 
     string adminInterface = "";
 }

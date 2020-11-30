@@ -34,7 +34,7 @@ public:
 private:
 	string userName;//name of user
 	string userID;//id of user
-	string userPassword;
+	string userPassword; //used in Official adding user funct
 	string userType;
 	string mostRecentLogin;
 	string recentActivity;
