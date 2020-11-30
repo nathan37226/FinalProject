@@ -55,6 +55,8 @@ void initialSetup()
     Client house;
     house.buildUser("UserData/house.txt");
     house.setName("House Account");
+    house.setAddress("1234 Made Up Avenue, Springfield, MO");
+    house.setPhoneNum("417-555-1234");
     house.setID("house");
     house.setPassword(EncryptionBox::hash("password1"));
     house.setUserType("client");
@@ -222,6 +224,7 @@ bool isValidUserID(string userID)
     return value;  //above ternary will return a vect of {} is userID not found, so if size == 0 then userID not found, which means the userID is avaliable
 }
 
+//Needs Work still!!
 void clientLogin(string userID)
 {
     Client user;
@@ -232,13 +235,13 @@ void clientLogin(string userID)
     user.setRecentLogin(DateTools().getCurrentTime()); //since we just logged in, now need to update time
     //Display last login date up here!
 
-    string clientInterface = "[1] Access Accounts\n[2] Change Information\n[3] Exit";
+    string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Exit";
     bool wantsToExit = false;
     
     while (!wantsToExit)
     {
         cout << clientInterface << endl << "Option: ";
-        int initialOption = getUserOption(3);
+        int initialOption = getUserOption(4);
         cout << endl;
 
         switch (initialOption)
@@ -271,7 +274,13 @@ void clientLogin(string userID)
                 }
                 break;
             }
-            case 2: //change info
+            case 2: //Display user info, i.e. name, address, phone num
+            {
+                user.displayInfo();
+                user.setRecentActivity("Displayed Personal Information");
+                break;
+            }
+            case 3: //change info
             {
                 cout << "Which piece of information would you like to change?" << endl;
                 cout << "[1] First Name\n[2] Last Name\n[3] Address\n[4] Phone Number\n[5] Password\n[6] Go Back" << endl;
@@ -285,7 +294,7 @@ void clientLogin(string userID)
                 cout << endl;
                 break;
             }
-            case 3: //exit
+            case 4: //exit
             {
                 wantsToExit = true;
                 user.saveUser();
@@ -312,7 +321,7 @@ void makeClientAccountChanges(Client &user, int option)
             user.saveUser();
 
             //need to reflect changes on all accts and tables as well
-            DataHandler::changeClientFirstName(userID, oldName, name);
+            DataHandler::changeClientFirstName(userID, oldName, name); //needs to be tested
 
             break;
         }

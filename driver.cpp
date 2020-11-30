@@ -14,6 +14,8 @@ Default User Accounts:
     Admin: admin - password1
     Official: official - password1
     Client: house - password1
+
+    Personal: nayithan - password1, for client testing
 */
 #include <iostream>
 #include <string>
@@ -131,7 +133,7 @@ int main()
                 cout << endl;
 
                 //now to create the Client obj
-                Client user(firstName + " " + lastName, userName, EncryptionBox::hash(password), "client");
+                Client user(firstName + " " + lastName, userName, EncryptionBox::hash(password), "client", address, phoneNum);
                 user.setRecentActivity("Just Enrolled!");
                 user.saveUser(); //creates a .txt file record
 

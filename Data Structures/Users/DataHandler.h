@@ -1,5 +1,6 @@
 #ifndef DATAHANDLER_H
 #define DATAHANDLER_H
+#include "Client.h"
 
 class DataHandler
 {
