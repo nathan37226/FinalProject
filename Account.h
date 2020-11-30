@@ -19,7 +19,7 @@ protected:
     double roundNum(double amount, int precision);
 
 public:
-    AccountType(double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0, string acctTypeName);
+    AccountType(double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0, string acctTypeName = "");
     void setMonthlyFee(double fee);
     double getMonthlyFee();
     void setServiceFee(double fee);
@@ -30,6 +30,8 @@ public:
     double getInterestRate();
     void setMinimumBalance(double amount);
     double getMinimumBalance();
+    void setAccountTypeName(string name);
+    string getAccountTypeName();
 
 };
 
@@ -48,6 +50,7 @@ private:
     double accountBalance;
     bool restrictedStatus;
     bool openStatus;
+    time_t lastInterestCalculation;
 
     static string nextCheckingAccountNumber;
     static string nextSavingsAccountNumber;
@@ -92,5 +95,6 @@ public:
     static time_t displayHistoryHelper(string date);
     string saveToFile();
     static string getDisplayNum(double input);
+
 };
 #endif

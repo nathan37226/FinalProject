@@ -14,11 +14,11 @@ int main()
     string date;
     cin >> date;
     cout << Account::displayHistoryHelper(date + " 00:00:00") << endl;
-    */
+    
 
     Account a;
     a.setAccountNumber("012345678");
-    cout << a.saveToFile() << endl;
+    cout << a.saveToFile() << endl;*/
 }
 
 /**********************************************************
@@ -28,7 +28,7 @@ double AccountType::penaltyFee;
 /**********************************************************
 / Constructor
 *//////////////////////////////////////////////////////////
-AccountType::AccountType(double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0, string acctTypeName)
+AccountType::AccountType(double monFee, double servFee, double interestR, double minBalance, string acctTypeName)
 {
     monthlyFee = monFee;
     serviceFee = servFee;
@@ -139,31 +139,36 @@ double AccountType::roundNum(double value, int precision)
 / Account
 *//////////////////////////////////////////////////////////
 const string Account::routingNumber = "133769420";
+string Account::nextCheckingAccountNumber;
+string Account::nextSavingsAccountNumber;
+string Account::nextCDAccountNumber;
+string Account::nextUniqueAccountNumber;
 /**********************************************************
 / Constructor for new account
 *//////////////////////////////////////////////////////////
-Account::Account(AccountType &acctType, string acctFirstName = "", string acctLastName = "", string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0)
+Account::Account(AccountType &acctType, string acctFirstName, string acctLastName, string acctPhoneNumber, string acctAddress, time_t mDate, double acctBalance)
 : AccountType(acctType.getMonthlyFee(), acctType.getServiceFee(), acctType.getInterestRate(), acctType.getMinimumBalance(), acctType.getAccountTypeName())
 {
     // Set Account Number
-    switch(acctType.getAccountTypeName())
+    if(acctType.getAccountTypeName() == "checking")
     {
-        case "checking":
-            accountNumber = nextCheckingAccountNumber;
-            nextCheckingAccountNumber = incrementAcctNum(nextCheckingAccountNumber);
-            break;
-        case "savings":
-            accountNumber = nextSavingsAccountNumber;
-            nextSavingsAccountNumber = incrementAcctNum(nextSavingsAccountNumber);
-            break;
-        case "CD":
-            accountNumber = nextCDAccountNumber;
-            nextCDAccountNumber = incrementAcctNum(nextCDAccountNumber);
-            break;
-        default:
-            accountNumber = nextUniqueAccountNumber;
-            nextUniqueAccountNumber = incrementAcctNum(nextUniqueAccountNumber);
-            break;
+        accountNumber = nextCheckingAccountNumber;
+        nextCheckingAccountNumber = incrementAcctNum(nextCheckingAccountNumber);
+    }
+    else if(acctType.getAccountTypeName() == "savings")
+    {
+        accountNumber = nextSavingsAccountNumber;
+        nextSavingsAccountNumber = incrementAcctNum(nextSavingsAccountNumber);
+    }
+    else if(acctType.getAccountTypeName() == "CD")
+    {
+        accountNumber = nextCDAccountNumber;
+        nextCDAccountNumber = incrementAcctNum(nextCDAccountNumber);
+    }
+    else
+    {
+        accountNumber = nextUniqueAccountNumber;
+        nextUniqueAccountNumber = incrementAcctNum(nextUniqueAccountNumber);
     }
 
     // Set account holder info
@@ -184,6 +189,8 @@ Account::Account(AccountType &acctType, string acctFirstName = "", string acctLa
     // set accountBalance
     accountBalance = acctBalance;
 
+    // set last time interest was calculated
+    time(&lastInterestCalculation);
 
 }
 /**********************************************************
@@ -191,7 +198,7 @@ Account::Account(AccountType &acctType, string acctFirstName = "", string acctLa
 *//////////////////////////////////////////////////////////
 Account::Account(string acctNum)
 {
-    buildFromFile(acctNum);
+    //buildFromFile(acctNum);
 }
 /**********************************************************
 / Setters
@@ -497,9 +504,9 @@ string Account::saveToFile()
     outFile << EncryptionBox::encrypt(accountHolderLastName) << endl;
     outFile << EncryptionBox::encrypt(accountHolderPhoneNumber) << endl;
     outFile << EncryptionBox::encrypt(accountHolderAddress) << endl;
-    outFile << EncryptionBox::encrypt(string(openDate)) << endl;
-    outFile << EncryptionBox::encrypt(string(closeDate)) << endl;
-    outFile << EncryptionBox::encrypt(string(maturityDate)) << endl;
+    outFile << EncryptionBox::encrypt(to_string(openDate)) << endl;
+    outFile << EncryptionBox::encrypt(to_string(closeDate)) << endl;
+    outFile << EncryptionBox::encrypt(to_string(maturityDate)) << endl;
     outFile << EncryptionBox::encrypt(getDisplayNum(accountBalance)) << endl;
     if(restrictedStatus)
         outFile << EncryptionBox::encrypt("True") << endl;
