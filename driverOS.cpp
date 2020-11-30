@@ -356,12 +356,23 @@ void makeClientAccountChanges(Client &user, int option)
             user.saveUser();
 
             //changing address in table
-            DataHandler::changeClientAddress(user.getID(), oldAddress, newAddress);
+            DataHandler::changeClientAddress(user.getID(), oldAddress, newAddress); //needs finishing
 
             break;
         }
         case 4: //change phone number
         {
+            string newNum = "", oldNum = user.getPhoneNum();
+
+            //chaning address in user obj
+            cout << "Enter your new phone number: ";
+            getline(cin, newNum);
+            user.setAddress(newNum);
+            user.setRecentActivity("Changed Phone Number");
+            user.saveUser();
+
+            //changing address in table
+            DataHandler::changeClientPhoneNum(user.getID(), oldNum, newNum); //needs finishing
             break;
         }
         case 5: //change password

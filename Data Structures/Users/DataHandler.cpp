@@ -193,3 +193,23 @@ void DataHandler::changeClientAddress(string userID, string oldAddress, string n
 		*/
 	 }
 }
+
+void DataHandler::changeClientPhoneNum(string userID, string oldNum, string newNum)
+{
+	//need to change inside each acct obj as well as the phoneNumTable
+	vector<string> acctList = allTables.userTable.returnMappedItems(userID);
+	 for (int i = 2; i < acctList.size(); i++)
+	 {
+		allTables.phoneNumTable.delMappedItem(oldNum, acctList[i]);
+		allTables.phoneNumTable.insertWithItem(newNum, acctList[i]);
+
+		/*
+		build account from .txt file with acctList[i] as the acctNum
+		insert new phone number
+		save to .txt file
+		get new info for acct from built account object
+		insert new info into with command: 
+		allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
+		*/
+	 }
+}
