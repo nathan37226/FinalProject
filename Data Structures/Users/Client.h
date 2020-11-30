@@ -11,6 +11,8 @@ public:
 	Client(string name, string ID, string pw, string type, string login);
 	Client(string name, string ID, string pw, string type);
 	~Client();
+
+	void getAccountHistory(vector<string> acctList) const;
 private:
 };
 
