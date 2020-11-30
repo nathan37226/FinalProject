@@ -1,4 +1,5 @@
 #include "Official.h"
+#include "Client.h"
 
 Official::Official()
 {
@@ -28,4 +29,11 @@ string Official::getState()
 void Official::setState(string newState)
 {
 	officialState = newState;
+}
+
+void Official::addNewClientUser(Client &user)
+{
+	string userID = user.getID(), hashedPw = user.getPassword();
+	vector<string> userData = {hashedPw, "client"}; //no accts at first
+	DataHandler::allTables.userTable.insertWithList(userID, userData); //inserts into AVLtree
 }

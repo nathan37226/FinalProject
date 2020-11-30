@@ -111,7 +111,7 @@ void DataHandler::queryAccountHistory(string clientID, string beginning, string 
 
 string DataHandler::isValidLogin(string userID, string password)
 {
-	vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(userID);   //userInfo is formatted: username -> {hashedPassword, userType}
+	vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(userID);   //userInfo is formatted: username -> {hashedPassword, userType, accts...}
 	string hashedInputPassword = "", savedHashPassword = "", userType = "";
 	if (userInfo.size() == 0) //i.e. no info returned from userTable for that username
 	{
@@ -133,4 +133,42 @@ string DataHandler::isValidLogin(string userID, string password)
 		}
 		
 	}
+}
+
+void DataHandler::changeClientFirstName(string userID, string oldName, string newName)
+{
+	//Need to update first name table and account table
+	vector<string> acctList = allTables.userTable.returnMappedItems(userID);
+
+	for (int i = 2; i < acctList.size(); i++) //vector is formatted {hashedPw, user type, acct1, acct2, etc} for however many accts a client has
+	{
+		allTables.firstNameTable.delMappedItem(oldName, acctList[i]); //removes acct from old name node
+		allTables.firstNameTable.insertWithItem(newName, acctList[i]); //inserts to new name node the acct
+	}
+	/*
+	build account from .txt file
+	insert new first name
+	save to .txt file
+	get new info for acct from built account object
+	insert new info into with command: allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
+	*/
+}
+
+void DataHandler::changeClientLastName(string userID, string oldName, string newName)
+{
+	//Need to update first name table and account table
+	vector<string> acctList = allTables.userTable.returnMappedItems(userID);
+
+	for (int i = 2; i < acctList.size(); i++) //vector is formatted {hashedPw, user type, acct1, acct2, etc} for however many accts a client has
+	{
+		allTables.lastNameTable.delMappedItem(oldName, acctList[i]); //removes acct from old name node
+		allTables.lastNameTable.insertWithItem(newName, acctList[i]); //inserts to new name node the acct
+	}
+	/*
+	build account from .txt file
+	insert new first name
+	save to .txt file
+	get new info for acct from built account object
+	insert new info into with command: allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
+	*/
 }

@@ -20,6 +20,7 @@ User::User(string name, string ID, string pw, string type)
 	userID = ID;
 	userPassword = pw;
 	userType = type;
+	mostRecentLogin = "No logins yet";
 }
 
 User::~User()

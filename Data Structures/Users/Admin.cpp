@@ -21,10 +21,11 @@ Admin::~Admin()
 }
  
 //requires userType so that searching through table is not required again to find it
-void Admin::resetPassword(string userID, string newPassword, string userType)
+void Admin::resetPassword(string userID, string newPassword) 
 {
-	vector<string> userLoginInfo = {EncryptionBox::hash(newPassword), userType};
-	DataHandler::allTables.userTable.insertWithList(userID, userLoginInfo); //adds new list of login info to AVLTree
+	vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(userID); //formatted {hashedPw, user type, accts...}
+	userInfo[0] = EncryptionBox::hash(newPassword);
+	DataHandler::allTables.userTable.insertWithList(userID, userInfo); //replaces node in AVLtree to one with updated list
 }
 
 //get funct to return from accountTable the userID in the info part of the acct entry

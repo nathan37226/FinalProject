@@ -5,10 +5,13 @@ the user, account, and object data.
 */
 
 void initialSetup();
+void savingTables();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
+bool isValidUserID(string userID);
 void clientLogin(string userID);
+void makeClientAccountChanges(Client &user, int option);
 void officialLogin(string userID);
 void adminLogin(string userID);
 
@@ -58,6 +61,16 @@ void initialSetup()
     admin.saveUser();
     official.saveUser();
     house.saveUser();
+}
+
+void savingTables()
+{
+    DataHandler::allTables.accountTable.saveInfo("Tables/AccountTable.txt");
+    DataHandler::allTables.firstNameTable.saveInfo("Tables/FirstNameTable.txt");
+    DataHandler::allTables.lastNameTable.saveInfo("Tables/LastNameTable.txt");
+    DataHandler::allTables.phoneNumTable.saveInfo("Tables/PhoneTable.txt");
+    DataHandler::allTables.addressTable.saveInfo("Tables/AddressTable.txt");
+    DataHandler::allTables.userTable.saveInfo("Tables/UserTable.txt");
 }
 
 //validates the user's input is within a range of options; max possible range is 1-9, for now
@@ -172,8 +185,8 @@ void userLoginReset()
             getline(cin, userID);
             cout << endl;
 
-            vector<string> userLoginInfo = DataHandler::allTables.userTable.returnMappedItems(userID); // {hashedPW, user type} is returned
-            if (userLoginInfo.size() > 0)
+            vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(userID); // {hashedPW, user type, accts...} is returned
+            if (userInfo.size() > 0)
             {
                 cout << "Enter your new password: ";
                 getline(cin, newPassword);
@@ -181,7 +194,7 @@ void userLoginReset()
                 Admin admin; //creating the Automated Admin obj to change the password
                 admin.buildUser("UserData/admin.txt");
                 admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
-                admin.resetPassword(userID, newPassword, userLoginInfo[1]);
+                admin.resetPassword(userID, newPassword);
 
                 User user;
                 user.buildUser("UserData/"+userID+".txt");
@@ -200,6 +213,12 @@ void userLoginReset()
     }
 }
 
+bool isValidUserID(string userID)
+{
+    bool value = (DataHandler::allTables.userTable.returnMappedItems(userID).size() == 0) ? true : false;
+    return value;  //above ternary will return a vect of {} is userID not found, so if size == 0 then userID not found, which means the userID is avaliable
+}
+
 void clientLogin(string userID)
 {
     Client user;
@@ -207,11 +226,126 @@ void clientLogin(string userID)
     cout << "Welcome, " << user.getName() << endl;
     cout << "Last Activity: " << user.getRecentActivity() << endl;
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentDate().ToString());
+    user.setRecentLogin(DateTools().getCurrentDate().ToString()); //since we just logged in, now need to update time
     //Display last login date up here!
 
-    string clientInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] View Account History\n[6] Change Information";
-    cout << clientInterface << endl << "Option: ";
+    string clientInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] Change Information\n[6] Exit";
+    bool wantsToExit = false;
+    
+    while (!wantsToExit)
+    {
+        cout << clientInterface << endl << "Option: ";
+        int initialOption = getUserOption(6);
+        cout << endl;
+
+        switch (initialOption)
+        {
+            case 1:
+            {
+                break;
+            }
+            case 2:
+            {
+                break;
+            }
+            case 3:
+            {
+                break;
+            }
+            case 4:
+            {
+                break;
+            }
+            case 5:
+            {
+                cout << "Which piece of information would you like to change?" << endl;
+                cout << "[1] First Name\n[2] Last Name\n[3] Address\n[4] Phone Number\n[5] Password\n[6] Go Back" << endl;
+                cout << "Option: ";
+                int option = getUserOption(6);
+                if (option != 6)
+                {
+                    cout << endl;
+                    makeClientAccountChanges(user, option);
+                }
+                break;
+            }
+            case 6:
+            {
+                wantsToExit = true;
+                user.saveUser();
+            }
+            cout << endl;
+        }
+    }
+}
+
+
+//Needs Finishing!
+void makeClientAccountChanges(Client &user, int option)
+{
+    switch (option)
+    {
+        case 1: //change first name
+        {
+            string name = "", oldName = user.getName(), lastName = user.getName(), userID = user.getID();
+            oldName = oldName.substr(0, oldName.find(" "));
+            lastName = lastName.substr(lastName.find(" ") + 1, string::npos);
+            cout << "Enter your new first name: ";
+            getline(cin, name);
+            name = name + " " + lastName;
+            user.setName(name);
+            user.setRecentActivity("Changed First Name");
+            user.saveUser();
+
+            //need to reflect changes on all accts and tables as well
+            DataHandler::changeClientFirstName(userID, oldName, name);
+
+            break;
+        }
+        case 2: //change last name
+        {
+            string firstName = user.getName(), name = "", oldName = user.getName(), userID = user.getID();
+            firstName = firstName.substr(0, firstName.find(" "));
+            oldName = oldName.substr(oldName.find(" ") + 1, string::npos);
+            cout << "Enter your new last name: ";
+            getline(cin, name);
+            name = firstName + " " + name;
+            user.setName(name);
+            user.setRecentActivity("Changed Last Name");
+            user.saveUser();
+
+            //make other changes to accts and tables
+            DataHandler::changeClientLastName(userID, oldName, name);
+
+            break;
+        }
+        case 3: //change address
+        {
+            break;
+        }
+        case 4: //change phone number
+        {
+            break;
+        }
+        case 5: //change password
+        {
+            string newPassword = "";
+            cout << "Enter your new password: ";
+            getline(cin, newPassword);
+
+            Admin admin; //creating the Automated Admin obj to change the password
+            admin.buildUser("UserData/admin.txt");
+            admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
+            admin.resetPassword(user.getID(), newPassword);
+            admin.setRecentActivity("Assisted Client Change Password in Settings");
+            admin.saveUser();
+
+            user.setRecentActivity("Password was Reset in Settings");
+            user.saveUser();
+            cout << "Your password has been reset." << endl;
+            break;
+        }
+    }
 }
 
 void officialLogin(string userID)
