@@ -14,6 +14,8 @@ Default User Accounts:
     Admin: admin - password1
     Official: official - password1
     Client: house - password1
+
+    Personal: nayithan - password1, for client testing
 */
 #include <iostream>
 #include <string>
@@ -72,10 +74,11 @@ int main()
         case 2: //reset pw or get userID
         {
             cout << "Connecting you with the Automated Bear Bank Administrator... Connected." << endl;
-            cout << "Do you need help logging into your online account?" << endl << endl;
+            cout << "Do you need help logging into your account?" << endl << endl;
             cout << "[1] Yes, I need help logging in\n[2] No, I was mistaken" << endl << "Option: ";
             int wantsHelp = getUserOption(2);
             cout << endl;
+
             if (wantsHelp == 1)
             {
                 userLoginReset(); //needs finishing work!
@@ -130,7 +133,7 @@ int main()
                 cout << endl;
 
                 //now to create the Client obj
-                Client user(firstName + " " + lastName, userName, EncryptionBox::hash(password), "client");
+                Client user(firstName + " " + lastName, userName, EncryptionBox::hash(password), "client", address, phoneNum);
                 user.setRecentActivity("Just Enrolled!");
                 user.saveUser(); //creates a .txt file record
 
@@ -141,7 +144,9 @@ int main()
                 official.setRecentActivity("Enrolled new user: " + userName);
                 official.saveUser();
 
-                //create initial savings account!
+                //create initial savings account for new client!
+                //don't forget to update all tables with new acct!!
+                //save accts in 'AccountData' folder!
             }
             break;
         }

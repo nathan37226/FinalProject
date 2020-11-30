@@ -1,5 +1,6 @@
 #ifndef DATAHANDLER_H
 #define DATAHANDLER_H
+#include "Client.h"
 
 class DataHandler
 {
@@ -32,6 +33,8 @@ public:
 	void queryAccountHistory(string clientID, string beginning, string ending);
 	static void changeClientFirstName(string userID, string oldName, string newName); //updates the necessary tables to reflect name change
 	static void changeClientLastName(string userID, string oldName, string newName);
+	static void changeClientAddress(string userID, string oldAddress, string newAddress);
+	static void changeClientPhoneNum(string userID, string oldNum, string newNum);
 
 	//login function
 	static string isValidLogin(string userID, string password); //success, returns user type, failure, returns "false"
