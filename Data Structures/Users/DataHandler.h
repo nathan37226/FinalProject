@@ -12,7 +12,9 @@ class DataHandler
 public:
 	DataHandler();
 
+	//All Data Storage
 	static tableSet allTables;
+	vector<AccountType> accountTypeList;
 
 	//login function
 	static string isValidLogin(string userID, string password); //success, returns user type, failure, returns "false"
@@ -28,7 +30,6 @@ public:
 	static bool clientDisplayAccounts(string userID);
 	static vector<string> clientGetAccountList(string userID);
 
-
 	//admin operations
 	static void addOfficialToRecords(string hashedPw, string ID);
 	static void createAccountType(double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
@@ -36,10 +37,10 @@ public:
 	static void alterAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
 
 	//official operations
-	void addClientAccountToRecords(Client &user, Account &acct);
+	static void addClientAccountToRecords(Client &user, Account &acct);
 
 	//AccountType operations
-	vector<AccountType> accountTypeList;
+	
 };
 
 tableSet DataHandler::allTables = tableSet(); //static initialization

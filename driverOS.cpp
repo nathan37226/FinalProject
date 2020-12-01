@@ -20,6 +20,8 @@ void officialSearch(Official &officialUser);
 
 void adminLogin(string userID);
 void adminModifyOfficial(Admin &admin);
+void adminModifyAccountTypes(Admin &admin);
+void adminViewTableStats(Admin &admin);
 void adminRetrieveUserID(Admin &admin);
 
 
@@ -93,10 +95,10 @@ void savingTables()
     DataHandler::allTables.userTable.saveInfo("Tables/UserTable.txt");
 }
 
-//validates the user's input is within a range of options; max possible range is 1-9, for now
+//validates the user's input is within a range of options; max possible range is 1-99, for now
 bool isValidOption(string input, int upperBound)
 {
-    if (input.length() > 1)
+    if (input.length() > 2)
     {
         return false;
     }
@@ -104,9 +106,15 @@ bool isValidOption(string input, int upperBound)
     {
         try
         {
-            int option = stoi(input); //since only 1 char is ensured, if 'a' is entered, will throw an error to catch block
-            bool returnValue = ( (option <= upperBound) && (option >= 1) ) ? true : false;
-            return returnValue;
+            int option = stoi(input); //ensures input like a1 will fail
+
+            if ( (input.length()) == to_string(option).length() ) //this comparison catches inputs like 1a, where they start with an int but not all is an int
+            {
+                bool returnValue = ( (option <= upperBound) && (option >= 1) ) ? true : false;
+                return returnValue;
+            }
+            
+            return false;
         }
 
         catch (...)
@@ -116,7 +124,7 @@ bool isValidOption(string input, int upperBound)
     }   
 }
 
-//upperBound is the max option possible, must be 1-9
+//upperBound is the max option possible, must be 1-99
 int getUserOption(int upperBound)
 {
     string userInput = "";
@@ -750,13 +758,13 @@ void adminLogin(string userID)
     cout << "Last Login: " << admin.getRecentLogin() << endl << endl;
     admin.setRecentLogin(DateTools().getCurrentTime());
 
-    string adminInterface = "[1] Modify Official Account\n[2] Modify Account Types\n[3] Retrieve a User ID\n[4] Change a Password\n[5] Log Out";
+    string adminInterface = "[1] Modify Official Account\n[2] Modify Account Types\n[3] Retrieve a User ID\n[4] Change a Password\n[5] View Table Statistics\n[6] Log Out";
     bool wantsToExit = false;
 
     while(!wantsToExit)
     {
         cout << adminInterface << endl << "Option: ";
-        int initialOption = getUserOption(5);
+        int initialOption = getUserOption(6);
         cout << endl;
 
         switch (initialOption)
@@ -768,6 +776,7 @@ void adminLogin(string userID)
             }
             case 2: //Modify Account Types
             {
+                adminModifyAccountTypes(admin);
                 break;
             }
             case 3: //Retrieve User ID
@@ -779,7 +788,12 @@ void adminLogin(string userID)
             {
                 break;
             }
-            case 5: //Log Out
+            case 5: //view statistics
+            {
+                adminViewTableStats(admin);
+                break;
+            }
+            case 6: //Log Out
             {
                 wantsToExit = true;
                 admin.saveUser();
@@ -900,6 +914,92 @@ void adminModifyOfficial(Admin &admin)
                 break;
             }
         }
+    }
+}
+
+void adminModifyAccountTypes(Admin &admin)
+{
+    string modifyAcctTypeInterface = "[1] View All Account Types\n[2] Create New Account Type\n[3] Delete Existing Account Type\n[4] Go Back";
+    bool wantsToExit = false;
+
+    while (!wantsToExit)
+    {
+        cout << modifyAcctTypeInterface << endl << "Option: ";
+        int modifyAcctTypeOption = getUserOption(4);
+        cout << endl;
+        
+        switch (modifyAcctTypeOption)
+        {
+            case 1: //View all
+            {
+                break;
+            }
+            case 2: //Create new
+            {
+                break;
+            }
+            case 3: //Delete existing
+            {
+                break;
+            }
+            case 4:
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
+    }
+}
+
+void adminViewTableStats(Admin &admin)
+{
+    string tableStatsInterface = "[1] View User Table Statistics\n[2] View First Name Table Statistics\n[3] View Last Name Table Statistics\n[4] View Phone Number Table Statistics\n[5] View Address Table Statistics\n[6] View Account Table Statistics\n[7] Go Back";
+    bool wantsToExit = false;
+
+    while (!wantsToExit)
+    {
+        cout << tableStatsInterface << endl << "Option: ";
+        int tableStatsOption = getUserOption(7);
+        
+        switch (tableStatsOption)
+        {
+            case 1:
+            {
+                DataHandler::allTables.userTable.getStatistics();
+                break;
+            }
+            case 2: //First name
+            {
+                DataHandler::allTables.firstNameTable.getStatistics();
+                break;
+            }
+            case 3: //Last name
+            {
+                DataHandler::allTables.lastNameTable.getStatistics();
+                break;
+            }
+            case 4: //Phone num
+            {
+                DataHandler::allTables.phoneNumTable.getStatistics();
+                break;
+            }
+            case 5: //Address
+            {
+                DataHandler::allTables.addressTable.getStatistics();
+                break;
+            }
+            case 6: //Accounts
+            {
+                DataHandler::allTables.accountTable.getStatistics();
+                break;
+            }
+            case 7: //Go back
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
+        cout << endl;
     }
 }
 

@@ -1,4 +1,3 @@
-
 DataHandler::DataHandler()
 {
 	;

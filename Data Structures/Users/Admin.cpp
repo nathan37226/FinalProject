@@ -70,4 +70,3 @@ void Admin::deleteOfficial(Official officialUser)
 	clearFile("UserData/" + officialUser.getID() + ".txt"); //clears all record of official's data
 	DataHandler::allTables.userTable.del(officialUser.getID()); //deletes entire node
 }
-
