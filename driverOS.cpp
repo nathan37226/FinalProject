@@ -842,9 +842,7 @@ void adminModifyOfficial(Admin &admin)
                     {
                         case 1: //Set active
                         {
-                            officialUser.setState("active");
-                            officialUser.setRecentActivity("Set Active by: " + admin.getID());
-                            officialUser.saveUser();
+                            admin.setOfficialActive(officialUser);
                             admin.setRecentActivity("Set Official Active: " + officialUserID);
                             admin.saveUser();
                             cout << officialUserID << " has been set to: Active" << endl;
@@ -853,9 +851,7 @@ void adminModifyOfficial(Admin &admin)
                         }
                         case 2: //Set inactive
                         {
-                            officialUser.setState("inactive");
-                            officialUser.setRecentActivity("Locked out by: " + admin.getID());
-                            officialUser.saveUser();
+                            admin.setOfficialInactive(officialUser);
                             admin.setRecentActivity("Locked out Official: " + officialUserID);
                             admin.saveUser();
                             cout << officialUserID << " has been set to: Inactive" << endl;
@@ -864,6 +860,11 @@ void adminModifyOfficial(Admin &admin)
                         }
                         case 3: //Delete official
                         {
+                            admin.deleteOfficial(officialUser);
+                            admin.setRecentActivity("Deleted Official: " + officialUserID);
+                            admin.saveUser();
+                            cout << officialUserID << " has been deleted" << endl;
+                            cout << endl;
                             break;
                         }
                         case 4: //Go back

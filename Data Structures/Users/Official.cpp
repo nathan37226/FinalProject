@@ -58,29 +58,41 @@ void Official::buildUser(string filename)
 	EncryptionBox::positionInFile = 0;
 	ifstream inFile;
 	inFile.open(filename);
-	if (inFile)
-	{
-		string line = "";
-		vector<string> userInfo = {};
 
-		while (getline(inFile, line))
+	try
+	{	
+		if (inFile)
 		{
-			line = line.substr(0, line.rfind("\r")); //removing carriage return from .txt file
-			line = EncryptionBox::decrypt(line);
-			userInfo.push_back(line);
-		}
+			string line = "";
+			vector<string> userInfo = {};
 
-		userID = userInfo[0]; //setting user attributes
-		userName = userInfo[1];
-		userPassword = userInfo[2];
-		userType = userInfo[3];
-		mostRecentLogin = userInfo[4];
-		recentActivity = userInfo[5];
-		officialState = userInfo[6];
+			while (getline(inFile, line))
+			{
+				line = line.substr(0, line.rfind("\r")); //removing carriage return from .txt file
+				line = EncryptionBox::decrypt(line);
+				userInfo.push_back(line);
+			}
+			if (userInfo.size() < 7)
+			{
+				throw 1;
+			}
+
+			userID = userInfo[0]; //setting user attributes
+			userName = userInfo[1];
+			userPassword = userInfo[2];
+			userType = userInfo[3];
+			mostRecentLogin = userInfo[4];
+			recentActivity = userInfo[5];
+			officialState = userInfo[6];
+		}
+		else
+		{
+			cout << "Could not read from file at: " << endl << filename << endl;
+		}
 	}
-	else
+	catch (...) //this is for the case that the default Official, Automated Official, gets deleted for some reason
 	{
-		cout << "Could not read from file at: " << endl << filename << endl;
+		recentActivity = ""; //everything else is preset in the initial login function in driver
 	}
 	
 	inFile.close();
