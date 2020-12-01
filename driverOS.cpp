@@ -16,7 +16,7 @@ void makeClientAccountChanges(Client &user, int option);
 void helpClientAccessAccount(Client &user, int option, vector<string> acctList);
 
 void officialLogin(string userID);
-void openAccounts(Official &user);
+void openAccounts(Official &officialUser);
 
 void adminLogin(string userID);
 
@@ -328,7 +328,7 @@ void clientLogin(string userID)
             }
             case 4: //open new acct
             {
-                string acctType = "";
+                string acctType = "a cool account type";
                 //Make sure to display all types of accts currently offered
                 //Upon user choosing, send request off to an official for confirmation!
                 //have all officials be able to access this list of requests!
@@ -337,7 +337,7 @@ void clientLogin(string userID)
 
                 DataHandler::clientRequestNewAccount(userID, acctType);
                 user.setRecentActivity("Requested New Account: " + acctType);
-                cout << "Please be aware that a Bear Bank Official may take several business days to review this request." << endl;
+                cout << "Please be aware that a Bear Bank Official may take several business days to review this request." << endl << endl;
                 break;
             }
             case 5: //exit
@@ -485,6 +485,7 @@ void officialLogin(string userID)
     {
         cout << officialInterface << endl << "Option: ";
         int initialOption = getUserOption(6);
+        cout << endl;
 
         switch (initialOption)
         {
@@ -519,7 +520,7 @@ void officialLogin(string userID)
     }
 }
 
-void openAccounts(Official &user)
+void openAccounts(Official &officialUser)
 {
     string openAcctInterface = "[1] Open a new Account\n[2] View User Requested Accounts\n[3] Go Back";
     string requestedAcctInterface = "[1] Approve Request\n[2] Deny Request\n[3] Go Back";
@@ -529,6 +530,7 @@ void openAccounts(Official &user)
     {
         cout << openAcctInterface << endl << "Option: ";
         int mainOption = getUserOption(3);
+        cout << endl;
         
         switch (mainOption)
         {
@@ -546,44 +548,74 @@ void openAccounts(Official &user)
                 queue.buildQueue();
                 string request = "", userID = "", acctType = "";
                 bool doneReviewing = false;
-    
-                while (!doneReviewing)
+
+                if (queue.isEmpty())
                 {
-                    queue.peekFirst(request); //request takes on first item in queues value, queue retains order
-                    userID = request.substr(0, request.find(" ")); //request is formatted: "<userID>  requests a new: <acctType>"
-                    acctType = request.substr(request.find(":") + 2, string::npos); //finds the : inside "a new: " and gets whatever is after
-                    Client user;
-                    user.buildUser("UserData/" + userID + ".txt");
-
-                    cout << requestedAcctInterface << endl << "Option: ";
-                    int reviewOption = getUserOption(3);
-
-                    switch (reviewOption)
+                    cout << "There are no account openning requests to view!" << endl << endl;
+                    queue.saveQueue();
+                    break;
+                }
+                else
+                {
+                    while (!doneReviewing)
                     {
-                        case 1: //Approve
-                        {  
-                            string acctNum = "", dummyStr = "";
-                            //create a new acct obj of specified type
-                            //Account newAccount;
-                            //save new acct obj to create a record in files
-                            //update acctNum!
+                        queue.peekFirst(request); //request takes on first item in queues value, queue retains order
+                        userID = request.substr(0, request.find(" ")); //request is formatted: "<userID>  requests a new: <acctType>"
+                        acctType = request.substr(request.find(":") + 2, string::npos); //finds the : inside "a new: " and gets whatever is after
+                        Client clientUser;
+                        clientUser.buildUser("UserData/" + userID + ".txt");
 
-                            //DataHandler::addClientAccountToRecords(user, newAccount); //updates all tables with new info!
-                            user.setRecentActivity("Request for: " + acctType + " was approved!");
-                            user.saveUser();
-                            queue.dequeue(dummyStr); //dequeue needs a string& passed, so this just allows a value to be removed
-                            break;
-                        }
-                        case 2: //Deny
+                        cout << request << endl;
+
+                        cout << requestedAcctInterface << endl << "Option: ";
+                        int reviewOption = getUserOption(3);
+
+                        switch (reviewOption)
                         {
-                            string dummyStr = "";
-                            queue.dequeue(dummyStr);
-                            break;
+                            case 1: //Approve
+                            {  
+                                string acctNum = "", dummyStr = "";
+                                //create a new acct obj of specified type
+                                //Account newAccount;
+                                //save new acct obj to create a record in files
+                                //update acctNum!
+
+                                //DataHandler::addClientAccountToRecords(user, newAccount); //updates all tables with new info!
+                                clientUser.setRecentActivity("Request for: " + acctType + " was approved!");
+                                clientUser.saveUser();
+                                officialUser.setRecentActivity("Approved Request from: " + userID + " for: " + acctType);
+                                officialUser.saveUser();
+                                queue.dequeue(dummyStr); //dequeue needs a string& passed, so this just allows a value to be removed
+
+                                cout << endl;
+                                break;
+                            }
+                            case 2: //Deny
+                            {
+                                string dummyStr = "";
+                                clientUser.setRecentActivity("Request for: " + acctType + " was denied.");
+                                clientUser.saveUser();
+                                officialUser.setRecentActivity("Denied Request from: " + userID + " for: " + acctType);
+                                officialUser.saveUser();
+                                queue.dequeue(dummyStr);
+
+                                cout << endl;
+                                break;
+                            }
+                            case 3: //Go Back
+                            {
+                                doneReviewing = true;
+                                //save queue back to file
+                                queue.saveQueue();
+                                cout << endl;
+                                break;
+                            }
                         }
-                        case 3: //Go Back
+                        if (queue.isEmpty()) //break condiditon while reviewing
                         {
+                            cout << "There are no account openning requests to view!" << endl << endl;
                             doneReviewing = true;
-                            //save queue back to file
+                            queue.saveQueue();
                             break;
                         }
                     }
