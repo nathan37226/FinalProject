@@ -9,16 +9,14 @@ using namespace std;
 
 int main()
 {
-    /*
-    cout << "Enter start date in the format: 'MM/DD/YYYY'" << endl;
-    string date;
-    cin >> date;
-    cout << Account::displayHistoryHelper(date + " 00:00:00") << endl;
-    
-
-    Account a;
-    a.setAccountNumber("012345678");
-    cout << a.saveToFile() << endl;*/
+    AccountType checkingAccount("checking", 0.0, 0.0, 0.0, -50.0);
+    AccountType savingsAccount("savings", 0.0, 0.0, 2.0, 0.0);
+    AccountType CD("CD", 0.0, 0.0, 5.0, 0.0);
+    AccountType checkingAccount2("checking");
+    cout << AccountType::getDisplayNum(checkingAccount2.getMinimumBalance()) << endl;
+    //Account a("checking","Dominic","Zucchini","417-551-2422","1234 N Street Place Springfield, MO, 65805",0,0.0);
+    //a.setAccountNumber("012345678");
+    //cout << a.saveToFile() << endl;
 }
 
 /**********************************************************
@@ -28,13 +26,52 @@ double AccountType::penaltyFee;
 /**********************************************************
 / Constructor
 *//////////////////////////////////////////////////////////
-AccountType::AccountType(double monFee, double servFee, double interestR, double minBalance, string acctTypeName)
+AccountType::AccountType(string acctTypeName, double monFee, double servFee, double interestR, double minBalance)
 {
-    monthlyFee = monFee;
-    serviceFee = servFee;
-    interestRate = interestR;
-    minimumBalance = minBalance;
-    accountTypeName = acctTypeName;
+    if(acctTypeName == "blank")
+    {
+        monthlyFee = 0.0;
+        serviceFee = 0.0;
+        interestRate = 0.0;
+        minimumBalance = 0.0;
+        accountTypeName = "";
+    }
+    else
+    {
+        ifstream inFile;
+        //attempt to open account type
+        inFile.open("AccountData/"+acctTypeName+".txt");
+        if(inFile)
+        {
+            string line;
+            getline(inFile,line);
+            monthlyFee = stod(line.substr(0,line.find("\r")));
+            getline(inFile,line);
+            serviceFee = stod(line.substr(0,line.find("\r")));
+            getline(inFile,line);
+            interestRate = stod(line.substr(0,line.find("\r")));
+            getline(inFile,line);
+            minimumBalance = stod(line.substr(0,line.find("\r")));
+            accountTypeName = acctTypeName;
+            inFile.close();
+        }
+        else // create new account type
+        {
+            inFile.close();
+            monthlyFee = monFee;
+            serviceFee = servFee;
+            interestRate = interestR;
+            minimumBalance = minBalance;
+            accountTypeName = acctTypeName;
+            // save account type to file
+            ofstream outFile("AccountData/"+acctTypeName+".txt", ofstream::trunc);
+            outFile << getDisplayNum(monFee) << endl;
+            outFile << getDisplayNum(servFee) << endl;
+            outFile << getDisplayNum(interestR) << endl;
+            outFile << getDisplayNum(minBalance) << endl;
+            outFile.close();
+        }
+    }
 }
 /**********************************************************
 / Setters
@@ -136,6 +173,22 @@ double AccountType::roundNum(double value, int precision)
 }
 
 /**********************************************************
+/ getDisplayNum (public) convert double to string for
+/ displaying to console and writing to file
+/
+/ parameters:
+/   input : double
+/
+/ returns:
+/   string
+*//////////////////////////////////////////////////////////
+string AccountType::getDisplayNum(double input)
+{
+    string num = to_string(input);
+    return num.substr(0, num.length() - 4); //cuts off the last 0000 of the double
+}
+
+/**********************************************************
 / Account
 *//////////////////////////////////////////////////////////
 const string Account::routingNumber = "133769420";
@@ -144,23 +197,23 @@ string Account::nextSavingsAccountNumber;
 string Account::nextCDAccountNumber;
 string Account::nextUniqueAccountNumber;
 /**********************************************************
-/ Constructor for new account
+/ Constructor for new account (account type must already exist)
 *//////////////////////////////////////////////////////////
-Account::Account(AccountType &acctType, string acctFirstName, string acctLastName, string acctPhoneNumber, string acctAddress, time_t mDate, double acctBalance)
-: AccountType(acctType.getMonthlyFee(), acctType.getServiceFee(), acctType.getInterestRate(), acctType.getMinimumBalance(), acctType.getAccountTypeName())
+Account::Account(string acctTypeName, string acctFirstName, string acctLastName, string acctPhoneNumber, string acctAddress, time_t mDate, double acctBalance)
+: AccountType(acctTypeName)
 {
     // Set Account Number
-    if(acctType.getAccountTypeName() == "checking")
+    if(acctTypeName == "checking")
     {
         accountNumber = nextCheckingAccountNumber;
         nextCheckingAccountNumber = incrementAcctNum(nextCheckingAccountNumber);
     }
-    else if(acctType.getAccountTypeName() == "savings")
+    else if(acctTypeName == "savings")
     {
         accountNumber = nextSavingsAccountNumber;
         nextSavingsAccountNumber = incrementAcctNum(nextSavingsAccountNumber);
     }
-    else if(acctType.getAccountTypeName() == "CD")
+    else if(acctTypeName == "CD")
     {
         accountNumber = nextCDAccountNumber;
         nextCDAccountNumber = incrementAcctNum(nextCDAccountNumber);
@@ -196,9 +249,9 @@ Account::Account(AccountType &acctType, string acctFirstName, string acctLastNam
 /**********************************************************
 / Constructor for existing account
 *//////////////////////////////////////////////////////////
-Account::Account(string acctNum)
+Account::Account(string acctNum) : AccountType("blank")
 {
-    //buildFromFile(acctNum);
+    buildFromFile(acctNum);
 }
 /**********************************************************
 / Setters
@@ -467,22 +520,6 @@ time_t Account::displayHistoryHelper(string date)
 }
 
 /**********************************************************
-/ getDisplayNum (public) convert double to string for
-/ displaying to console and writing to file
-/
-/ parameters:
-/   input : double
-/
-/ returns:
-/   string
-*//////////////////////////////////////////////////////////
-string Account::getDisplayNum(double input)
-{
-    string num = to_string(input);
-    return num.substr(0, num.length() - 4); //cuts off the last 0000 of the double
-}
-
-/**********************************************************
 / saveToFile (private) save the account to file. Returns
 / a string saying what happened.
 /
@@ -493,7 +530,8 @@ string Account::getDisplayNum(double input)
 /   string
 *//////////////////////////////////////////////////////////
 string Account::saveToFile()
-{
+{   
+    EncryptionBox::positionInFile = 0;
     ofstream outFile;
 
     outFile.open("AccountData/"+accountNumber+".txt", ofstream::trunc); // attempt to open file with intent to overwirite existing data
@@ -517,6 +555,69 @@ string Account::saveToFile()
     else
         outFile << EncryptionBox::encrypt("False") << endl;
     
+    // Store accountType data (must use getters since inherited atributes are private)
+    outFile << EncryptionBox::encrypt(getDisplayNum(getMonthlyFee())) << endl;
+    outFile << EncryptionBox::encrypt(getDisplayNum(getServiceFee())) << endl;
+    outFile << EncryptionBox::encrypt(getDisplayNum(getInterestRate())) << endl;
+    outFile << EncryptionBox::encrypt(getDisplayNum(getMinimumBalance())) << endl;
+    outFile << EncryptionBox::encrypt(getAccountTypeName()) << endl;
+
 
     return "Saved";
+}
+
+void Account::buildFromFile(string acctNum)
+{
+    ifstream inFile;
+    string line;
+    inFile.open("AccountData/"+acctNum+".txt");
+    if(inFile)
+    {
+        getline(inFile, line);
+        accountNumber = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        getline(inFile, line);
+        //routingNumber = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        getline(inFile, line);
+        accountHolderFirstName = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        getline(inFile, line);
+        accountHolderLastName = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        getline(inFile, line);
+        accountHolderPhoneNumber = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        getline(inFile, line);
+        accountHolderAddress = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        getline(inFile, line);
+        openDate = stoi(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        getline(inFile, line);
+        closeDate = stoi(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        getline(inFile, line);
+        maturityDate = stoi(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        getline(inFile, line);
+        accountBalance = stod(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        getline(inFile, line);
+        if(EncryptionBox::decrypt(line.substr(0,line.find("\r"))) == "True")
+            restrictedStatus = true;
+        else
+            restrictedStatus = false;
+        getline(inFile, line);
+        if(EncryptionBox::decrypt(line.substr(0,line.find("\r"))) == "True")
+            openStatus = true;
+        else
+            openStatus = false;
+
+        // defind accountType attributes (must use setters since attributes are inaccessible)
+        getline(inFile, line);
+        setMonthlyFee(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
+        getline(inFile, line);
+        setServiceFee(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
+        getline(inFile, line);
+        setInterestRate(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
+        getline(inFile, line);
+        setMinimumBalance(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
+        getline(inFile, line);
+        setAccountTypeName(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+    }
+    else
+    {
+        cout << "File not found." << endl;
+    }
 }

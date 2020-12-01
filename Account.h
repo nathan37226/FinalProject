@@ -19,7 +19,10 @@ protected:
     double roundNum(double amount, int precision);
 
 public:
-    AccountType(double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0, string acctTypeName = "");
+    // Constructor for new account type
+    AccountType(string acctTypeName, double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0);
+    // Constructor for existing account type
+    //AccountType(string acctTypeName);
     void setMonthlyFee(double fee);
     double getMonthlyFee();
     void setServiceFee(double fee);
@@ -32,6 +35,7 @@ public:
     double getMinimumBalance();
     void setAccountTypeName(string name);
     string getAccountTypeName();
+    static string getDisplayNum(double input);
 
 };
 
@@ -63,7 +67,7 @@ private:
 
 public:
     // Constructor for new account
-    Account(AccountType &acctType, string acctFirstName = "", string acctLastName = "", string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0);
+    Account(string acctTypeName, string acctFirstName = "", string acctLastName = "", string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0);
     // Constructor for existing account
     Account(string acctNum);
     //Account(string accountNumber);
@@ -94,7 +98,7 @@ public:
     void displayHistory(string beginning, string ending);
     static time_t displayHistoryHelper(string date);
     string saveToFile();
-    static string getDisplayNum(double input);
+    void buildFromFile(string acctNum);
 
 };
 #endif
