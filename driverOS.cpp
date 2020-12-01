@@ -219,7 +219,7 @@ void userLoginReset()
                     user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
                     user.setRecentActivity("Password was Reset by the Automated System Administrator");
                     user.saveUser();
-                    cout << "Your password has been reset." << endl;
+                    cout << "Your password has been reset." << endl << endl;
                 }
                 else if (userInfo[1] == "official")
                 {
@@ -228,11 +228,11 @@ void userLoginReset()
                     user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
                     user.setRecentActivity("Password was Reset by the Automated System Administrator");
                     user.saveUser();
-                    cout << "Your password has been reset." << endl;
+                    cout << "Your password has been reset." << endl << endl;
                 }
                 else
                 {
-                    cout << "Admin Accounts Must Manually Reset Their Password." << endl;
+                    cout << "Admin Accounts Must Manually Reset Their Password." << endl << endl;
                 }
             }
             else
@@ -268,7 +268,7 @@ void clientLogin(string userID)
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
     user.setRecentLogin(DateTools().getCurrentTime()); //since we just logged in, now need to update time
 
-    string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Open New Account\n[5] Exit";
+    string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Open New Account\n[5] Log Out";
     bool wantsToExit = false;
     
     while (!wantsToExit)
@@ -341,7 +341,7 @@ void clientLogin(string userID)
                 cout << "Please be aware that a Bear Bank Official may take several business days to review this request." << endl << endl;
                 break;
             }
-            case 5: //exit
+            case 5: //Log out
             {
                 wantsToExit = true;
                 user.saveUser();
@@ -482,7 +482,7 @@ void officialLogin(string userID)
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
     user.setRecentLogin(DateTools().getCurrentTime());
 
-    string officialInterface = "[1] Open Account\n[2] Close Account\n[3] Deposit into Account\n[4] Withdraw from Account\n[5] Search for Accounts\n[6] Exit";
+    string officialInterface = "[1] Open Account\n[2] Close Account\n[3] Deposit into Account\n[4] Withdraw from Account\n[5] Search for Accounts\n[6] Log Out";
     bool wantsToExit = false;
     
     while (!wantsToExit)
