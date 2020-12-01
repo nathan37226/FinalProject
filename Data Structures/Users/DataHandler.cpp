@@ -109,6 +109,8 @@ void DataHandler::queryAccountHistory(string clientID, string beginning, string 
 }
 */
 
+
+
 string DataHandler::isValidLogin(string userID, string password)
 {
 	vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(userID);   //userInfo is formatted: username -> {hashedPassword, userType, accts...}
@@ -133,6 +135,10 @@ string DataHandler::isValidLogin(string userID, string password)
 		}
 	}
 }
+
+/************************************************
+Functs called by Client
+************************************************/
 
 void DataHandler::changeClientFirstName(string userID, string oldName, string newName)
 {
@@ -212,4 +218,29 @@ void DataHandler::changeClientPhoneNum(string userID, string oldNum, string newN
 		allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
 		*/
 	 }
+}
+
+void DataHandler::clientRequestNewAccount(string userID, string acctType)
+{
+	AccountQueue queue;
+	queue.buildQueue(); //preserves encryption, o.w. just append to .txt file
+	string newEntry =  userID + " requests a new: " + acctType;
+	queue.enqueue(newEntry);
+	queue.saveQueue(); //rewrites textfile with new entry
+}
+
+/************************************************
+Functs called by Official
+************************************************/
+
+void DataHandler::addClientAccountToRecords(Client &user, Account &acct)
+{
+	allTables.firstNameTable.insertWithItem(acct.getAccountHolderFirstName(), acct.getAccountNumber());
+	allTables.lastNameTable.insertWithItem(acct.getAccountHolderLastName(), acct.getAccountNumber());
+	allTables.addressTable.insertWithItem(user.getAddress(), acct.getAccountNumber());
+	allTables.phoneNumTable.insertWithItem(user.getPhoneNum(), acct.getAccountNumber());
+	allTables.userTable.insertWithItem(user.getID(), acct.getAccountNumber());
+
+	//accountEntry newEntry(acct.getAccountNumber(), acct.getAccountInfo()); //implemenent getAcctInfo later on!
+	//allTables.accountTable.insert(newEntry);
 }

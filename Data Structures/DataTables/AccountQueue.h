@@ -121,7 +121,7 @@ void AccountQueue::buildQueue()
     }
     else
     {
-        cout << "Could not save to file at: \nAccountData/RequestedAccounts.txt" << endl;
+        //cout << "Could not save to file at: \nAccountData/RequestedAccounts.txt" << endl;
     }
 }
 

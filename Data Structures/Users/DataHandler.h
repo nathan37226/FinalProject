@@ -19,7 +19,8 @@ public:
 	void alterAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
 
 	//official operation
-	void openMemberAccount(string accountType);
+	void addClientAccountToRecords(Client &user, Account &acct);
+
 	bool closeMemberAccount(string accountNumber);
 	bool depositIntoAccount(string accountNumber, double amount);
 	bool withdrawlFromAccount(string accountNumber, double amount);
@@ -35,6 +36,7 @@ public:
 	static void changeClientLastName(string userID, string oldName, string newName);
 	static void changeClientAddress(string userID, string oldAddress, string newAddress);
 	static void changeClientPhoneNum(string userID, string oldNum, string newNum);
+	static void clientRequestNewAccount(string userID, string acctType);
 
 	//login function
 	static string isValidLogin(string userID, string password); //success, returns user type, failure, returns "false"

@@ -328,11 +328,16 @@ void clientLogin(string userID)
             }
             case 4: //open new acct
             {
+                string acctType = "";
                 //Make sure to display all types of accts currently offered
                 //Upon user choosing, send request off to an official for confirmation!
                 //have all officials be able to access this list of requests!
                 //Each request needs: UserID requesting and acct type
                 //Upon accpeting request or denying request for new acct, update client recent activity message to display the choice
+
+                DataHandler::clientRequestNewAccount(userID, acctType);
+                user.setRecentActivity("Requested New Account: " + acctType);
+                cout << "Please be aware that a Bear Bank Official may take several business days to review this request." << endl;
                 break;
             }
             case 5: //exit
@@ -359,7 +364,6 @@ void makeClientAccountChanges(Client &user, int option)
             name = name + " " + lastName;
             user.setName(name);
             user.setRecentActivity("Changed First Name");
-            user.saveUser();
 
             //need to reflect changes on all accts and tables as well
             DataHandler::changeClientFirstName(userID, oldName, name); //needs finishing
@@ -378,7 +382,6 @@ void makeClientAccountChanges(Client &user, int option)
             name = firstName + " " + name;
             user.setName(name);
             user.setRecentActivity("Changed Last Name");
-            user.saveUser();
 
             //changing name inside the tables
             DataHandler::changeClientLastName(userID, oldName, name); //needs finishing
@@ -394,7 +397,6 @@ void makeClientAccountChanges(Client &user, int option)
             getline(cin, newAddress);
             user.setAddress(newAddress);
             user.setRecentActivity("Changed Address");
-            user.saveUser();
 
             //changing address in table
             DataHandler::changeClientAddress(user.getID(), oldAddress, newAddress); //needs finishing
@@ -410,7 +412,6 @@ void makeClientAccountChanges(Client &user, int option)
             getline(cin, newNum);
             user.setAddress(newNum);
             user.setRecentActivity("Changed Phone Number");
-            user.saveUser();
 
             //changing address in table
             DataHandler::changeClientPhoneNum(user.getID(), oldNum, newNum); //needs finishing
@@ -427,7 +428,6 @@ void makeClientAccountChanges(Client &user, int option)
             admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
             admin.resetPassword(user.getID(), newPassword);
             admin.setRecentActivity("Assisted Client '" + user.getID() + "' Change Password in Settings");
-            admin.saveUser();
 
             user.setRecentActivity("Password was Reset in Settings");
             user.saveUser();
@@ -435,6 +435,7 @@ void makeClientAccountChanges(Client &user, int option)
             break;
         }
     }
+    user.saveUser();
 }
 
 //Needs Finishing!
@@ -541,22 +542,42 @@ void openAccounts(Official &user)
             }
             case 2: //View acct request queue
             {
+                AccountQueue queue;
+                queue.buildQueue();
+                string request = "", userID = "", acctType = "";
                 bool doneReviewing = false;
-                //build queue obj
-                //display first obj in queue
+    
                 while (!doneReviewing)
                 {
+                    queue.peekFirst(request); //request takes on first item in queues value, queue retains order
+                    userID = request.substr(0, request.find(" ")); //request is formatted: "<userID>  requests a new: <acctType>"
+                    acctType = request.substr(request.find(":") + 2, string::npos); //finds the : inside "a new: " and gets whatever is after
+                    Client user;
+                    user.buildUser("UserData/" + userID + ".txt");
+
                     cout << requestedAcctInterface << endl << "Option: ";
                     int reviewOption = getUserOption(3);
 
                     switch (reviewOption)
                     {
                         case 1: //Approve
-                        {
+                        {  
+                            string acctNum = "", dummyStr = "";
+                            //create a new acct obj of specified type
+                            //Account newAccount;
+                            //save new acct obj to create a record in files
+                            //update acctNum!
+
+                            //DataHandler::addClientAccountToRecords(user, newAccount); //updates all tables with new info!
+                            user.setRecentActivity("Request for: " + acctType + " was approved!");
+                            user.saveUser();
+                            queue.dequeue(dummyStr); //dequeue needs a string& passed, so this just allows a value to be removed
                             break;
                         }
                         case 2: //Deny
                         {
+                            string dummyStr = "";
+                            queue.dequeue(dummyStr);
                             break;
                         }
                         case 3: //Go Back
@@ -567,7 +588,7 @@ void openAccounts(Official &user)
                         }
                     }
                 }
-                
+
                 break;
             }
             case 3: //Go back
@@ -577,13 +598,12 @@ void openAccounts(Official &user)
             }
         }
     }
-
 }
 
 
 
 /************************************************
-Start of Client Login
+Start of Admin Login
 ************************************************/
 
 
