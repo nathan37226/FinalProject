@@ -8,19 +8,20 @@ void initialSetup();
 void savingTables();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
-
 void userLoginReset();
 bool isValidUserID(string userID);
+
 void clientLogin(string userID);
-void makeClientAccountChanges(Client &user, int option);
-void helpClientAccessAccount(Client &user, int option, vector<string> acctList);
+void clientMakeAccountChanges(Client &user, int option);
+void clientHelpAccessAccount(Client &user, int option, vector<string> acctList);
 
 void officialLogin(string userID);
-void openAccounts(Official &officialUser);
+void officialOpenAccounts(Official &officialUser);
 void officialSearch(Official &officialUser);
 
 void adminLogin(string userID);
 void adminModifyOfficial(Admin &admin);
+void adminRetrieveUserID(Admin &admin);
 
 
 /************************************************
@@ -304,7 +305,7 @@ void clientLogin(string userID)
                     
                     if (accountInterfaceOption != 5)
                     {
-                        helpClientAccessAccount(user, accountInterfaceOption, acctList);
+                        clientHelpAccessAccount(user, accountInterfaceOption, acctList);
                     }
                 }
                 break;
@@ -324,7 +325,7 @@ void clientLogin(string userID)
                 if (option != 6)
                 {
                     cout << endl;
-                    makeClientAccountChanges(user, option);
+                    clientMakeAccountChanges(user, option);
                 }
                 cout << endl;
                 break;
@@ -353,7 +354,7 @@ void clientLogin(string userID)
 }
 
 //Needs Finishing!
-void makeClientAccountChanges(Client &user, int option)
+void clientMakeAccountChanges(Client &user, int option)
 {
     switch (option)
     {
@@ -445,7 +446,7 @@ void makeClientAccountChanges(Client &user, int option)
 }
 
 //Needs Finishing!
-void helpClientAccessAccount(Client &user, int option, vector<string> acctList)
+void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
 {
     switch (option)
     {
@@ -504,7 +505,7 @@ void officialLogin(string userID)
             {
                 case 1: //Open acct - look at queue or just open new acct for specified user
                 {
-                    openAccounts(user); //abstracted due to needed while loop
+                    officialOpenAccounts(user); //abstracted due to needed while loop
                     break;
                 }
                 case 2: //Close acct
@@ -544,7 +545,7 @@ void officialLogin(string userID)
     }
 }
 
-void openAccounts(Official &officialUser)
+void officialOpenAccounts(Official &officialUser)
 {
     string openAcctInterface = "[1] Open a new Account\n[2] View User Requested Accounts\n[3] Go Back";
     string requestedAcctInterface = "[1] Approve Request\n[2] Deny Request\n[3] Go Back";
@@ -777,6 +778,7 @@ void adminLogin(string userID)
             }
             case 3: //Retrieve User ID
             {
+                adminRetrieveUserID(admin);
                 break;
             }
             case 4: //Change pw
@@ -899,6 +901,35 @@ void adminModifyOfficial(Admin &admin)
                 break;
             }
             case 3: //Go back
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
+    }
+}
+
+void adminRetrieveUserID(Admin &admin)
+{
+    string retrieveIDInterface = "[1] Display All Official User IDs\n[2] Search for Client User ID by an Account Number\n[3] Go Back";
+    bool wantsToExit = false;
+    while (!wantsToExit)
+    {
+        cout << retrieveIDInterface << endl << "Option: ";
+        int retrieveIDOption = getUserOption(3);
+        cout << endl;
+
+        switch (retrieveIDOption)
+        {
+            case 1: //display all Officials, admin can then search thru
+            {
+                break;
+            }
+            case 2: //Search For Client by acct num
+            {
+                break;
+            }
+            case 3:
             {
                 wantsToExit = true;
                 break;
