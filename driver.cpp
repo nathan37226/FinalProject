@@ -31,7 +31,6 @@ int main()
     initialSetup(); //not finished--need to do interest on accounts
     
 
-    //Put inside a while loop at the end!
     string loginScreen = "Welcome to BearBank!\n";
     bool wantsToCloseBearBank = false;
     cout << loginScreen << endl;

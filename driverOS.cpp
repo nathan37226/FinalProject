@@ -50,8 +50,8 @@ void initialSetup()
 
 	//creating record of these default users, i.e. saving to .txt files
 	Admin admin;
-    admin.buildUser("UserData/admin.txt");
-    admin.setName("Automated Admin");
+    admin.buildUser("UserData/admin.txt"); //this will preserve recent history, if there
+    admin.setName("Automated Admin"); //hard coding everything else abount the account
     admin.setID("admin");
     admin.setPassword(EncryptionBox::hash("password1"));
     admin.setUserType("admin");
@@ -62,6 +62,7 @@ void initialSetup()
     official.setID("official");
     official.setPassword(EncryptionBox::hash("password1"));
     official.setUserType("official");
+    official.setState("active");
 
     Client house;
     house.buildUser("UserData/house.txt");
@@ -477,49 +478,57 @@ void officialLogin(string userID)
 {
     Official user;
     user.buildUser("UserData/" + userID + ".txt");
-    cout << "Welcome, " << user.getName() << endl;
-    cout << "Last Activity: " << user.getRecentActivity() << endl;
-    cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentTime());
 
-    string officialInterface = "[1] Open Account\n[2] Close Account\n[3] Deposit into Account\n[4] Withdraw from Account\n[5] Search for Accounts\n[6] Log Out";
-    bool wantsToExit = false;
-    
-    while (!wantsToExit)
+    if (user.getState() != "active")
     {
-        cout << officialInterface << endl << "Option: ";
-        int initialOption = getUserOption(6);
-        cout << endl;
+        cout << "This account has been locked." << endl << endl;
+    }
+    else
+    {
+        cout << "Welcome, " << user.getName() << endl;
+        cout << "Last Activity: " << user.getRecentActivity() << endl;
+        cout << "Last Login: " << user.getRecentLogin() << endl << endl;
+        user.setRecentLogin(DateTools().getCurrentTime());
 
-        switch (initialOption)
+        string officialInterface = "[1] Open Account\n[2] Close Account\n[3] Deposit into Account\n[4] Withdraw from Account\n[5] Search for Bank Accounts\n[6] Log Out";
+        bool wantsToExit = false;
+        
+        while (!wantsToExit)
         {
-            case 1: //Open acct - look at queue or just open new acct for specified user
+            cout << officialInterface << endl << "Option: ";
+            int initialOption = getUserOption(6);
+            cout << endl;
+
+            switch (initialOption)
             {
-                openAccounts(user); //abstracted due to needed while loop
-                break;
-            }
-            case 2: //Close acct
-            {
-                break;
-            }
-            case 3: //Deposit into acct - needs user confirmation
-            {
-                break;
-            }
-            case 4: //Withdraw from acct - needs user confirmation
-            {
-                break;
-            }
-            case 5: //Search for acct by first name, last name, phone num, address, acct num
-            {
-                officialSearch(user);
-                break;
-            }
-            case 6: //Exit
-            {
-                wantsToExit = true;
-                user.saveUser();
-                break;
+                case 1: //Open acct - look at queue or just open new acct for specified user
+                {
+                    openAccounts(user); //abstracted due to needed while loop
+                    break;
+                }
+                case 2: //Close acct
+                {
+                    break;
+                }
+                case 3: //Deposit into acct - needs user confirmation
+                {
+                    break;
+                }
+                case 4: //Withdraw from acct - needs user confirmation
+                {
+                    break;
+                }
+                case 5: //Search for acct by first name, last name, phone num, address, acct num
+                {
+                    officialSearch(user);
+                    break;
+                }
+                case 6: //Exit
+                {
+                    wantsToExit = true;
+                    user.saveUser();
+                    break;
+                }
             }
         }
     }
@@ -658,7 +667,7 @@ void officialSearch(Official &officialUser)
                 getline(cin, firstName);
                 cout << endl;
                 officialUser.searchByFirstName(firstName);
-                officialUser.setRecentActivity("Searched for a First Name");
+                officialUser.setRecentActivity("Searched for Bank Accounts by a First Name");
                 officialUser.saveUser();
                 break;
             }
@@ -669,7 +678,7 @@ void officialSearch(Official &officialUser)
                 getline(cin, lastName);
                 cout << endl;
                 officialUser.searchByLastName(lastName);
-                officialUser.setRecentActivity("Searched for a Last Name");
+                officialUser.setRecentActivity("Searched for Bank Accounts by a Last Name");
                 officialUser.saveUser();
                 break;
             }
@@ -680,7 +689,7 @@ void officialSearch(Official &officialUser)
                 getline(cin, acctNum);
                 cout << endl;
                 officialUser.searchByAccountNum(acctNum);
-                officialUser.setRecentActivity("Searched for an Account Number");
+                officialUser.setRecentActivity("Searched for a Bank Account by an Account Number");
                 officialUser.saveUser();
                 break;
             }
@@ -691,7 +700,7 @@ void officialSearch(Official &officialUser)
                 getline(cin, phoneNum);
                 cout << endl;
                 officialUser.searchByPhoneNum(phoneNum);
-                officialUser.setRecentActivity("Searched for a Phone Number");
+                officialUser.setRecentActivity("Searched for Bank Accounts by a Phone Number");
                 officialUser.saveUser();
                 break;
             }
@@ -702,7 +711,7 @@ void officialSearch(Official &officialUser)
                 getline(cin, address);
                 cout << endl;
                 officialUser.searchByAddress(address);
-                officialUser.setRecentActivity("Searched for an Address");
+                officialUser.setRecentActivity("Searched for Bank Accounts by an Address");
                 officialUser.saveUser();
                 break;
             }
