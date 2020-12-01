@@ -8,13 +8,23 @@ void initialSetup();
 void savingTables();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
+
 void userLoginReset();
 bool isValidUserID(string userID);
 void clientLogin(string userID);
 void makeClientAccountChanges(Client &user, int option);
 void helpClientAccessAccount(Client &user, int option, vector<string> acctList);
+
 void officialLogin(string userID);
+void openAccounts(Official &user);
+
 void adminLogin(string userID);
+
+
+/************************************************
+Initial helper functions
+************************************************/
+
 
 //must add chking for house account!!
 void initialSetup()
@@ -241,6 +251,12 @@ bool isValidUserID(string userID)
     return value;  //above ternary will return a vect of {} is userID not found, so if size == 0 then userID not found, which means the userID is avaliable
 }
 
+
+/************************************************
+Start of Client Login
+************************************************/
+
+
 //Needs Work still!!
 void clientLogin(string userID)
 {
@@ -447,6 +463,11 @@ void helpClientAccessAccount(Client &user, int option, vector<string> acctList)
 }
 
 
+/************************************************
+Start of Official Login
+************************************************/
+
+
 void officialLogin(string userID)
 {
     Official user;
@@ -468,6 +489,7 @@ void officialLogin(string userID)
         {
             case 1: //Open acct - look at queue or just open new acct for specified user
             {
+                openAccounts(user); //abstracted due to needed while loop
                 break;
             }
             case 2: //Close acct
@@ -495,6 +517,74 @@ void officialLogin(string userID)
         }
     }
 }
+
+void openAccounts(Official &user)
+{
+    string openAcctInterface = "[1] Open a new Account\n[2] View User Requested Accounts\n[3] Go Back";
+    string requestedAcctInterface = "[1] Approve Request\n[2] Deny Request\n[3] Go Back";
+    bool wantsToExit = false;
+    
+    while (!wantsToExit)
+    {
+        cout << openAcctInterface << endl << "Option: ";
+        int mainOption = getUserOption(3);
+        
+        switch (mainOption)
+        {
+            case 1: //Open new acct
+            {
+                //get userID where acct will be added
+                //display acct types
+                //get selection
+                //add acct to userTable and accountTable
+                break;
+            }
+            case 2: //View acct request queue
+            {
+                bool doneReviewing = false;
+                //build queue obj
+                //display first obj in queue
+                while (!doneReviewing)
+                {
+                    cout << requestedAcctInterface << endl << "Option: ";
+                    int reviewOption = getUserOption(3);
+
+                    switch (reviewOption)
+                    {
+                        case 1: //Approve
+                        {
+                            break;
+                        }
+                        case 2: //Deny
+                        {
+                            break;
+                        }
+                        case 3: //Go Back
+                        {
+                            doneReviewing = true;
+                            //save queue back to file
+                            break;
+                        }
+                    }
+                }
+                
+                break;
+            }
+            case 3: //Go back
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
+    }
+
+}
+
+
+
+/************************************************
+Start of Client Login
+************************************************/
 
 
 void adminLogin(string userID)
