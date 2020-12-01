@@ -13,6 +13,11 @@ public:
 	~Official();
 
 	void addNewClientUser(Client &user);
+	void searchByFirstName(string firstName);
+	void searchByLastName(string lastName);
+	void searchByAccountNum(string acctNum);
+	void searchByPhoneNum(string phoneNum);
+	void searchByAddress(string address);
 
 	string getState();
 	void setState(string newState);

@@ -17,6 +17,7 @@ void helpClientAccessAccount(Client &user, int option, vector<string> acctList);
 
 void officialLogin(string userID);
 void openAccounts(Official &officialUser);
+void officialSearch(Official &officialUser);
 
 void adminLogin(string userID);
 
@@ -508,6 +509,7 @@ void officialLogin(string userID)
             }
             case 5: //Search for acct by first name, last name, phone num, address, acct num
             {
+                officialSearch(user);
                 break;
             }
             case 6: //Exit
@@ -539,7 +541,9 @@ void openAccounts(Official &officialUser)
                 //get userID where acct will be added
                 //display acct types
                 //get selection
-                //add acct to userTable and accountTable
+                //add acct to userTable and accountTable 
+
+                //make all of ^ into official funct!!!
                 break;
             }
             case 2: //View acct request queue
@@ -626,6 +630,83 @@ void openAccounts(Official &officialUser)
             case 3: //Go back
             {
                 wantsToExit = true;
+                break;
+            }
+        }
+    }
+}
+
+void officialSearch(Official &officialUser)
+{
+    string searchInterface = "[1] Search by First Name\n[2] Search by Last Name\n[3] Search by Account Number\n[4] Search by Phone Number\n[5] Search by Address\n[6] Go Back";
+    bool wantsToExit = false;
+
+    while (!wantsToExit)
+    {
+        cout << searchInterface << endl << "Option: ";
+        int searchOption = getUserOption(6);
+
+        switch (searchOption)
+        {
+            case 1: //first name
+            {
+                string firstName = "";
+                cout << "Enter a first name: ";
+                getline(cin, firstName);
+                cout << endl;
+                officialUser.searchByFirstName(firstName);
+                officialUser.setRecentActivity("Searched for a First Name");
+                officialUser.saveUser();
+                break;
+            }
+            case 2: //last name
+            {
+                string lastName = "";
+                cout << "Enter a last name: ";
+                getline(cin, lastName);
+                cout << endl;
+                officialUser.searchByLastName(lastName);
+                officialUser.setRecentActivity("Searched for a Last Name");
+                officialUser.saveUser();
+                break;
+            }
+            case 3: //acct num
+            {
+                string acctNum = "";
+                cout << "Enter an Account Number: ";
+                getline(cin, acctNum);
+                cout << endl;
+                officialUser.searchByAccountNum(acctNum);
+                officialUser.setRecentActivity("Searched for an Account Number");
+                officialUser.saveUser();
+                break;
+            }
+            case 4: //phone num
+            {
+                string phoneNum = "";
+                cout << "Enter a phone number: ";
+                getline(cin, phoneNum);
+                cout << endl;
+                officialUser.searchByPhoneNum(phoneNum);
+                officialUser.setRecentActivity("Searched for a Phone Number");
+                officialUser.saveUser();
+                break;
+            }
+            case 5: //address
+            {
+                string address = "";
+                cout << "Enter an address: ";
+                getline(cin, address);
+                cout << endl;
+                officialUser.searchByAddress(address);
+                officialUser.setRecentActivity("Searched for an Address");
+                officialUser.saveUser();
+                break;
+            }
+            case 6: //go back
+            {
+                wantsToExit = true;
+                cout << endl;
                 break;
             }
         }

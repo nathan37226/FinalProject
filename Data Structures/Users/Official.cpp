@@ -37,3 +37,88 @@ void Official::addNewClientUser(Client &user)
 	vector<string> userData = {hashedPw, "client"}; //no accts at first
 	DataHandler::allTables.userTable.insertWithList(userID, userData); //inserts into AVLtree
 }
+
+void Official::searchByFirstName(string firstName)
+{
+	vector<string> searchResults = DataHandler::allTables.firstNameTable.returnMappedItems(firstName);
+
+	if (searchResults.size() == 0) //i.e. no associated accts, or just firstName not found
+	{
+		cout << "No results found" << endl << endl;
+	}
+	else
+	{
+		for (int i = 0; i < searchResults.size(); i++) 
+		{
+			string accountInfo = DataHandler::allTables.accountTable.search(searchResults[i]); //returns short info about acct
+			cout << searchResults[i] << endl << accountInfo << endl << endl;
+		}
+	}	
+}
+
+void Official::searchByLastName(string lastName)
+{
+	vector<string> searchResults = DataHandler::allTables.lastNameTable.returnMappedItems(lastName);
+
+	if (searchResults.size() == 0) //i.e. no associated accts, or just lastName not found
+	{
+		cout << "No results found" << endl << endl;
+	}
+	else
+	{
+		for (int i = 0; i < searchResults.size(); i++) 
+		{
+			string accountInfo = DataHandler::allTables.accountTable.search(searchResults[i]); //returns short info about acct
+			cout << searchResults[i] << endl << accountInfo << endl << endl;
+		}
+	}
+}
+
+void Official::searchByAccountNum(string acctNum)
+{
+	string accountInfo = DataHandler::allTables.accountTable.search(acctNum);
+	if (accountInfo == "false")
+	{
+		cout << "No results found" << endl << endl;
+	}
+	else
+	{
+		cout << accountInfo << endl << endl;
+	}
+}
+
+void Official::searchByPhoneNum(string phoneNum)
+{
+	vector<string> searchResults = DataHandler::allTables.phoneNumTable.returnMappedItems(phoneNum);
+
+	if (searchResults.size() == 0) //i.e. no associated accts, or just phoneNum not found
+	{
+		cout << "No results found" << endl << endl;
+	}
+	else
+	{
+		for (int i = 0; i < searchResults.size(); i++) 
+		{
+			string accountInfo = DataHandler::allTables.accountTable.search(searchResults[i]); //returns short info about acct
+			cout << searchResults[i] << endl << accountInfo << endl << endl;
+		}
+	}
+}
+
+void Official::searchByAddress(string address)
+{
+	vector<string> searchResults = DataHandler::allTables.addressTable.returnMappedItems(address);
+
+	if (searchResults.size() == 0) //i.e. no associated accts, or just address not found
+	{
+		cout << "No results found" << endl << endl;
+	}
+	else
+	{
+		for (int i = 0; i < searchResults.size(); i++) 
+		{
+			string accountInfo = DataHandler::allTables.accountTable.search(searchResults[i]); //returns short info about acct
+			cout << searchResults[i] << endl << accountInfo << endl << endl;
+		}
+	}
+}
