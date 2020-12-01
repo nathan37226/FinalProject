@@ -14,9 +14,11 @@ public:
 
 	void resetPassword(string ID, string newPassword);
 	string returnUserID(string acctNum);
+	void createOfficial(string fullName, string ID, string password);
 	void setOfficialActive(Official officialUser);
 	void setOfficialInactive(Official officialUser);
 	void deleteOfficial(Official officialUser);
+	
 
 protected:
 	void clearFile(string filename);

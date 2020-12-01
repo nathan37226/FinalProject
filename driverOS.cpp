@@ -808,6 +808,29 @@ void adminModifyOfficial(Admin &admin)
         {
             case 1: //Create New Official
             {
+                string fullName = "", userID = "", password = "";
+                bool isUserIDAvailable = false;
+                cout << "Enter the Official's first and last name: ";
+                getline(cin, fullName);
+
+                while (!isUserIDAvailable)
+                {
+                    cout << "Enter the Official's User ID: ";
+                    getline(cin, userID);
+                    isUserIDAvailable = isValidUserID(userID);
+                    if (!isUserIDAvailable)
+                    {
+                        cout << "Entered User ID not Available" << endl;
+                    }
+                }
+                
+                cout << "Enter the Official's password: ";
+                getline(cin, password);
+
+                admin.createOfficial(fullName, userID, password);
+                admin.setRecentActivity("Created new official: " + userID);
+                admin.saveUser();
+                cout << "A New Official Account for: " << fullName << " has been created!" << endl;                
                 break;
             }
             case 2: //Edit Existing official

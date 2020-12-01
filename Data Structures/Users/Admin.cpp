@@ -34,6 +34,17 @@ string Admin::returnUserID(string acctNum)
 	return "Must implement this later";
 }
 
+void Admin::createOfficial(string fullName, string ID, string password)
+{
+	password = EncryptionBox::hash(password);
+	Official newOfficial(fullName, ID, password, "official"); //puts state as active initially
+	newOfficial.setRecentActivity("Account created by: " + userID);
+	newOfficial.saveUser();
+
+	vector <string> userData = {password, "official"};
+	DataHandler::allTables.userTable.insertWithList(ID, userData); //creates record of Official inside table; allows login to occur
+}
+
 void Admin::setOfficialActive(Official officialUser)
 {
 	officialUser.setState("active");
@@ -68,3 +79,4 @@ void Admin::deleteOfficial(Official officialUser)
 	clearFile("UserData/" + officialUser.getID() + ".txt"); //clears all record of official's data
 	DataHandler::allTables.userTable.del(officialUser.getID()); //deletes entire node
 }
+
