@@ -6,6 +6,7 @@
 #include "DataTables/AVL.h"
 #include "DataTables/EncryptionBox.h"
 #include "DataTables/AccountTable.h"
+#include "DataTables/AccountQueue.h"
 
 //allows for easy passing of all tables, best to do by reference since they can get large!
 struct tableSet

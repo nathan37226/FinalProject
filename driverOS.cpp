@@ -8,13 +8,23 @@ void initialSetup();
 void savingTables();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
+
 void userLoginReset();
 bool isValidUserID(string userID);
 void clientLogin(string userID);
 void makeClientAccountChanges(Client &user, int option);
 void helpClientAccessAccount(Client &user, int option, vector<string> acctList);
+
 void officialLogin(string userID);
+void openAccounts(Official &officialUser);
+
 void adminLogin(string userID);
+
+
+/************************************************
+Initial helper functions
+************************************************/
+
 
 //must add chking for house account!!
 void initialSetup()
@@ -130,7 +140,7 @@ void userLoginReset()
 
     switch (userResetOption)
     {
-        case 1: //User ID display
+        case 1: //User ID display -- Will not work for admin or officials, by design
         {
             cout << "In order to provide you with your User ID, one of your Account Numbers is required." << endl;
             cout << "Do you know any of your Account Numbers?" << endl << endl;
@@ -153,7 +163,7 @@ void userLoginReset()
                     admin.buildUser("UserData/admin.txt");
                     admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
 
-                    string userID = admin.returnUserID(accountNum); //implement later!!!
+                    string userID = admin.returnUserID(accountNum); //Implement Later!!!!!
                     cout << "Your User ID is: " << userID << endl;
 
                     string description = "Provided user '" + userID + "' the User ID to the online account";
@@ -161,7 +171,7 @@ void userLoginReset()
                     admin.saveUser(); //saving change to file
 
                     //now to reflect changes made in user account!
-                    User user; //doesn't matter which type of user!
+                    Client user;
                     user.buildUser("UserData/"+userID+".txt");
                     user.setRecentActivity("Recieved User ID from Automated System Administrator");
                     user.saveUser();
@@ -197,15 +207,32 @@ void userLoginReset()
                 Admin admin; //creating the Automated Admin obj to change the password
                 admin.buildUser("UserData/admin.txt");
                 admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
-                admin.resetPassword(userID, newPassword);
+                admin.resetPassword(userID, newPassword); //updates tables
                 admin.setRecentActivity("Assisted Client '" + userID + "' Change Password");
                 admin.saveUser();
 
-                User user;
-                user.buildUser("UserData/"+userID+".txt");
-                user.setRecentActivity("Password was Reset by the Automated System Administrator");
-                user.saveUser();
-                cout << "Your password has been reset." << endl;
+                if (userInfo[1] == "client")
+                {
+                    Client user;
+                    user.buildUser("UserData/"+userID+".txt");
+                    user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
+                    user.setRecentActivity("Password was Reset by the Automated System Administrator");
+                    user.saveUser();
+                    cout << "Your password has been reset." << endl;
+                }
+                else if (userInfo[1] == "official")
+                {
+                    Official user;
+                    user.buildUser("UserData/"+userID+".txt");
+                    user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
+                    user.setRecentActivity("Password was Reset by the Automated System Administrator");
+                    user.saveUser();
+                    cout << "Your password has been reset." << endl;
+                }
+                else
+                {
+                    cout << "Admin Accounts Must Manually Reset Their Password." << endl;
+                }
             }
             else
             {
@@ -224,6 +251,12 @@ bool isValidUserID(string userID)
     return value;  //above ternary will return a vect of {} is userID not found, so if size == 0 then userID not found, which means the userID is avaliable
 }
 
+
+/************************************************
+Start of Client Login
+************************************************/
+
+
 //Needs Work still!!
 void clientLogin(string userID)
 {
@@ -233,15 +266,14 @@ void clientLogin(string userID)
     cout << "Last Activity: " << user.getRecentActivity() << endl;
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
     user.setRecentLogin(DateTools().getCurrentTime()); //since we just logged in, now need to update time
-    //Display last login date up here!
 
-    string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Exit";
+    string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Open New Account\n[5] Exit";
     bool wantsToExit = false;
     
     while (!wantsToExit)
     {
         cout << clientInterface << endl << "Option: ";
-        int initialOption = getUserOption(4);
+        int initialOption = getUserOption(5);
         cout << endl;
 
         switch (initialOption)
@@ -294,7 +326,21 @@ void clientLogin(string userID)
                 cout << endl;
                 break;
             }
-            case 4: //exit
+            case 4: //open new acct
+            {
+                string acctType = "a cool account type";
+                //Make sure to display all types of accts currently offered
+                //Upon user choosing, send request off to an official for confirmation!
+                //have all officials be able to access this list of requests!
+                //Each request needs: UserID requesting and acct type
+                //Upon accpeting request or denying request for new acct, update client recent activity message to display the choice
+
+                DataHandler::clientRequestNewAccount(userID, acctType);
+                user.setRecentActivity("Requested New Account: " + acctType);
+                cout << "Please be aware that a Bear Bank Official may take several business days to review this request." << endl << endl;
+                break;
+            }
+            case 5: //exit
             {
                 wantsToExit = true;
                 user.saveUser();
@@ -318,7 +364,6 @@ void makeClientAccountChanges(Client &user, int option)
             name = name + " " + lastName;
             user.setName(name);
             user.setRecentActivity("Changed First Name");
-            user.saveUser();
 
             //need to reflect changes on all accts and tables as well
             DataHandler::changeClientFirstName(userID, oldName, name); //needs finishing
@@ -337,7 +382,6 @@ void makeClientAccountChanges(Client &user, int option)
             name = firstName + " " + name;
             user.setName(name);
             user.setRecentActivity("Changed Last Name");
-            user.saveUser();
 
             //changing name inside the tables
             DataHandler::changeClientLastName(userID, oldName, name); //needs finishing
@@ -353,7 +397,6 @@ void makeClientAccountChanges(Client &user, int option)
             getline(cin, newAddress);
             user.setAddress(newAddress);
             user.setRecentActivity("Changed Address");
-            user.saveUser();
 
             //changing address in table
             DataHandler::changeClientAddress(user.getID(), oldAddress, newAddress); //needs finishing
@@ -369,7 +412,6 @@ void makeClientAccountChanges(Client &user, int option)
             getline(cin, newNum);
             user.setAddress(newNum);
             user.setRecentActivity("Changed Phone Number");
-            user.saveUser();
 
             //changing address in table
             DataHandler::changeClientPhoneNum(user.getID(), oldNum, newNum); //needs finishing
@@ -386,7 +428,6 @@ void makeClientAccountChanges(Client &user, int option)
             admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
             admin.resetPassword(user.getID(), newPassword);
             admin.setRecentActivity("Assisted Client '" + user.getID() + "' Change Password in Settings");
-            admin.saveUser();
 
             user.setRecentActivity("Password was Reset in Settings");
             user.saveUser();
@@ -394,6 +435,7 @@ void makeClientAccountChanges(Client &user, int option)
             break;
         }
     }
+    user.saveUser();
 }
 
 //Needs Finishing!
@@ -422,6 +464,11 @@ void helpClientAccessAccount(Client &user, int option, vector<string> acctList)
 }
 
 
+/************************************************
+Start of Official Login
+************************************************/
+
+
 void officialLogin(string userID)
 {
     Official user;
@@ -431,8 +478,165 @@ void officialLogin(string userID)
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
     user.setRecentLogin(DateTools().getCurrentTime());
 
-    string officialInterface = "";
+    string officialInterface = "[1] Open Account\n[2] Close Account\n[3] Deposit into Account\n[4] Withdraw from Account\n[5] Search for Accounts\n[6] Exit";
+    bool wantsToExit = false;
+    
+    while (!wantsToExit)
+    {
+        cout << officialInterface << endl << "Option: ";
+        int initialOption = getUserOption(6);
+        cout << endl;
+
+        switch (initialOption)
+        {
+            case 1: //Open acct - look at queue or just open new acct for specified user
+            {
+                openAccounts(user); //abstracted due to needed while loop
+                break;
+            }
+            case 2: //Close acct
+            {
+                break;
+            }
+            case 3: //Deposit into acct - needs user confirmation
+            {
+                break;
+            }
+            case 4: //Withdraw from acct - needs user confirmation
+            {
+                break;
+            }
+            case 5: //Search for acct by first name, last name, phone num, address, acct num
+            {
+                break;
+            }
+            case 6: //Exit
+            {
+                wantsToExit = true;
+                user.saveUser();
+                break;
+            }
+        }
+    }
 }
+
+void openAccounts(Official &officialUser)
+{
+    string openAcctInterface = "[1] Open a new Account\n[2] View User Requested Accounts\n[3] Go Back";
+    string requestedAcctInterface = "[1] Approve Request\n[2] Deny Request\n[3] Go Back";
+    bool wantsToExit = false;
+    
+    while (!wantsToExit)
+    {
+        cout << openAcctInterface << endl << "Option: ";
+        int mainOption = getUserOption(3);
+        cout << endl;
+        
+        switch (mainOption)
+        {
+            case 1: //Open new acct
+            {
+                //get userID where acct will be added
+                //display acct types
+                //get selection
+                //add acct to userTable and accountTable
+                break;
+            }
+            case 2: //View acct request queue
+            {
+                AccountQueue queue;
+                queue.buildQueue();
+                string request = "", userID = "", acctType = "";
+                bool doneReviewing = false;
+
+                if (queue.isEmpty())
+                {
+                    cout << "There are no account openning requests to view!" << endl << endl;
+                    queue.saveQueue();
+                    break;
+                }
+                else
+                {
+                    while (!doneReviewing)
+                    {
+                        queue.peekFirst(request); //request takes on first item in queues value, queue retains order
+                        userID = request.substr(0, request.find(" ")); //request is formatted: "<userID>  requests a new: <acctType>"
+                        acctType = request.substr(request.find(":") + 2, string::npos); //finds the : inside "a new: " and gets whatever is after
+                        Client clientUser;
+                        clientUser.buildUser("UserData/" + userID + ".txt");
+
+                        cout << request << endl;
+
+                        cout << requestedAcctInterface << endl << "Option: ";
+                        int reviewOption = getUserOption(3);
+
+                        switch (reviewOption)
+                        {
+                            case 1: //Approve
+                            {  
+                                string acctNum = "", dummyStr = "";
+                                //create a new acct obj of specified type
+                                //Account newAccount;
+                                //save new acct obj to create a record in files
+                                //update acctNum!
+
+                                //DataHandler::addClientAccountToRecords(user, newAccount); //updates all tables with new info!
+                                clientUser.setRecentActivity("Request for: " + acctType + " was approved!");
+                                clientUser.saveUser();
+                                officialUser.setRecentActivity("Approved Request from: " + userID + " for: " + acctType);
+                                officialUser.saveUser();
+                                queue.dequeue(dummyStr); //dequeue needs a string& passed, so this just allows a value to be removed
+
+                                cout << endl;
+                                break;
+                            }
+                            case 2: //Deny
+                            {
+                                string dummyStr = "";
+                                clientUser.setRecentActivity("Request for: " + acctType + " was denied.");
+                                clientUser.saveUser();
+                                officialUser.setRecentActivity("Denied Request from: " + userID + " for: " + acctType);
+                                officialUser.saveUser();
+                                queue.dequeue(dummyStr);
+
+                                cout << endl;
+                                break;
+                            }
+                            case 3: //Go Back
+                            {
+                                doneReviewing = true;
+                                //save queue back to file
+                                queue.saveQueue();
+                                cout << endl;
+                                break;
+                            }
+                        }
+                        if (queue.isEmpty()) //break condiditon while reviewing
+                        {
+                            cout << "There are no account openning requests to view!" << endl << endl;
+                            doneReviewing = true;
+                            queue.saveQueue();
+                            break;
+                        }
+                    }
+                }
+
+                break;
+            }
+            case 3: //Go back
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
+    }
+}
+
+
+
+/************************************************
+Start of Admin Login
+************************************************/
 
 
 void adminLogin(string userID)
