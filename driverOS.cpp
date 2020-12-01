@@ -130,7 +130,7 @@ void userLoginReset()
 
     switch (userResetOption)
     {
-        case 1: //User ID display
+        case 1: //User ID display -- Will not work for admin or officials, by design
         {
             cout << "In order to provide you with your User ID, one of your Account Numbers is required." << endl;
             cout << "Do you know any of your Account Numbers?" << endl << endl;
@@ -153,7 +153,7 @@ void userLoginReset()
                     admin.buildUser("UserData/admin.txt");
                     admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
 
-                    string userID = admin.returnUserID(accountNum); //implement later!!!
+                    string userID = admin.returnUserID(accountNum); //Implement Later!!!!!
                     cout << "Your User ID is: " << userID << endl;
 
                     string description = "Provided user '" + userID + "' the User ID to the online account";
@@ -161,7 +161,7 @@ void userLoginReset()
                     admin.saveUser(); //saving change to file
 
                     //now to reflect changes made in user account!
-                    User user; //doesn't matter which type of user!
+                    Client user;
                     user.buildUser("UserData/"+userID+".txt");
                     user.setRecentActivity("Recieved User ID from Automated System Administrator");
                     user.saveUser();
@@ -197,15 +197,32 @@ void userLoginReset()
                 Admin admin; //creating the Automated Admin obj to change the password
                 admin.buildUser("UserData/admin.txt");
                 admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
-                admin.resetPassword(userID, newPassword);
+                admin.resetPassword(userID, newPassword); //updates tables
                 admin.setRecentActivity("Assisted Client '" + userID + "' Change Password");
                 admin.saveUser();
 
-                User user;
-                user.buildUser("UserData/"+userID+".txt");
-                user.setRecentActivity("Password was Reset by the Automated System Administrator");
-                user.saveUser();
-                cout << "Your password has been reset." << endl;
+                if (userInfo[1] == "client")
+                {
+                    Client user;
+                    user.buildUser("UserData/"+userID+".txt");
+                    user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
+                    user.setRecentActivity("Password was Reset by the Automated System Administrator");
+                    user.saveUser();
+                    cout << "Your password has been reset." << endl;
+                }
+                else if (userInfo[1] == "official")
+                {
+                    Official user;
+                    user.buildUser("UserData/"+userID+".txt");
+                    user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
+                    user.setRecentActivity("Password was Reset by the Automated System Administrator");
+                    user.saveUser();
+                    cout << "Your password has been reset." << endl;
+                }
+                else
+                {
+                    cout << "Admin Accounts Must Manually Reset Their Password." << endl;
+                }
             }
             else
             {
@@ -233,7 +250,6 @@ void clientLogin(string userID)
     cout << "Last Activity: " << user.getRecentActivity() << endl;
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
     user.setRecentLogin(DateTools().getCurrentTime()); //since we just logged in, now need to update time
-    //Display last login date up here!
 
     string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Open New Account\n[5] Exit";
     bool wantsToExit = false;
@@ -440,7 +456,44 @@ void officialLogin(string userID)
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
     user.setRecentLogin(DateTools().getCurrentTime());
 
-    string officialInterface = "";
+    string officialInterface = "[1] Open Account\n[2] Close Account\n[3] Deposit into Account\n[4] Withdraw from Account\n[5] Search for Accounts\n[6] Exit";
+    bool wantsToExit = false;
+    
+    while (!wantsToExit)
+    {
+        cout << officialInterface << endl << "Option: ";
+        int initialOption = getUserOption(6);
+
+        switch (initialOption)
+        {
+            case 1: //Open acct - look at queue or just open new acct for specified user
+            {
+                break;
+            }
+            case 2: //Close acct
+            {
+                break;
+            }
+            case 3: //Deposit into acct - needs user confirmation
+            {
+                break;
+            }
+            case 4: //Withdraw from acct - needs user confirmation
+            {
+                break;
+            }
+            case 5: //Search for acct by first name, last name, phone num, address, acct num
+            {
+                break;
+            }
+            case 6: //Exit
+            {
+                wantsToExit = true;
+                user.saveUser();
+                break;
+            }
+        }
+    }
 }
 
 
