@@ -360,6 +360,8 @@ void makeClientAccountChanges(Client &user, int option)
             string name = "", oldName = user.getName(), lastName = user.getName(), userID = user.getID();
             oldName = oldName.substr(0, oldName.find(" "));
             lastName = lastName.substr(lastName.find(" ") + 1, string::npos);
+
+            //changing name in user obj
             cout << "Enter your new first name: ";
             getline(cin, name);
             name = name + " " + lastName;
@@ -426,11 +428,12 @@ void makeClientAccountChanges(Client &user, int option)
 
             Admin admin; //creating the Automated Admin obj to change the password
             admin.buildUser("UserData/admin.txt");
-            admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
+            admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login time as now
             admin.resetPassword(user.getID(), newPassword);
             admin.setRecentActivity("Assisted Client '" + user.getID() + "' Change Password in Settings");
 
             user.setRecentActivity("Password was Reset in Settings");
+            user.setPassword(EncryptionBox::hash(newPassword)); //reflecting change inside user obj
             user.saveUser();
             cout << "Your password has been reset." << endl;
             break;
