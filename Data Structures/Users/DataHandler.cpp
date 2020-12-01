@@ -1,115 +1,8 @@
-#include "DataHandler.h"
-
-DataHandler* DataHandler::GetInstance()
-{
-	static DataHandler instance;
-	return &instance;
-}
-
-/*
-void DataHandler::createOfficialAccount(string userName, string userID, string userPassword, string lastLogin)
-{
-	Official newOfficial;
-	newOfficial.setName(userName);
-	newOfficial.setID(userID);
-	newOfficial.setPassword(userPassword);
-	newOfficial.setRecentLogin(lastLogin);
-	officialList.push_back(newOfficial);
-}
-
-bool DataHandler::changeOfficialStatus(string userID, string newState)
-{
-	for (int i = 0; i < officialList.size(); i++)
-	{
-		if (officialList[i].getID() == userID)
-		{
-			officialList[i].setState(newState);
-			return true;
-		}
-	}
-	return false;
-}
-
-bool DataHandler::deleteOfficialAccount(string userID)
-{
-	for (int i = 0; i < officialList.size(); i++)
-	{
-		if (officialList[i].getID() == userID)
-		{
-			officialList.erase(officialList.begin() + i);
-			return true;
-		}
-	}
-	return false;
-}
-*/
 
 DataHandler::DataHandler()
 {
+	;
 }
-
-DataHandler::~DataHandler()
-{
-}
-
-vector<AccountType> DataHandler::getTypeData()
-{
-	return accountTypeList;
-}
-
-/*
-vector<Account> DataHandler::searchForNumber(string accountNumber)
-{
-	vector<Account> searchResult;
-	for (int i = 0; i < accountList.size(); i++)
-	{
-		if (accountList[i].getAccountNumber() == accountNumber)
-		{
-			searchResult.push_back(accountList[i]);
-		}
-	}
-	return searchResult;
-}
-
-vector<Account> DataHandler::searchForName(string clientName) //search for full name
-{
-	vector<Account> searchResult;
-	for (int i = 0; i < accountList.size(); i++)
-	{
-		if (accountList[i].getAccountHolderFirstName() == clientName)
-		{
-			searchResult.push_back(accountList[i]);
-		}
-	}
-	return searchResult;
-}
-
-vector<Account> DataHandler::searchForPhone(string phoneNumber)
-{
-	vector<Account> searchResult;
-	for (int i = 0; i < accountList.size(); i++)
-	{
-		if (accountList[i].getAccountHolderPhoneNumber() == phoneNumber)
-		{
-			searchResult.push_back(accountList[i]);
-		}
-	}
-	return searchResult;
-}
-
-void DataHandler::queryAccountHistory(string clientID, string beginning, string ending)
-{
-	for (int i = 0; i < accountList.size(); i++)
-	{
-		if (accountList[i].getAccountHolderFullName() == clientID)
-		{
-			accountList[i].displayHistory(beginning, ending);
-		}
-	}
-}
-*/
-
-
 
 string DataHandler::isValidLogin(string userID, string password)
 {
@@ -136,9 +29,21 @@ string DataHandler::isValidLogin(string userID, string password)
 	}
 }
 
+bool DataHandler::isValidUserID(string userID)
+{
+	bool value = (DataHandler::allTables.userTable.returnMappedItems(userID).size() == 0) ? true : false;
+    return value;  //above ternary will return a vect of {} is userID not found, so if size == 0 then userID not found, which means the userID is avaliable
+}
+
 /************************************************
 Functs called by Client
 ************************************************/
+
+string DataHandler::getAccountInfo(string acctNum)
+{
+	string acctInfo = allTables.accountTable.search(acctNum); //for easier access to data
+	return acctInfo;
+}
 
 void DataHandler::changeClientFirstName(string userID, string oldName, string newName)
 {
@@ -229,6 +134,32 @@ void DataHandler::clientRequestNewAccount(string userID, string acctType)
 	queue.saveQueue(); //rewrites textfile with new entry
 }
 
+bool DataHandler::clientDisplayAccounts(string userID)
+{
+	vector<string> acctList = DataHandler::allTables.userTable.returnMappedItems(userID); //formatted {hashedPw, user type, acct 1, acct 2, etc}
+
+	if (acctList.size() == 2) //i.e. no present accounts
+	{
+		return false;
+	}
+	else
+	{
+		for (int i = 2; i < acctList.size(); i++)
+		{
+			cout << acctList[i] << endl;
+			cout << allTables.accountTable.search(acctList[i]) << endl; //short snippet of acct
+		}
+		cout << endl;
+		return true;
+	}
+}
+
+vector<string> DataHandler::clientGetAccountList(string userID)
+{
+	vector<string> accountInfo = allTables.userTable.returnMappedItems(userID); //formatted {hashedPw, user type, acct 1, acct 2, etc} 
+	return accountInfo;
+}
+
 /************************************************
 Functs called by Official
 ************************************************/
@@ -243,4 +174,14 @@ void DataHandler::addClientAccountToRecords(Client &user, Account &acct)
 
 	//accountEntry newEntry(acct.getAccountNumber(), acct.getAccountInfo()); //implemenent getAcctInfo later on!
 	//allTables.accountTable.insert(newEntry);
+}
+
+/************************************************
+Functs called by Admin
+************************************************/
+
+void DataHandler::addOfficialToRecords(string hashedPw, string ID)
+{
+	vector <string> userData = {hashedPw, "official"};
+	allTables.userTable.insertWithList(ID, userData); //creates record of Official inside table; allows login to occur
 }

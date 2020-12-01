@@ -1,5 +1,3 @@
-#include "Admin.h"
-
 Admin::Admin()
 {
 	;
@@ -15,11 +13,6 @@ Admin::Admin(string name, string ID, string pw, string type) : User(name, ID, pw
 	;
 }
 
-Admin::~Admin()
-{
-	;
-}
- 
 //requires userType so that searching through table is not required again to find it
 void Admin::resetPassword(string ID, string newPassword) 
 {
@@ -40,9 +33,7 @@ void Admin::createOfficial(string fullName, string ID, string password)
 	Official newOfficial(fullName, ID, password, "official"); //puts state as active initially
 	newOfficial.setRecentActivity("Account created by: " + userID);
 	newOfficial.saveUser();
-
-	vector <string> userData = {password, "official"};
-	DataHandler::allTables.userTable.insertWithList(ID, userData); //creates record of Official inside table; allows login to occur
+	DataHandler::addOfficialToRecords(password, userID); //adds official to table
 }
 
 void Admin::setOfficialActive(Official officialUser)

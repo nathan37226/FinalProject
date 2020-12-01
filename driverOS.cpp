@@ -9,7 +9,6 @@ void savingTables();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
-bool isValidUserID(string userID);
 
 void clientLogin(string userID);
 void clientMakeAccountChanges(Client &user, int option);
@@ -38,6 +37,10 @@ void initialSetup()
     DataHandler::allTables.phoneNumTable.buildTree("Tables/PhoneTable.txt");
     DataHandler::allTables.addressTable.buildTree("Tables/AddressTable.txt");
     DataHandler::allTables.userTable.buildTree("Tables/UserTable.txt");
+
+    AccountQueue queue; //where user requested accounts are stored, inside a specific .txt file
+    queue.buildQueue();
+    queue.saveQueue(); //so that if file's not there, won't display that message during runtime
 
     DataHandler::allTables.accountTable.refreshInfo(); //need to finish function, but will do the interest computation
 
@@ -160,7 +163,7 @@ void userLoginReset()
                 getline(cin, accountNum);
                 cout << endl;
 
-                accountInfo = DataHandler::allTables.accountTable.search(accountNum);
+                accountInfo = DataHandler::getAccountInfo(accountNum);
                 if (accountInfo != "false") //i.e. found valid account info from the acctNum
                 {
                     Admin admin; //creating the Automated Admin obj to change the password
@@ -202,8 +205,9 @@ void userLoginReset()
             getline(cin, userID);
             cout << endl;
 
-            vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(userID); // {hashedPW, user type, accts...} is returned
-            if (userInfo.size() > 0)
+            vector<string> userInfo = DataHandler::clientGetAccountList(userID); // {hashedPW, user type, accts...} is returned
+
+            if (userInfo.size() > 0) //a user ID was found
             {
                 cout << "Enter your new password: ";
                 getline(cin, newPassword);
@@ -238,7 +242,8 @@ void userLoginReset()
                     cout << "Admin Accounts Must Manually Reset Their Password." << endl << endl;
                 }
             }
-            else
+           
+            else //invalid user id
             {
                 cout << "The online account could not be located." << endl << endl;
                 cout << "We apologize for our automated system not being able to assist you further.\nPlease seek further help at your nearest branch office." << endl;
@@ -247,12 +252,6 @@ void userLoginReset()
             break;
         }
     }
-}
-
-bool isValidUserID(string userID)
-{
-    bool value = (DataHandler::allTables.userTable.returnMappedItems(userID).size() == 0) ? true : false;
-    return value;  //above ternary will return a vect of {} is userID not found, so if size == 0 then userID not found, which means the userID is avaliable
 }
 
 
@@ -284,20 +283,14 @@ void clientLogin(string userID)
         {
             case 1: //Accounts
             {
-                vector<string> acctList = DataHandler::allTables.userTable.returnMappedItems(userID); //formatted {hashedPw, user type, acct 1, acct 2, etc}
-                if (acctList.size() == 2)
+                bool doAccountsExist = DataHandler::clientDisplayAccounts(userID);
+
+                if (!doAccountsExist) //won't display anything
                 {
                     cout << "There is no account data to access" << endl << endl;
                 }
-                else
+                else //accounts have been displayed by DataHandler already
                 {
-                    for (int i = 2; i < acctList.size(); i++)
-                    {
-                        cout << acctList[i] << endl;
-                        cout << DataHandler::allTables.accountTable.search(acctList[i]) << endl;
-                    }
-                    cout << endl;
-
                     string accountInterface = "[1] Deposit Into Account\n[2] Withdraw From Account\n[3] Deposit Into External Account\n[4] View an Accounts History\n[5] Go Back";
                     cout << accountInterface << endl << "Option: ";
                     int accountInterfaceOption = getUserOption(5);
@@ -305,6 +298,7 @@ void clientLogin(string userID)
                     
                     if (accountInterfaceOption != 5)
                     {
+                        vector<string> acctList = DataHandler::clientGetAccountList(userID);
                         clientHelpAccessAccount(user, accountInterfaceOption, acctList);
                     }
                 }
@@ -819,7 +813,7 @@ void adminModifyOfficial(Admin &admin)
                 {
                     cout << "Enter the Official's User ID: ";
                     getline(cin, userID);
-                    isUserIDAvailable = isValidUserID(userID);
+                    isUserIDAvailable = DataHandler::isValidUserID(userID);
                     if (!isUserIDAvailable)
                     {
                         cout << "Entered User ID not Available" << endl;
@@ -842,7 +836,7 @@ void adminModifyOfficial(Admin &admin)
                 getline(cin, officialUserID);
                 cout << endl;
 
-                vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(officialUserID);
+                vector<string> userInfo = DataHandler::clientGetAccountList(officialUserID);
 
                 if (userInfo.size() == 0) //no results found from searching, i.e. returned vect was {}
                 {

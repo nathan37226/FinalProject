@@ -1,12 +1,4 @@
-#include "Official.h"
-#include "Client.h"
-
 Official::Official()
-{
-	;
-}
-
-Official::~Official()
 {
 	;
 }
