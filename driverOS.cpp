@@ -8,17 +8,20 @@ void initialSetup();
 void savingTables();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
-
 void userLoginReset();
 bool isValidUserID(string userID);
+
 void clientLogin(string userID);
-void makeClientAccountChanges(Client &user, int option);
-void helpClientAccessAccount(Client &user, int option, vector<string> acctList);
+void clientMakeAccountChanges(Client &user, int option);
+void clientHelpAccessAccount(Client &user, int option, vector<string> acctList);
 
 void officialLogin(string userID);
-void openAccounts(Official &officialUser);
+void officialOpenAccounts(Official &officialUser);
+void officialSearch(Official &officialUser);
 
 void adminLogin(string userID);
+void adminModifyOfficial(Admin &admin);
+void adminRetrieveUserID(Admin &admin);
 
 
 /************************************************
@@ -49,8 +52,8 @@ void initialSetup()
 
 	//creating record of these default users, i.e. saving to .txt files
 	Admin admin;
-    admin.buildUser("UserData/admin.txt");
-    admin.setName("Automated Admin");
+    admin.buildUser("UserData/admin.txt"); //this will preserve recent history, if there
+    admin.setName("Automated Admin"); //hard coding everything else abount the account
     admin.setID("admin");
     admin.setPassword(EncryptionBox::hash("password1"));
     admin.setUserType("admin");
@@ -61,6 +64,7 @@ void initialSetup()
     official.setID("official");
     official.setPassword(EncryptionBox::hash("password1"));
     official.setUserType("official");
+    official.setState("active");
 
     Client house;
     house.buildUser("UserData/house.txt");
@@ -218,7 +222,7 @@ void userLoginReset()
                     user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
                     user.setRecentActivity("Password was Reset by the Automated System Administrator");
                     user.saveUser();
-                    cout << "Your password has been reset." << endl;
+                    cout << "Your password has been reset." << endl << endl;
                 }
                 else if (userInfo[1] == "official")
                 {
@@ -227,11 +231,11 @@ void userLoginReset()
                     user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
                     user.setRecentActivity("Password was Reset by the Automated System Administrator");
                     user.saveUser();
-                    cout << "Your password has been reset." << endl;
+                    cout << "Your password has been reset." << endl << endl;
                 }
                 else
                 {
-                    cout << "Admin Accounts Must Manually Reset Their Password." << endl;
+                    cout << "Admin Accounts Must Manually Reset Their Password." << endl << endl;
                 }
             }
             else
@@ -267,7 +271,7 @@ void clientLogin(string userID)
     cout << "Last Login: " << user.getRecentLogin() << endl << endl;
     user.setRecentLogin(DateTools().getCurrentTime()); //since we just logged in, now need to update time
 
-    string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Open New Account\n[5] Exit";
+    string clientInterface = "[1] Access Accounts\n[2] View Personal Information\n[3] Change Information\n[4] Open New Account\n[5] Log Out";
     bool wantsToExit = false;
     
     while (!wantsToExit)
@@ -301,7 +305,7 @@ void clientLogin(string userID)
                     
                     if (accountInterfaceOption != 5)
                     {
-                        helpClientAccessAccount(user, accountInterfaceOption, acctList);
+                        clientHelpAccessAccount(user, accountInterfaceOption, acctList);
                     }
                 }
                 break;
@@ -321,7 +325,7 @@ void clientLogin(string userID)
                 if (option != 6)
                 {
                     cout << endl;
-                    makeClientAccountChanges(user, option);
+                    clientMakeAccountChanges(user, option);
                 }
                 cout << endl;
                 break;
@@ -340,7 +344,7 @@ void clientLogin(string userID)
                 cout << "Please be aware that a Bear Bank Official may take several business days to review this request." << endl << endl;
                 break;
             }
-            case 5: //exit
+            case 5: //Log out
             {
                 wantsToExit = true;
                 user.saveUser();
@@ -350,7 +354,7 @@ void clientLogin(string userID)
 }
 
 //Needs Finishing!
-void makeClientAccountChanges(Client &user, int option)
+void clientMakeAccountChanges(Client &user, int option)
 {
     switch (option)
     {
@@ -359,6 +363,8 @@ void makeClientAccountChanges(Client &user, int option)
             string name = "", oldName = user.getName(), lastName = user.getName(), userID = user.getID();
             oldName = oldName.substr(0, oldName.find(" "));
             lastName = lastName.substr(lastName.find(" ") + 1, string::npos);
+
+            //changing name in user obj
             cout << "Enter your new first name: ";
             getline(cin, name);
             name = name + " " + lastName;
@@ -425,11 +431,12 @@ void makeClientAccountChanges(Client &user, int option)
 
             Admin admin; //creating the Automated Admin obj to change the password
             admin.buildUser("UserData/admin.txt");
-            admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
+            admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login time as now
             admin.resetPassword(user.getID(), newPassword);
             admin.setRecentActivity("Assisted Client '" + user.getID() + "' Change Password in Settings");
 
             user.setRecentActivity("Password was Reset in Settings");
+            user.setPassword(EncryptionBox::hash(newPassword)); //reflecting change inside user obj
             user.saveUser();
             cout << "Your password has been reset." << endl;
             break;
@@ -439,7 +446,7 @@ void makeClientAccountChanges(Client &user, int option)
 }
 
 //Needs Finishing!
-void helpClientAccessAccount(Client &user, int option, vector<string> acctList)
+void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
 {
     switch (option)
     {
@@ -473,54 +480,72 @@ void officialLogin(string userID)
 {
     Official user;
     user.buildUser("UserData/" + userID + ".txt");
-    cout << "Welcome, " << user.getName() << endl;
-    cout << "Last Activity: " << user.getRecentActivity() << endl;
-    cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentTime());
 
-    string officialInterface = "[1] Open Account\n[2] Close Account\n[3] Deposit into Account\n[4] Withdraw from Account\n[5] Search for Accounts\n[6] Exit";
-    bool wantsToExit = false;
-    
-    while (!wantsToExit)
+    if (user.getState() != "active")
     {
-        cout << officialInterface << endl << "Option: ";
-        int initialOption = getUserOption(6);
-        cout << endl;
+        cout << "This account has been locked." << endl << endl;
+    }
+    else
+    {
+        cout << "Welcome, " << user.getName() << endl;
+        cout << "Last Activity: " << user.getRecentActivity() << endl;
+        cout << "Last Login: " << user.getRecentLogin() << endl << endl;
+        user.setRecentLogin(DateTools().getCurrentTime());
 
-        switch (initialOption)
+        string officialInterface = "[1] Open Account\n[2] Close Account\n[3] Alter Existing Account\n[4] Deposit into Account\n[5] Withdraw from Account\n[6] Search for Bank Accounts\n[7] Log Out";
+        bool wantsToExit = false;
+        
+        while (!wantsToExit)
         {
-            case 1: //Open acct - look at queue or just open new acct for specified user
+            cout << officialInterface << endl << "Option: ";
+            int initialOption = getUserOption(7);
+            cout << endl;
+
+            switch (initialOption)
             {
-                openAccounts(user); //abstracted due to needed while loop
-                break;
-            }
-            case 2: //Close acct
-            {
-                break;
-            }
-            case 3: //Deposit into acct - needs user confirmation
-            {
-                break;
-            }
-            case 4: //Withdraw from acct - needs user confirmation
-            {
-                break;
-            }
-            case 5: //Search for acct by first name, last name, phone num, address, acct num
-            {
-                break;
-            }
-            case 6: //Exit
-            {
-                wantsToExit = true;
-                user.saveUser();
-                break;
+                case 1: //Open acct - look at queue or just open new acct for specified user
+                {
+                    officialOpenAccounts(user); //abstracted due to needed while loop
+                    break;
+                }
+                case 2: //Close acct
+                {
+                    break;
+                }
+                case 3: //Alter existing acct - changing things like interest rate, term length, maturity date, etc
+                {
+                    //build acct
+                    //check if open
+                    //make changes, if applicable to acct type
+                    //update DataHandler.allTables.accountTable to have new info
+                    //save acct
+                    break;
+                }
+                case 4: //Deposit into acct - needs user confirmation
+                {
+                    break;
+                }
+                case 5: //Withdraw from acct - needs user confirmation
+                {
+                    break;
+                }
+                case 6: //Search for acct by first name, last name, phone num, address, acct num
+                {
+                    officialSearch(user);
+                    break;
+                }
+                case 7: //Exit
+                {
+                    wantsToExit = true;
+                    user.saveUser();
+                    break;
+                }
             }
         }
     }
 }
 
-void openAccounts(Official &officialUser)
+void officialOpenAccounts(Official &officialUser)
 {
     string openAcctInterface = "[1] Open a new Account\n[2] View User Requested Accounts\n[3] Go Back";
     string requestedAcctInterface = "[1] Approve Request\n[2] Deny Request\n[3] Go Back";
@@ -539,7 +564,9 @@ void openAccounts(Official &officialUser)
                 //get userID where acct will be added
                 //display acct types
                 //get selection
-                //add acct to userTable and accountTable
+                //add acct to userTable and accountTable 
+
+                //make all of ^ into official funct!!!
                 break;
             }
             case 2: //View acct request queue
@@ -632,6 +659,87 @@ void openAccounts(Official &officialUser)
     }
 }
 
+void officialSearch(Official &officialUser)
+{
+    string searchInterface = "[1] Search by First Name\n[2] Search by Last Name\n[3] Search by Account Number\n[4] Search by Phone Number\n[5] Search by Address\n[6] View a Closed Account\n[7] Go Back";
+    bool wantsToExit = false;
+
+    while (!wantsToExit)
+    {
+        cout << searchInterface << endl << "Option: ";
+        int searchOption = getUserOption(7);
+
+        switch (searchOption)
+        {
+            case 1: //first name
+            {
+                string firstName = "";
+                cout << "Enter a first name: ";
+                getline(cin, firstName);
+                cout << endl;
+                officialUser.searchByFirstName(firstName);
+                officialUser.setRecentActivity("Searched for Bank Accounts by a First Name");
+                officialUser.saveUser();
+                break;
+            }
+            case 2: //last name
+            {
+                string lastName = "";
+                cout << "Enter a last name: ";
+                getline(cin, lastName);
+                cout << endl;
+                officialUser.searchByLastName(lastName);
+                officialUser.setRecentActivity("Searched for Bank Accounts by a Last Name");
+                officialUser.saveUser();
+                break;
+            }
+            case 3: //acct num
+            {
+                string acctNum = "";
+                cout << "Enter an Account Number: ";
+                getline(cin, acctNum);
+                cout << endl;
+                officialUser.searchByAccountNum(acctNum);
+                officialUser.setRecentActivity("Searched for a Bank Account by an Account Number");
+                officialUser.saveUser();
+                break;
+            }
+            case 4: //phone num
+            {
+                string phoneNum = "";
+                cout << "Enter a phone number: ";
+                getline(cin, phoneNum);
+                cout << endl;
+                officialUser.searchByPhoneNum(phoneNum);
+                officialUser.setRecentActivity("Searched for Bank Accounts by a Phone Number");
+                officialUser.saveUser();
+                break;
+            }
+            case 5: //address
+            {
+                string address = "";
+                cout << "Enter an address: ";
+                getline(cin, address);
+                cout << endl;
+                officialUser.searchByAddress(address);
+                officialUser.setRecentActivity("Searched for Bank Accounts by an Address");
+                officialUser.saveUser();
+                break;
+            }
+            case 6: //closed acct display -- must implement!!
+            {
+                break; 
+            }
+            case 7: //go back
+            {
+                wantsToExit = true;
+                cout << endl;
+                break;
+            }
+        }
+    }
+}
+
 
 
 /************************************************
@@ -641,12 +749,191 @@ Start of Admin Login
 
 void adminLogin(string userID)
 {
-    Admin user;
-    user.buildUser("UserData/" + userID + ".txt");
-    cout << "Welcome, " << user.getName() << endl;
-    cout << "Last Activity: " << user.getRecentActivity() << endl;
-    cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentTime());
+    Admin admin;
+    admin.buildUser("UserData/" + userID + ".txt");
+    cout << "Welcome, " << admin.getName() << endl;
+    cout << "Last Activity: " << admin.getRecentActivity() << endl;
+    cout << "Last Login: " << admin.getRecentLogin() << endl << endl;
+    admin.setRecentLogin(DateTools().getCurrentTime());
 
-    string adminInterface = "";
+    string adminInterface = "[1] Modify Official Account\n[2] Modify Account Types\n[3] Retrieve a User ID\n[4] Change a Password\n[5] Log Out";
+    bool wantsToExit = false;
+
+    while(!wantsToExit)
+    {
+        cout << adminInterface << endl << "Option: ";
+        int initialOption = getUserOption(5);
+        cout << endl;
+
+        switch (initialOption)
+        {
+            case 1: //Modify Official Account
+            {
+                adminModifyOfficial(admin);
+                break;
+            }
+            case 2: //Modify Account Types
+            {
+                break;
+            }
+            case 3: //Retrieve User ID
+            {
+                adminRetrieveUserID(admin);
+                break;
+            }
+            case 4: //Change pw
+            {
+                break;
+            }
+            case 5: //Log Out
+            {
+                wantsToExit = true;
+                admin.saveUser();
+                break;
+            }
+        }
+    }
+}
+
+void adminModifyOfficial(Admin &admin)
+{
+    string modifyOfficialInterface = "[1] Create a New Official\n[2] Edit Existing Official\n[3] Go Back";
+    bool wantsToExit = false;
+
+    while (!wantsToExit)
+    {
+        cout << modifyOfficialInterface << endl << "Option: ";
+        int modifyOfficialOption = getUserOption(3);
+        cout << endl;
+
+        switch (modifyOfficialOption)
+        {
+            case 1: //Create New Official
+            {
+                string fullName = "", userID = "", password = "";
+                bool isUserIDAvailable = false;
+                cout << "Enter the Official's first and last name: ";
+                getline(cin, fullName);
+
+                while (!isUserIDAvailable)
+                {
+                    cout << "Enter the Official's User ID: ";
+                    getline(cin, userID);
+                    isUserIDAvailable = isValidUserID(userID);
+                    if (!isUserIDAvailable)
+                    {
+                        cout << "Entered User ID not Available" << endl;
+                    }
+                }
+                
+                cout << "Enter the Official's password: ";
+                getline(cin, password);
+
+                admin.createOfficial(fullName, userID, password);
+                admin.setRecentActivity("Created new official: " + userID);
+                admin.saveUser();
+                cout << "A New Official Account for: " << fullName << " has been created!" << endl;                
+                break;
+            }
+            case 2: //Edit Existing official
+            {
+                string officialUserID = "";
+                cout << "Enter the User ID of the official: ";
+                getline(cin, officialUserID);
+                cout << endl;
+
+                vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(officialUserID);
+
+                if (userInfo.size() == 0) //no results found from searching, i.e. returned vect was {}
+                {
+                    cout << "User ID not found" << endl << endl;
+                }
+                else if (userInfo[1] != "official") 
+                {
+                    cout << officialUserID << " is not a Bear Bank Official" << endl << endl;
+                }
+                else //found an official!
+                {
+                    cout << "Official: " << officialUserID << " was found!" << endl << endl;
+                    Official officialUser;
+                    officialUser.buildUser("UserData/" + officialUserID + ".txt");
+
+                    string editOfficialInterface = "[1] Set Active\n[2] Set Inactive\n[3] Delete Official\n[4] Go Back";
+                    cout << editOfficialInterface << endl << "Option: ";
+                    int editOfficialOption = getUserOption(4);
+                    cout << endl;
+
+                    switch (editOfficialOption)
+                    {
+                        case 1: //Set active
+                        {
+                            admin.setOfficialActive(officialUser);
+                            admin.setRecentActivity("Set Official Active: " + officialUserID);
+                            admin.saveUser();
+                            cout << officialUserID << " has been set to: Active" << endl;
+                            cout << endl;
+                            break;
+                        }
+                        case 2: //Set inactive
+                        {
+                            admin.setOfficialInactive(officialUser);
+                            admin.setRecentActivity("Locked out Official: " + officialUserID);
+                            admin.saveUser();
+                            cout << officialUserID << " has been set to: Inactive" << endl;
+                            cout << endl;
+                            break;
+                        }
+                        case 3: //Delete official
+                        {
+                            admin.deleteOfficial(officialUser);
+                            admin.setRecentActivity("Deleted Official: " + officialUserID);
+                            admin.saveUser();
+                            cout << officialUserID << " has been deleted" << endl;
+                            cout << endl;
+                            break;
+                        }
+                        case 4: //Go back
+                        {
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+            case 3: //Go back
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
+    }
+}
+
+void adminRetrieveUserID(Admin &admin)
+{
+    string retrieveIDInterface = "[1] Display All Official User IDs\n[2] Search for Client User ID by an Account Number\n[3] Go Back";
+    bool wantsToExit = false;
+    while (!wantsToExit)
+    {
+        cout << retrieveIDInterface << endl << "Option: ";
+        int retrieveIDOption = getUserOption(3);
+        cout << endl;
+
+        switch (retrieveIDOption)
+        {
+            case 1: //display all Officials, admin can then search thru
+            {
+                break;
+            }
+            case 2: //Search For Client by acct num
+            {
+                break;
+            }
+            case 3:
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
+    }
 }
