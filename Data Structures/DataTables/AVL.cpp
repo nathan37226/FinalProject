@@ -376,6 +376,7 @@ node<T>* AVLTree<T>::delHelper(node<T> *&subRoot, T value)
             node<T> *largestLeftNode = rightmost(subRoot->left); //finding max value in left subtree of del node
             subRoot->value = largestLeftNode->value; //copying value over
             subRoot->list = largestLeftNode->list; //deep copy of list
+            mappedItemCount += largestLeftNode->list.size(); //if largestLeftNode is deleted, then we need to counter act the decrement to mappedItems
             subRoot->left = delHelper(subRoot->left, largestLeftNode->value); //delete max value in left subtree
         }
 
