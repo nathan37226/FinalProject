@@ -13,12 +13,12 @@ void accountExit();
 int main()
 {
     accountInit();
-    cout << "Loading checking account..." << endl;
-    //Account a("checking","Dominic","Zucchini","417-551-2422","1234 N Street Place Springfield, MO, 65805",0,0.0);
-    string acctNum = "C000000000";
-    Account a(acctNum);
+    cout << endl;
+    //Account a("checking","dom14","Dominic","Zucchini","417-551-2422","1234 N Street Place Springfield, MO, 65805",0,0.0);
+    Account a("C000000001");
     a.deposit(200.001);
     a.withdraw(100.5);
+    cout << a.getAccountHolderUserID() << endl;
     cout << Account::getDisplayNum(a.getAccountBalance()) << endl;
     a.displayHistory("12/01/2020 00:00:00", "12/02/2020 00:00:00");
     cout << a.saveToFile() << endl;
@@ -241,7 +241,7 @@ string Account::nextUniqueAccountNumber;
 /**********************************************************
 / Constructor for new account (account type must already exist)
 *//////////////////////////////////////////////////////////
-Account::Account(string acctTypeName, string acctFirstName, string acctLastName, string acctPhoneNumber, string acctAddress, time_t mDate, double acctBalance)
+Account::Account(string acctTypeName, string userID, string acctFirstName, string acctLastName, string acctPhoneNumber, string acctAddress, time_t mDate, double acctBalance)
 : AccountType(acctTypeName)
 {
     // Set Account Number
@@ -267,6 +267,7 @@ Account::Account(string acctTypeName, string acctFirstName, string acctLastName,
     }
 
     // Set account holder info
+    accountHolderUserID = userID;
     accountHolderFirstName = acctFirstName;
     accountHolderLastName = acctLastName;
     accountHolderPhoneNumber = acctPhoneNumber;
@@ -293,7 +294,6 @@ Account::Account(string acctTypeName, string acctFirstName, string acctLastName,
 *//////////////////////////////////////////////////////////
 Account::Account(string acctNum) : AccountType("blank")
 {
-    cout << "Loading account file..." << endl;
     buildFromFile(acctNum);
 }
 /**********************************************************
@@ -303,6 +303,12 @@ void Account::setAccountNumber(string acctNum)
 {
     accountNumber = acctNum;
 }
+
+void Account::setAccountHolderUserID(string userID)
+{
+    accountHolderUserID = userID;
+}
+
 void Account::setAccountHolderFirstName(string name)
 {
     // possibly add check for valid inputs
@@ -353,6 +359,11 @@ void Account::setOpenStatus(bool status)
 string Account::getAccountNumber()
 {
     return accountNumber;
+}
+
+string Account::getAccountHolderUserID()
+{
+    return accountHolderUserID;
 }
 
 string Account::getAccountHolderFirstName()
@@ -428,7 +439,8 @@ bool Account::getOpenStatus()
 *//////////////////////////////////////////////////////////
 string Account::convertTimeToString(time_t inputTime)
 {
-    return ctime(&inputTime);
+    string date = ctime(&inputTime);
+    return date.substr(0,date.find("\n"));
 }
 
 /**********************************************************
@@ -498,7 +510,7 @@ string Account::withdraw(double amount)
         {
             accountBalance = tempBalance - getPenaltyFee();
             saveTransaction("Withdrawl",amount);
-            saveTransaction("Overdraft",getPenaltyFee());
+            saveTransaction("Overdraft",-1 * getPenaltyFee());
             return "Overdraft Penalty.";
         }
         else
@@ -529,6 +541,12 @@ void Account::displayHistory(string beginning, string ending)
     time_t startDate = displayHistoryHelper(beginning);
     time_t endDate = displayHistoryHelper(ending);
     time_t tempDate;
+
+    if(endDate < startDate)
+    {
+        cout << "Invalid Dates" << endl;
+        return;
+    }
 
     string line;
     ifstream inFile;
@@ -596,7 +614,7 @@ string Account::saveToFile()
 
     outFile.open("AccountData/"+accountNumber+".txt", ofstream::trunc); // attempt to open file with intent to overwirite existing data
     outFile << EncryptionBox::encrypt(accountNumber) << endl;
-    //outFile << EncryptionBox::encrypt(routingNumber) << endl;
+    outFile << EncryptionBox::encrypt(accountHolderUserID) << endl;
     outFile << EncryptionBox::encrypt(accountHolderFirstName) << endl;
     outFile << EncryptionBox::encrypt(accountHolderLastName) << endl;
     outFile << EncryptionBox::encrypt(accountHolderPhoneNumber) << endl;
@@ -644,8 +662,8 @@ void Account::buildFromFile(string acctNum)
     {
         getline(inFile, line);
         accountNumber = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
-        //getline(inFile, line);
-        //routingNumber = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        getline(inFile, line);
+        accountHolderUserID = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
         getline(inFile, line);
         accountHolderFirstName = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
         getline(inFile, line);
@@ -729,6 +747,6 @@ void Account::saveTransaction(string type, double amount)
     time(&date);
     ofstream outFile;
     outFile.open("AccountData/"+accountNumber+"History.txt", ofstream::app);
-    outFile << to_string(date) + " " + type + " " + getDisplayNum(amount) << endl;
+    outFile << to_string(date) + " " + getDisplayNum(amount) + " " + type << endl;
     outFile.close();
 }

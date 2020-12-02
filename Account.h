@@ -44,6 +44,7 @@ class Account : public AccountType
 private:
     static const string routingNumber;
     string accountNumber;
+    string accountHolderUserID;
     string accountHolderFirstName;
     string accountHolderLastName;
     string accountHolderPhoneNumber;
@@ -70,13 +71,15 @@ private:
 
 public:
     // Constructor for new account
-    Account(string acctTypeName, string acctFirstName, string acctLastName, string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0);
+    Account(string acctTypeName, string userID, string acctFirstName, string acctLastName, string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0);
     // Constructor for existing account
     Account(string acctNum);
     //Account(string accountNumber);
     //~Account();
     void setAccountNumber(string acctNum);
     string getAccountNumber();
+    void setAccountHolderUserID(string userID);
+    string getAccountHolderUserID();
     void setAccountHolderFirstName(string name);
     string getAccountHolderFirstName();
     void setAccountHolderLastName(string name);
