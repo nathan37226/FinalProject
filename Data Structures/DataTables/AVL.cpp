@@ -61,7 +61,7 @@ void AVLTree<T>::display(int option) const
         {
             case 1:
             {
-                displayInOrder(root);
+                displayInOrderWithClients(root);
                 break;
             }
             case 2:
@@ -89,13 +89,16 @@ void AVLTree<T>::display(int option) const
 }
 
 template <class T>
-void AVLTree<T>::displayInOrder(node<T> *subRoot) const
+void AVLTree<T>::displayInOrderWithClients(node<T> *subRoot) const
 {
     if (subRoot) //not nullptr
     {
-        displayInOrder(subRoot->left);
-        cout << subRoot->value << endl;
-        displayInOrder(subRoot->right);
+        displayInOrderWithClients(subRoot->left);
+        if (subRoot->list[1] == "client")
+        {
+            cout << subRoot->value << endl;
+        }
+        displayInOrderWithClients(subRoot->right);
     }
 }
 
@@ -376,6 +379,7 @@ node<T>* AVLTree<T>::delHelper(node<T> *&subRoot, T value)
             node<T> *largestLeftNode = rightmost(subRoot->left); //finding max value in left subtree of del node
             subRoot->value = largestLeftNode->value; //copying value over
             subRoot->list = largestLeftNode->list; //deep copy of list
+            mappedItemCount += largestLeftNode->list.size(); //if largestLeftNode is deleted, then we need to counter act the decrement to mappedItems
             subRoot->left = delHelper(subRoot->left, largestLeftNode->value); //delete max value in left subtree
         }
 

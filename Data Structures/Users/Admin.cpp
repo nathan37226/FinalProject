@@ -95,3 +95,8 @@ void Admin::displayAllAdmins()
 {
 	DataHandler::allTables.userTable.display(2);
 }
+
+void Admin::displayAllClients()
+{
+	DataHandler::allTables.userTable.display(1);
+}

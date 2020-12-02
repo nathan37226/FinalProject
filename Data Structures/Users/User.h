@@ -25,8 +25,6 @@ public:
 	void setUserType(string type);
 	void setRecentActivity(string description);
 
-	bool isValidLogin(string newName, string newPassword, string loginTime);
-
 	virtual void saveUser() const; //virtual because clients have additional attributes
 	virtual void buildUser(string filename);
 

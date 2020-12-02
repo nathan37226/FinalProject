@@ -14,7 +14,7 @@ public:
 
 	//All Data Storage
 	static tableSet allTables;
-	vector<AccountType> accountTypeList;
+	static vector<AccountType> accountTypeList;
 
 	//login function
 	static string isValidLogin(string userID, string password); //success, returns user type, failure, returns "false"
@@ -33,7 +33,7 @@ public:
 
 	//admin operations
 	static void addOfficialToRecords(string hashedPw, string ID);
-	static void createAccountType(double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
+	static void createAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
 	static void deleteAccountType(string typeName);
 	static void alterAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
 	static void addAdminToRecords(string hashedPw, string ID);
@@ -47,6 +47,7 @@ public:
 };
 
 tableSet DataHandler::allTables = tableSet(); //static initialization
+vector<AccountType> DataHandler::accountTypeList = {};
 
 #include "DataHandler.cpp"
 #endif

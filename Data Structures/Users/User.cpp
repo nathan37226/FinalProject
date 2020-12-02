@@ -83,16 +83,6 @@ void User::setRecentActivity(string description)
 	recentActivity = description;
 }
 
-bool User::isValidLogin(string newName, string newPassword, string loginTime)
-{
-	if (userName == newName && userPassword == newPassword)
-	{
-		mostRecentLogin = loginTime;
-		return true;
-	}
-	return false;
-}
-
 void User::saveUser() const
 {
 	EncryptionBox::positionInFile = 0;

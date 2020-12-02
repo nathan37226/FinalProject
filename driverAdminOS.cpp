@@ -95,7 +95,7 @@ void adminLogin(string userID)
                         user.setRecentActivity("Password reset by: " + userID);
                         user.saveUser();
                     }
-                    cout << endl << "The Password has been Changed!" << endl;
+                    cout << endl << "The Password has been Changed!" << endl << endl;;
                 }
                 else
                 {
@@ -411,17 +411,25 @@ void adminViewTableStats(Admin &admin)
 
 void adminRetrieveUserID(Admin &admin)
 {
-    string retrieveIDInterface = "[1] Display All Official User IDs\n[2] Display All Admin User IDs\n[3] Search for Client User ID by an Account Number\n[4] Go Back";
+    string retrieveIDInterface = "[1] Display All Client User IDs\n[2] Display All Official User IDs\n[3] Display All Admin User IDs\n[4] Search for Client User ID by an Account Number\n[5] Go Back";
     bool wantsToExit = false;
     while (!wantsToExit)
     {
         cout << retrieveIDInterface << endl << "Option: ";
-        int retrieveIDOption = getUserOption(4);
+        int retrieveIDOption = getUserOption(5);
         cout << endl;
 
         switch (retrieveIDOption)
         {
-            case 1: //display all Officials
+            case 1:
+            {
+                admin.displayAllClients();
+                admin.setRecentActivity("Displayed All Client User IDs");
+                admin.saveUser();
+                cout << endl;
+                break;
+            }
+            case 2: //display all Officials
             {
                 admin.displayAllOfficials();
                 admin.setRecentActivity("Displayed All Official User IDs");
@@ -429,7 +437,7 @@ void adminRetrieveUserID(Admin &admin)
                 cout << endl;
                 break;
             }
-            case 2: //display all Admins
+            case 3: //display all Admins
             {
                 admin.displayAllAdmins();
                 admin.setRecentActivity("Displayed All Admin User IDs");
@@ -437,11 +445,11 @@ void adminRetrieveUserID(Admin &admin)
                 cout << endl;
                 break;
             }
-            case 3: //Search For Client by acct num
+            case 4: //Search For Client by acct num
             {
                 break;
             }
-            case 4:
+            case 5:
             {
                 wantsToExit = true;
                 break;
