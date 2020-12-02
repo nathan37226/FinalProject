@@ -10,7 +10,6 @@ public:
 	Client();
 	Client(string name, string ID, string pw, string type, string login, string address, string num);
 	Client(string name, string ID, string pw, string type, string address, string num);
-	~Client();
 
 	string getAddress() const;
 	string getPhoneNum() const;

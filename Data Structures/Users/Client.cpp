@@ -17,10 +17,6 @@ Client::Client(string name, string ID, string pw, string type, string address, s
 	clientPhoneNum = num;
 }
 
-Client::~Client()
-{
-}
-
 void Client::setAddress(string address)
 {
 	clientAddress = address;

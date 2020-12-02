@@ -1,56 +1,49 @@
 #ifndef DATAHANDLER_H
 #define DATAHANDLER_H
-#include "Client.h"
+
+struct tableSet
+{
+	AVLTree<string> firstNameTable, lastNameTable, phoneNumTable, addressTable, userTable;
+	AccountTable accountTable;
+};
 
 class DataHandler
 {
 public:
+	DataHandler();
+
+	//All Data Storage
 	static tableSet allTables;
+	vector<AccountType> accountTypeList;
 
-	static DataHandler* GetInstance();
+	//login function
+	static string isValidLogin(string userID, string password); //success, returns user type, failure, returns "false"
+	static bool isValidUserID(string userID);
+	static bool isAvaliableUserID(string userID);
 
-	//admin operation
-	void createOfficialAccount(string userName, string userID, string userPassword, string lastLogin);
-	bool changeOfficialStatus(string userID, string newState);//active or inactive
-	bool deleteOfficialAccount(string userID);
-
-	void createAccountType(double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
-	void deleteAccountType(string typeName);
-	void alterAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
-
-	//official operation
-	void addClientAccountToRecords(Client &user, Account &acct);
-
-	bool closeMemberAccount(string accountNumber);
-	bool depositIntoAccount(string accountNumber, double amount);
-	bool withdrawlFromAccount(string accountNumber, double amount);
-	vector<Account> searchForNumber(string accountNumber);
-	vector<Account> searchForName(string clientName);
-	vector<Account> searchForPhone(string phoneNumber);
-
-	void saveAccount();
-
-	//client operation
-	void queryAccountHistory(string clientID, string beginning, string ending);
+	//client operations
+	static string getAccountInfo(string acctNum);
 	static void changeClientFirstName(string userID, string oldName, string newName); //updates the necessary tables to reflect name change
 	static void changeClientLastName(string userID, string oldName, string newName);
 	static void changeClientAddress(string userID, string oldAddress, string newAddress);
 	static void changeClientPhoneNum(string userID, string oldNum, string newNum);
 	static void clientRequestNewAccount(string userID, string acctType);
+	static bool clientDisplayAccounts(string userID);
+	static vector<string> clientGetAccountList(string userID);
 
-	//login function
-	static string isValidLogin(string userID, string password); //success, returns user type, failure, returns "false"
+	//admin operations
+	static void addOfficialToRecords(string hashedPw, string ID);
+	static void createAccountType(double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
+	static void deleteAccountType(string typeName);
+	static void alterAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
+	static void addAdminToRecords(string hashedPw, string ID);
+	static vector<string> getLoginInfo(string userID);
 
-	//data interface
-	vector<AccountType> getTypeData();
+	//official operations
+	static void addClientAccountToRecords(Client &user, Account &acct);
 
-private:
-	DataHandler();
-	~DataHandler();
+	//AccountType operations
 
-private:
-	vector<AccountType> accountTypeList;
-	
 };
 
 tableSet DataHandler::allTables = tableSet(); //static initialization

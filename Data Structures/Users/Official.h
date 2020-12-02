@@ -1,21 +1,18 @@
 #ifndef OFFICIAL_H
 #define OFFICIAL_H
 
-#include "User.h"
-#include "Client.h"
-
 class Official : public User
 {
 public:
 	Official();
 	Official(string name, string ID, string pw, string type, string login);
 	Official(string name, string ID, string pw, string type);
-	~Official();
 
 	void saveUser() const;
 	void buildUser(string filename);
 
 	void addNewClientUser(Client &user);
+	void searchByUserID(string ID);
 	void searchByFirstName(string firstName);
 	void searchByLastName(string lastName);
 	void searchByAccountNum(string acctNum);

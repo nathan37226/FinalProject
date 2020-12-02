@@ -1,6 +1,7 @@
 /*
+Nathan Obert M03134502
 This file runs the Bear Bank program!
-Tables Needed:
+Tables:
     AccountTable:
         accountTable -- AcctNum -> info about acct
     AVLTree<string>:
@@ -10,17 +11,16 @@ Tables Needed:
         addressTable -- Address -> acct nums with that address
         userTable -- User ID -> {hashed password, userType, accts...}, if accts are applicable to the user type
 
-Default User Accounts:
+Default User Accounts:              These are hard coded to work each time the program is launched
     Admin: admin - password1
     Official: official - password1
     Client: house - password1
-
-    Personal: nayithan - password1, for client testing
 */
-#include <iostream>
-#include <string>
 #include "Data Structures/AllDataStructures.h" //include all classes into this header! ensure all classes are in that folder, too
 #include "driverOS.cpp" //all functs used to run driver are placed in here to reduce clutter
+#include "driverClientOS.cpp"
+#include "driverOfficialOS.cpp"
+#include "driverAdminOS.cpp"
 using namespace std;
 
 int main()
@@ -122,14 +122,14 @@ int main()
                     cout << "Now, an online account will be created for you." << endl;
                     cout << "Enter your desired user ID: ";
                     getline(cin, userName); //check for non duplicates!!!
-                    isAvailableID = isValidUserID(userName);
+                    isAvailableID = DataHandler::isAvaliableUserID(userName);
 
                     while (!isAvailableID) //validation check on userName
                     {
                         cout << "That user ID is not available." << endl;
                         cout << "Enter a new user ID: ";
                         getline(cin, userName);
-                        isAvailableID = isValidUserID(userName);
+                        isAvailableID = DataHandler::isAvaliableUserID(userName);
                     }
                     cout << "Enter your new password: ";
                     getline(cin, password);
