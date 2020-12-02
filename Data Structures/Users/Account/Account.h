@@ -19,6 +19,10 @@ protected:
     double roundNum(double amount, int precision);
 
 public:
+    // Constructor for new account type
+    AccountType(string acctTypeName, double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0);
+    // Constructor for existing account type
+    //AccountType(string acctTypeName);
     void setMonthlyFee(double fee);
     double getMonthlyFee();
     void setServiceFee(double fee);
@@ -29,6 +33,9 @@ public:
     double getInterestRate();
     void setMinimumBalance(double amount);
     double getMinimumBalance();
+    void setAccountTypeName(string name);
+    string getAccountTypeName();
+    static string getDisplayNum(double input);
 
 };
 
@@ -37,6 +44,7 @@ class Account : public AccountType
 private:
     static const string routingNumber;
     string accountNumber;
+    string accountHolderUserID;
     string accountHolderFirstName;
     string accountHolderLastName;
     string accountHolderPhoneNumber;
@@ -47,6 +55,7 @@ private:
     double accountBalance;
     bool restrictedStatus;
     bool openStatus;
+    time_t lastInterestCalculation;
 
     static string nextCheckingAccountNumber;
     static string nextSavingsAccountNumber;
@@ -56,9 +65,22 @@ private:
     void setAccountBalance(double amount);
     string convertTimeToString(time_t inputTime);
     string incrementAcctNum(string lastAcctNum);
+    void saveTransaction(string type, double amount);
+    void interestCalc();
+
+    friend void accountInit();
 
 public:
+    // Constructor for new account
+    Account(string acctTypeName, string userID, string acctFirstName, string acctLastName, string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0);
+    // Constructor for existing account
+    Account(string acctNum);
+    //Account(string accountNumber);
+    //~Account();
+    void setAccountNumber(string acctNum);
     string getAccountNumber();
+    void setAccountHolderUserID(string userID);
+    string getAccountHolderUserID();
     void setAccountHolderFirstName(string name);
     string getAccountHolderFirstName();
     void setAccountHolderLastName(string name);
@@ -80,8 +102,11 @@ public:
     bool getOpenStatus();
     string deposit(double amount); // returns string of what happened
     string withdraw(double amount);
-    void displayHistory(string beginning, string ending);
+    void displayHistory(string startDate, string endDate);
     static time_t displayHistoryHelper(string date);
+    string saveToFile();
+    void buildFromFile(string acctNum);
+    static void saveNextAccountNumbers();
 
 };
 
