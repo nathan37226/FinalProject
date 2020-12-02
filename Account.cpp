@@ -21,22 +21,31 @@ void accountInit()
     inFile.open("AccountData/nextAccountNumbers.txt");
     if(inFile)
     {
-        string line;
+        EncryptionBox::positionInFile = 0;
+        string line = "";
+
         getline(inFile,line);
-        Account::nextCheckingAccountNumber = line.substr(0,line.find("\r"));
+        line = line.substr(0, line.rfind("\r"));
+        Account::nextCheckingAccountNumber = EncryptionBox::decrypt(line);
+
         getline(inFile,line);
-        Account::nextSavingsAccountNumber = line.substr(0,line.find("\r"));
+        line = line.substr(0, line.rfind("\r"));
+        Account::nextSavingsAccountNumber = EncryptionBox::decrypt(line);
+
         getline(inFile,line);
-        Account::nextCDAccountNumber = line.substr(0,line.find("\r"));
+        line = line.substr(0, line.rfind("\r"));
+        Account::nextCDAccountNumber = EncryptionBox::decrypt(line);
+
         getline(inFile,line);
-        Account::nextUniqueAccountNumber = line.substr(0,line.find("\r"));
+        line = line.substr(0, line.rfind("\r"));
+        Account::nextUniqueAccountNumber = EncryptionBox::decrypt(line);
     }
     else
     {
-        Account::nextCheckingAccountNumber = "C000000000";
-        Account::nextSavingsAccountNumber = "S000000000";
-        Account::nextCDAccountNumber = "D000000000";
-        Account::nextUniqueAccountNumber = "U000000000";
+        Account::nextCheckingAccountNumber = "C000000001";
+        Account::nextSavingsAccountNumber = "S000000001";
+        Account::nextCDAccountNumber = "D000000001";
+        Account::nextUniqueAccountNumber = "U000000001";
     }
     inFile.close();
 }
@@ -70,15 +79,20 @@ AccountType::AccountType(string acctTypeName, double monFee, double servFee, dou
         inFile.open("AccountData/"+acctTypeName+".txt");
         if(inFile)
         {
-            string line;
+            EncryptionBox::positionInFile = 0;
+            string line = "";
             getline(inFile,line);
-            monthlyFee = stod(line.substr(0,line.find("\r")));
+            line = line.substr(0, line.rfind("\r"));
+            monthlyFee = stod(EncryptionBox::decrypt(line));
             getline(inFile,line);
-            serviceFee = stod(line.substr(0,line.find("\r")));
+            line = line.substr(0, line.rfind("\r"));
+            serviceFee = stod(EncryptionBox::decrypt(line));
             getline(inFile,line);
-            interestRate = stod(line.substr(0,line.find("\r")));
+            line = line.substr(0, line.rfind("\r"));
+            interestRate = stod(EncryptionBox::decrypt(line));
             getline(inFile,line);
-            minimumBalance = stod(line.substr(0,line.find("\r")));
+            line = line.substr(0, line.rfind("\r"));
+            minimumBalance = stod(EncryptionBox::decrypt(line));
             accountTypeName = acctTypeName;
             inFile.close();
         }
@@ -91,11 +105,12 @@ AccountType::AccountType(string acctTypeName, double monFee, double servFee, dou
             minimumBalance = minBalance;
             accountTypeName = acctTypeName;
             // save account type to file
+            EncryptionBox::positionInFile = 0;
             ofstream outFile("AccountData/"+acctTypeName+".txt", ofstream::trunc);
-            outFile << getDisplayNum(monFee) << endl;
-            outFile << getDisplayNum(servFee) << endl;
-            outFile << getDisplayNum(interestR) << endl;
-            outFile << getDisplayNum(minBalance) << endl;
+            outFile << EncryptionBox::encrypt(getDisplayNum(monFee)) << endl;
+            outFile << EncryptionBox::encrypt(getDisplayNum(servFee)) << endl;
+            outFile << EncryptionBox::encrypt(getDisplayNum(interestR)) << endl;
+            outFile << EncryptionBox::encrypt(getDisplayNum(minBalance)) << endl;
             outFile.close();
         }
     }
@@ -538,6 +553,10 @@ void Account::displayHistory(string beginning, string ending)
     inFile.open("AccountData/"+accountNumber+"History.txt");
     while(getline(inFile,line))
     {
+        EncryptionBox::positionInFile = 0;
+        line = line.substr(0, line.rfind("\r"));
+        line = EncryptionBox::decrypt(line);
+
         tempDate = stoi(line.substr(0,line.find(" ")));
         if(tempDate > startDate && tempDate < endDate)
             cout << convertTimeToString(tempDate) + " " + line.substr(line.find(" ")+1,line.length()) << endl;
@@ -708,12 +727,13 @@ void Account::buildFromFile(string acctNum)
 void Account::saveNextAccountNumbers()
 {
     // save account numbers
+    EncryptionBox::positionInFile = 0;
     ofstream outFile;
     outFile.open("AccountData/nextAccountNumbers.txt", ofstream::trunc);
-    outFile << nextCheckingAccountNumber << endl;
-    outFile << nextSavingsAccountNumber << endl;
-    outFile << nextCDAccountNumber << endl;
-    outFile << nextUniqueAccountNumber << endl;
+    outFile << EncryptionBox::encrypt(nextCheckingAccountNumber) << endl;
+    outFile << EncryptionBox::encrypt(nextSavingsAccountNumber) << endl;
+    outFile << EncryptionBox::encrypt(nextCDAccountNumber) << endl;
+    outFile << EncryptionBox::encrypt(nextUniqueAccountNumber) << endl;
     outFile.close();
 }
 
@@ -730,8 +750,10 @@ void Account::saveTransaction(string type, double amount)
 {
     time_t date;
     time(&date);
+    EncryptionBox::positionInFile = 0;
     ofstream outFile;
     outFile.open("AccountData/"+accountNumber+"History.txt", ofstream::app);
-    outFile << to_string(date) + " " + getDisplayNum(amount) + " " + type << endl;
+    string transactionInfo = to_string(date) + " " + getDisplayNum(amount) + " " + type;
+    outFile <<  EncryptionBox::encrypt(transactionInfo) << endl;
     outFile.close();
 }
