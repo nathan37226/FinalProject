@@ -18,6 +18,7 @@ public:
 	void deleteAdmin(string ID);
 	void displayAllOfficials();
 	void displayAllAdmins();
+	void displayAllClients();
 	
 
 protected:

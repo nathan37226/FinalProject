@@ -61,7 +61,7 @@ void AVLTree<T>::display(int option) const
         {
             case 1:
             {
-                displayInOrder(root);
+                displayInOrderWithClients(root);
                 break;
             }
             case 2:
@@ -89,13 +89,16 @@ void AVLTree<T>::display(int option) const
 }
 
 template <class T>
-void AVLTree<T>::displayInOrder(node<T> *subRoot) const
+void AVLTree<T>::displayInOrderWithClients(node<T> *subRoot) const
 {
     if (subRoot) //not nullptr
     {
-        displayInOrder(subRoot->left);
-        cout << subRoot->value << endl;
-        displayInOrder(subRoot->right);
+        displayInOrderWithClients(subRoot->left);
+        if (subRoot->list[1] == "client")
+        {
+            cout << subRoot->value << endl;
+        }
+        displayInOrderWithClients(subRoot->right);
     }
 }
 

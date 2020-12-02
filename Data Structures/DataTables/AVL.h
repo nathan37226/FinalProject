@@ -35,7 +35,7 @@ protected:
     int height(node<T> *&subRoot) const; //returns height attribute of a given node, or 0 if applicable
     int getNodeBalance(node<T> *subRoot) const; //whether node's subtrees are balanced
     int leafCount(node<T> *subRoot) const;
-    void displayInOrder(node<T> *subRoot) const;
+    void displayInOrderWithClients(node<T> *subRoot) const;
     void displayInOrderWithAdmins(node<T> *subRoot) const;
     void displayInOrderWithOfficials(node<T> *subRoot) const;
     void displayInOrderWithHeight(node<T> *subRoot) const;
