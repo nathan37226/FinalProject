@@ -85,3 +85,13 @@ void Admin::deleteAdmin(string ID)
 	clearFile("UserData/" + ID + ".txt"); //clears file with record
 	DataHandler::allTables.userTable.del(ID); //deletes entire node, so no more log in ability
 }
+
+void Admin::displayAllOfficials()
+{
+	DataHandler::allTables.userTable.display(3);
+}
+
+void Admin::displayAllAdmins()
+{
+	DataHandler::allTables.userTable.display(2);
+}

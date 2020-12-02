@@ -36,8 +36,8 @@ protected:
     int getNodeBalance(node<T> *subRoot) const; //whether node's subtrees are balanced
     int leafCount(node<T> *subRoot) const;
     void displayInOrder(node<T> *subRoot) const;
-    void displayPreOrder(node<T> *subRoot) const;
-    void displayPostOrder(node<T> *subRoot) const;
+    void displayInOrderWithAdmins(node<T> *subRoot) const;
+    void displayInOrderWithOfficials(node<T> *subRoot) const;
     void displayInOrderWithHeight(node<T> *subRoot) const;
     void displayInOrderWithMappedItems(node<T> *subRoot) const;
     node<T>* insertHelper(node<T> *&subRoot, node<T> *&newNode); 

@@ -1122,25 +1122,37 @@ void adminViewTableStats(Admin &admin)
 
 void adminRetrieveUserID(Admin &admin)
 {
-    string retrieveIDInterface = "[1] Display All Official User IDs\n[2] Search for Client User ID by an Account Number\n[3] Go Back";
+    string retrieveIDInterface = "[1] Display All Official User IDs\n[2] Display All Admin User IDs\n[3] Search for Client User ID by an Account Number\n[4] Go Back";
     bool wantsToExit = false;
     while (!wantsToExit)
     {
         cout << retrieveIDInterface << endl << "Option: ";
-        int retrieveIDOption = getUserOption(3);
+        int retrieveIDOption = getUserOption(4);
         cout << endl;
 
         switch (retrieveIDOption)
         {
-            case 1: //display all Officials, admin can then search thru
+            case 1: //display all Officials
+            {
+                admin.displayAllOfficials();
+                cout << endl;
+                admin.setRecentActivity("Displayed All Official User IDs");
+                admin.saveUser();
+                break;
+            }
+            case 2: //display all Admins
+            {
+                admin.displayAllAdmins();
+                cout << endl;
+                admin.setRecentActivity("Displayed All Admin User IDs");
+                admin.saveUser();
+                break;
+            }
+            case 3: //Search For Client by acct num
             {
                 break;
             }
-            case 2: //Search For Client by acct num
-            {
-                break;
-            }
-            case 3:
+            case 4:
             {
                 wantsToExit = true;
                 break;

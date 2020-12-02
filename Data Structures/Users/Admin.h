@@ -16,6 +16,8 @@ public:
 	void deleteOfficial(Official &officialUser);
 	void createAdmin(string fullName, string ID, string password);
 	void deleteAdmin(string ID);
+	void displayAllOfficials();
+	void displayAllAdmins();
 	
 
 protected:

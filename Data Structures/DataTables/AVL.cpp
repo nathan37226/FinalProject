@@ -66,12 +66,12 @@ void AVLTree<T>::display(int option) const
             }
             case 2:
             {
-                displayPreOrder(root);
+                displayInOrderWithAdmins(root);
                 break;
             }
             case 3:
             {
-                displayPostOrder(root);
+                displayInOrderWithOfficials(root);
                 break;
             }
             case 4:
@@ -100,24 +100,30 @@ void AVLTree<T>::displayInOrder(node<T> *subRoot) const
 }
 
 template <class T>
-void AVLTree<T>::displayPreOrder(node<T> *subRoot) const
+void AVLTree<T>::displayInOrderWithAdmins(node<T> *subRoot) const
 {
     if (subRoot)
     {
-        cout << subRoot->value << endl;
-        displayPreOrder(subRoot->left);
-        displayPreOrder(subRoot->right);
+        displayInOrderWithAdmins(subRoot->left);
+        if (subRoot->list[1] == "admin")
+        {
+            cout << subRoot->value << endl;
+        }
+        displayInOrderWithAdmins(subRoot->right);
     }
 }
 
 template <class T>
-void AVLTree<T>::displayPostOrder(node<T> *subRoot) const
+void AVLTree<T>::displayInOrderWithOfficials(node<T> *subRoot) const
 {
     if (subRoot)
     {
-        displayPostOrder(subRoot->left);
-        displayPostOrder(subRoot->right);
-        cout << subRoot->value << endl;
+        displayInOrderWithOfficials(subRoot->left);
+        if (subRoot->list[1] == "official")
+        {
+            cout << subRoot->value << endl;
+        }
+        displayInOrderWithOfficials(subRoot->right);
     }
 }
 
