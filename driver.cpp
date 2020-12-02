@@ -1,6 +1,7 @@
 /*
+Nathan Obert M03134502
 This file runs the Bear Bank program!
-Tables Needed:
+Tables:
     AccountTable:
         accountTable -- AcctNum -> info about acct
     AVLTree<string>:
@@ -10,13 +11,16 @@ Tables Needed:
         addressTable -- Address -> acct nums with that address
         userTable -- User ID -> {hashed password, userType, accts...}, if accts are applicable to the user type
 
-Default User Accounts:
+Default User Accounts:              These are hard coded to work each time the program is launched
     Admin: admin - password1
     Official: official - password1
     Client: house - password1
 */
 #include "Data Structures/AllDataStructures.h" //include all classes into this header! ensure all classes are in that folder, too
 #include "driverOS.cpp" //all functs used to run driver are placed in here to reduce clutter
+#include "driverClientOS.cpp"
+#include "driverOfficialOS.cpp"
+#include "driverAdminOS.cpp"
 using namespace std;
 
 int main()
