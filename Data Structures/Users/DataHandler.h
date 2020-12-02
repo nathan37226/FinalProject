@@ -19,6 +19,7 @@ public:
 	//login function
 	static string isValidLogin(string userID, string password); //success, returns user type, failure, returns "false"
 	static bool isValidUserID(string userID);
+	static bool isAvaliableUserID(string userID);
 
 	//client operations
 	static string getAccountInfo(string acctNum);
@@ -35,12 +36,14 @@ public:
 	static void createAccountType(double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
 	static void deleteAccountType(string typeName);
 	static void alterAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
+	static void addAdminToRecords(string hashedPw, string ID);
+	static vector<string> getLoginInfo(string userID);
 
 	//official operations
 	static void addClientAccountToRecords(Client &user, Account &acct);
 
 	//AccountType operations
-	
+
 };
 
 tableSet DataHandler::allTables = tableSet(); //static initialization

@@ -20,6 +20,7 @@ void officialSearch(Official &officialUser);
 
 void adminLogin(string userID);
 void adminModifyOfficial(Admin &admin);
+void adminModifyAdmin(Admin &admin);
 void adminModifyAccountTypes(Admin &admin);
 void adminViewTableStats(Admin &admin);
 void adminRetrieveUserID(Admin &admin);
@@ -531,7 +532,7 @@ void officialLogin(string userID)
                 {
                     break;
                 }
-                case 6: //Search for acct by first name, last name, phone num, address, acct num
+                case 6: //Search for acct by userID, first name, last name, phone num, address, acct num
                 {
                     officialSearch(user);
                     break;
@@ -615,6 +616,7 @@ void officialOpenAccounts(Official &officialUser)
                                 officialUser.setRecentActivity("Approved Request from: " + userID + " for: " + acctType);
                                 officialUser.saveUser();
                                 queue.dequeue(dummyStr); //dequeue needs a string& passed, so this just allows a value to be removed
+                                cout << "Approved Request" << endl;
 
                                 cout << endl;
                                 break;
@@ -627,6 +629,7 @@ void officialOpenAccounts(Official &officialUser)
                                 officialUser.setRecentActivity("Denied Request from: " + userID + " for: " + acctType);
                                 officialUser.saveUser();
                                 queue.dequeue(dummyStr);
+                                cout << "Denied Request" << endl;
 
                                 cout << endl;
                                 break;
@@ -642,7 +645,7 @@ void officialOpenAccounts(Official &officialUser)
                         }
                         if (queue.isEmpty()) //break condiditon while reviewing
                         {
-                            cout << "There are no account openning requests to view!" << endl << endl;
+                            cout << "There are no more Requests to View" << endl << endl;
                             doneReviewing = true;
                             queue.saveQueue();
                             break;
@@ -663,17 +666,38 @@ void officialOpenAccounts(Official &officialUser)
 
 void officialSearch(Official &officialUser)
 {
-    string searchInterface = "[1] Search by First Name\n[2] Search by Last Name\n[3] Search by Account Number\n[4] Search by Phone Number\n[5] Search by Address\n[6] View a Closed Account\n[7] Go Back";
+    string searchInterface = "[1] Search by User ID\n[2] Search by First Name\n[3] Search by Last Name\n[4] Search by Account Number\n[5] Search by Phone Number\n[6] Search by Address\n[7] View a Closed Account\n[8] Go Back";
     bool wantsToExit = false;
 
     while (!wantsToExit)
     {
         cout << searchInterface << endl << "Option: ";
-        int searchOption = getUserOption(7);
+        int searchOption = getUserOption(8);
 
         switch (searchOption)
         {
-            case 1: //first name
+            case 1: //user id
+            {
+                string userID = "";
+                cout << "Enter a User ID: ";
+                getline(cin, userID);
+                cout << endl;
+                bool isValid = DataHandler::isValidUserID(userID);
+
+                if (isValid)
+                {
+                    officialUser.searchByUserID(userID);
+                    officialUser.setRecentActivity("Searched for Bank Accounts by a User ID");
+                    officialUser.saveUser();
+                }
+                else
+                {
+                    cout << "The Entered User ID is Invalid" << endl;
+                }
+                
+                break;
+            }
+            case 2: //first name
             {
                 string firstName = "";
                 cout << "Enter a first name: ";
@@ -684,7 +708,7 @@ void officialSearch(Official &officialUser)
                 officialUser.saveUser();
                 break;
             }
-            case 2: //last name
+            case 3: //last name
             {
                 string lastName = "";
                 cout << "Enter a last name: ";
@@ -695,7 +719,7 @@ void officialSearch(Official &officialUser)
                 officialUser.saveUser();
                 break;
             }
-            case 3: //acct num
+            case 4: //acct num
             {
                 string acctNum = "";
                 cout << "Enter an Account Number: ";
@@ -706,7 +730,7 @@ void officialSearch(Official &officialUser)
                 officialUser.saveUser();
                 break;
             }
-            case 4: //phone num
+            case 5: //phone num
             {
                 string phoneNum = "";
                 cout << "Enter a phone number: ";
@@ -717,7 +741,7 @@ void officialSearch(Official &officialUser)
                 officialUser.saveUser();
                 break;
             }
-            case 5: //address
+            case 6: //address
             {
                 string address = "";
                 cout << "Enter an address: ";
@@ -728,11 +752,15 @@ void officialSearch(Official &officialUser)
                 officialUser.saveUser();
                 break;
             }
-            case 6: //closed acct display -- must implement!!
+            case 7: //closed acct display -- must implement!!
             {
+                //get acct num
+                //display short into
+                //display who closed by
+                //display when closed
                 break; 
             }
-            case 7: //go back
+            case 8: //go back
             {
                 wantsToExit = true;
                 cout << endl;
@@ -758,13 +786,13 @@ void adminLogin(string userID)
     cout << "Last Login: " << admin.getRecentLogin() << endl << endl;
     admin.setRecentLogin(DateTools().getCurrentTime());
 
-    string adminInterface = "[1] Modify Official Account\n[2] Modify Account Types\n[3] Retrieve a User ID\n[4] Change a Password\n[5] View Table Statistics\n[6] Log Out";
+    string adminInterface = "[1] Modify Official Account\n[2] Modify an Admin Account\n[3] Modify Account Types\n[4] Retrieve a User ID\n[5] Change a Password\n[6] View Table Statistics\n[7] Log Out";
     bool wantsToExit = false;
 
     while(!wantsToExit)
     {
         cout << adminInterface << endl << "Option: ";
-        int initialOption = getUserOption(6);
+        int initialOption = getUserOption(7);
         cout << endl;
 
         switch (initialOption)
@@ -774,26 +802,31 @@ void adminLogin(string userID)
                 adminModifyOfficial(admin);
                 break;
             }
-            case 2: //Modify Account Types
+            case 2: //Modify Admin
+            {
+                adminModifyAdmin(admin);
+                break;
+            }
+            case 3: //Modify Account Types
             {
                 adminModifyAccountTypes(admin);
                 break;
             }
-            case 3: //Retrieve User ID
+            case 4: //Retrieve User ID
             {
                 adminRetrieveUserID(admin);
                 break;
             }
-            case 4: //Change pw
+            case 5: //Change pw
             {
                 break;
             }
-            case 5: //view statistics
+            case 6: //view statistics
             {
                 adminViewTableStats(admin);
                 break;
             }
-            case 6: //Log Out
+            case 7: //Log Out
             {
                 wantsToExit = true;
                 admin.saveUser();
@@ -805,7 +838,7 @@ void adminLogin(string userID)
 
 void adminModifyOfficial(Admin &admin)
 {
-    string modifyOfficialInterface = "[1] Create a New Official\n[2] Edit Existing Official\n[3] Go Back";
+    string modifyOfficialInterface = "[1] Create a New Official\n[2] Edit an Existing Official\n[3] Go Back";
     bool wantsToExit = false;
 
     while (!wantsToExit)
@@ -827,7 +860,7 @@ void adminModifyOfficial(Admin &admin)
                 {
                     cout << "Enter the Official's User ID: ";
                     getline(cin, userID);
-                    isUserIDAvailable = DataHandler::isValidUserID(userID);
+                    isUserIDAvailable = DataHandler::isAvaliableUserID(userID);
                     if (!isUserIDAvailable)
                     {
                         cout << "Entered User ID not Available" << endl;
@@ -840,7 +873,7 @@ void adminModifyOfficial(Admin &admin)
                 admin.createOfficial(fullName, userID, password);
                 admin.setRecentActivity("Created new official: " + userID);
                 admin.saveUser();
-                cout << "A New Official Account for: " << fullName << " has been created!" << endl;                
+                cout << "A New Official Account for: " << fullName << " has been created!" << endl << endl;                
                 break;
             }
             case 2: //Edit Existing official
@@ -850,65 +883,149 @@ void adminModifyOfficial(Admin &admin)
                 getline(cin, officialUserID);
                 cout << endl;
 
-                vector<string> userInfo = DataHandler::clientGetAccountList(officialUserID);
-
-                if (userInfo.size() == 0) //no results found from searching, i.e. returned vect was {}
+                if (officialUserID == "official")
                 {
-                    cout << "User ID not found" << endl << endl;
+                    cout << "Cannot edit the Automated Official" << endl;
                 }
-                else if (userInfo[1] != "official") 
+                else
                 {
-                    cout << officialUserID << " is not a Bear Bank Official" << endl << endl;
-                }
-                else //found an official!
-                {
-                    cout << "Official: " << officialUserID << " was found!" << endl << endl;
-                    Official officialUser;
-                    officialUser.buildUser("UserData/" + officialUserID + ".txt");
+                    vector<string> userInfo = DataHandler::clientGetAccountList(officialUserID);
 
-                    string editOfficialInterface = "[1] Set Active\n[2] Set Inactive\n[3] Delete Official\n[4] Go Back";
-                    cout << editOfficialInterface << endl << "Option: ";
-                    int editOfficialOption = getUserOption(4);
-                    cout << endl;
-
-                    switch (editOfficialOption)
+                    if (userInfo.size() == 0) //no results found from searching, i.e. returned vect was {}
                     {
-                        case 1: //Set active
+                        cout << "User ID not found" << endl << endl;
+                    }
+                    else if (userInfo[1] != "official") 
+                    {
+                        cout << officialUserID << " is not a Bear Bank Official" << endl << endl;
+                    }
+                    else //found an official!
+                    {
+                        cout << "Official: " << officialUserID << " was found!" << endl << endl;
+                        Official officialUser;
+                        officialUser.buildUser("UserData/" + officialUserID + ".txt");
+
+                        string editOfficialInterface = "[1] Set Active\n[2] Set Inactive\n[3] Delete Official\n[4] Go Back";
+                        cout << editOfficialInterface << endl << "Option: ";
+                        int editOfficialOption = getUserOption(4);
+                        cout << endl;
+
+                        switch (editOfficialOption)
                         {
-                            admin.setOfficialActive(officialUser);
-                            admin.setRecentActivity("Set Official Active: " + officialUserID);
-                            admin.saveUser();
-                            cout << officialUserID << " has been set to: Active" << endl;
-                            cout << endl;
-                            break;
-                        }
-                        case 2: //Set inactive
-                        {
-                            admin.setOfficialInactive(officialUser);
-                            admin.setRecentActivity("Locked out Official: " + officialUserID);
-                            admin.saveUser();
-                            cout << officialUserID << " has been set to: Inactive" << endl;
-                            cout << endl;
-                            break;
-                        }
-                        case 3: //Delete official
-                        {
-                            admin.deleteOfficial(officialUser);
-                            admin.setRecentActivity("Deleted Official: " + officialUserID);
-                            admin.saveUser();
-                            cout << officialUserID << " has been deleted" << endl;
-                            cout << endl;
-                            break;
-                        }
-                        case 4: //Go back
-                        {
-                            break;
+                            case 1: //Set active
+                            {
+                                admin.setOfficialActive(officialUser);
+                                admin.setRecentActivity("Set Official Active: " + officialUserID);
+                                admin.saveUser();
+                                cout << officialUserID << " has been set to: Active" << endl;
+                                cout << endl;
+                                break;
+                            }
+                            case 2: //Set inactive
+                            {
+                                admin.setOfficialInactive(officialUser);
+                                admin.setRecentActivity("Locked out Official: " + officialUserID);
+                                admin.saveUser();
+                                cout << officialUserID << " has been set to: Inactive" << endl;
+                                cout << endl;
+                                break;
+                            }
+                            case 3: //Delete official
+                            {
+                                admin.deleteOfficial(officialUser);
+                                admin.setRecentActivity("Deleted Official: " + officialUserID);
+                                admin.saveUser();
+                                cout << officialUserID << " has been deleted" << endl;
+                                cout << endl;
+                                break;
+                            }
+                            case 4: //Go back
+                            {
+                                break;
+                            }
                         }
                     }
                 }
+
                 break;
             }
             case 3: //Go back
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
+    }
+}
+
+void adminModifyAdmin(Admin &admin)
+{
+    string modifyAdmin = "[1] Create a New Admin\n[2] Delete an Existing Admin\n[3] Go Back";
+    bool wantsToExit = false;
+
+    while (!wantsToExit)
+    {
+        cout << modifyAdmin << endl << "Option: ";
+        int modifyAdminOption = getUserOption(3);
+        cout << endl;
+
+        switch (modifyAdminOption)
+        {
+            case 1: //new admin
+            {
+                string fullName = "", userID = "", password = "";
+                bool isUserIDAvailable = false;
+                cout << "Enter the Admin's first and last name: ";
+                getline(cin, fullName);
+
+                while (!isUserIDAvailable)
+                {
+                    cout << "Enter the Admin's User ID: ";
+                    getline(cin, userID);
+                    isUserIDAvailable = DataHandler::isAvaliableUserID(userID);
+                    if (!isUserIDAvailable)
+                    {
+                        cout << "Entered User ID not Available" << endl;
+                    }
+                }
+                
+                cout << "Enter the Admin's password: ";
+                getline(cin, password);
+                admin.createAdmin(fullName, userID, password);
+                admin.setRecentActivity("Created new admin: " + userID);
+                admin.saveUser();
+                cout << endl << "A New Admin Account for: " << fullName << " has been created!" << endl << endl;                
+                break;
+            }
+            case 2: //delete existing admin
+            {
+                string userID = "";
+                cout << "Enter the User ID of the Admin you want to Delete: ";
+                getline(cin, userID);
+                vector<string> userInfo = DataHandler::getLoginInfo(userID);
+
+                if (userID == "admin")
+                {
+                    cout << endl << "Cannot delete the Automated Admin" << endl << endl;
+                }
+                else if (userInfo.size() == 0)
+                {
+                    cout << endl << "Invalid User ID" << endl << endl;
+                }
+                else if (userInfo[1] != "admin")
+                {
+                    cout << endl << "User ID does not Belong to an Admin" << endl << endl;
+                }
+                else
+                {
+                    admin.deleteAdmin(userID);
+                    admin.setRecentActivity("Deleted admin: " + userID);
+                    admin.saveUser();
+                    cout << endl << "The Admin Account: " + userID + " has been deleted" << endl << endl;
+                }
+                break;
+            }
+            case 3:
             {
                 wantsToExit = true;
                 break;

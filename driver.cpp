@@ -14,8 +14,6 @@ Default User Accounts:
     Admin: admin - password1
     Official: official - password1
     Client: house - password1
-
-    Personal: nayithan - password1, for client testing
 */
 #include "Data Structures/AllDataStructures.h" //include all classes into this header! ensure all classes are in that folder, too
 #include "driverOS.cpp" //all functs used to run driver are placed in here to reduce clutter
@@ -120,14 +118,14 @@ int main()
                     cout << "Now, an online account will be created for you." << endl;
                     cout << "Enter your desired user ID: ";
                     getline(cin, userName); //check for non duplicates!!!
-                    isAvailableID = DataHandler::isValidUserID(userName);
+                    isAvailableID = DataHandler::isAvaliableUserID(userName);
 
                     while (!isAvailableID) //validation check on userName
                     {
                         cout << "That user ID is not available." << endl;
                         cout << "Enter a new user ID: ";
                         getline(cin, userName);
-                        isAvailableID = DataHandler::isValidUserID(userName);
+                        isAvailableID = DataHandler::isAvaliableUserID(userName);
                     }
                     cout << "Enter your new password: ";
                     getline(cin, password);

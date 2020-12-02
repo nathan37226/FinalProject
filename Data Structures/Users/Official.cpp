@@ -97,6 +97,24 @@ void Official::addNewClientUser(Client &user)
 	DataHandler::allTables.userTable.insertWithList(userID, userData); //inserts into AVLtree
 }
 
+void Official::searchByUserID(string ID)
+{
+	vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(ID);
+
+	if (userInfo[1] == "client")
+	{
+		for (int i = 2; i < userInfo.size(); i++) //starts at 2 since userInfo is {hashedPw, acct type, acc1, acc2, acc3, etc}
+		{
+			string accountInfo = DataHandler::allTables.accountTable.search(userInfo[i]); //returns short info about acct
+			cout << userInfo[i] << endl << accountInfo << endl << endl;
+		}
+	}
+	else
+	{
+		cout << "The Entered User ID does not Belong to a Client" << endl;
+	}
+}
+
 void Official::searchByFirstName(string firstName)
 {
 	vector<string> searchResults = DataHandler::allTables.firstNameTable.returnMappedItems(firstName);

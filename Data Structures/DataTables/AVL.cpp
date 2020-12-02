@@ -19,7 +19,6 @@ void AVLTree<T>::addMidpoints(vector<node<T>*> &nodeList, int start, int end)
 
         root = insertHelper(root, nodeList[midpoint] );
         nodeCount++;
-        mappedItemCount += nodeList[midpoint]->list.size(); 
 
         addMidpoints(nodeList, start, midpoint- 1); //all values to the left of given mid
         addMidpoints(nodeList, midpoint + 1, end); //all values to the right of given mid
@@ -218,6 +217,7 @@ node<T>* AVLTree<T>::insertHelper(node<T> *&subRoot, node<T> *&newNode)
     //inserting the newNode
     if (!subRoot) 
     {
+        mappedItemCount += newNode->list.size();
         return newNode; 
     } 
     else if (newNode->value < subRoot->value)
@@ -362,6 +362,7 @@ node<T>* AVLTree<T>::delHelper(node<T> *&subRoot, T value)
     }
     else  //the values are equal, so need to start deleting
     {
+        mappedItemCount -= subRoot->list.size();
         //at this point, need to see which case is being dealt with
 
         if (subRoot->left && subRoot->right) //two children present

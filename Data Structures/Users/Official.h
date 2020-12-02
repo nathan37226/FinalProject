@@ -12,6 +12,7 @@ public:
 	void buildUser(string filename);
 
 	void addNewClientUser(Client &user);
+	void searchByUserID(string ID);
 	void searchByFirstName(string firstName);
 	void searchByLastName(string lastName);
 	void searchByAccountNum(string acctNum);

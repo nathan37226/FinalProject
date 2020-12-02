@@ -6,6 +6,7 @@ DataHandler::DataHandler()
 string DataHandler::isValidLogin(string userID, string password)
 {
 	vector<string> userInfo = DataHandler::allTables.userTable.returnMappedItems(userID);   //userInfo is formatted: username -> {hashedPassword, userType, accts...}
+	
 	string hashedInputPassword = "", savedHashPassword = "", userType = "";
 	if (userInfo.size() == 0) //i.e. no info returned from userTable for that username
 	{
@@ -30,8 +31,14 @@ string DataHandler::isValidLogin(string userID, string password)
 
 bool DataHandler::isValidUserID(string userID)
 {
-	bool value = (DataHandler::allTables.userTable.returnMappedItems(userID).size() == 0) ? true : false;
+	bool value = (DataHandler::allTables.userTable.returnMappedItems(userID).size() == 0) ? false : true;
     return value;  //above ternary will return a vect of {} is userID not found, so if size == 0 then userID not found, which means the userID is avaliable
+}
+
+bool DataHandler::isAvaliableUserID(string userID)
+{
+	bool value = (DataHandler::allTables.userTable.returnMappedItems(userID).size() == 0) ? true : false;
+    return value; //if the found vector is {}, then userID not present in table, so userID is avaliable
 }
 
 /************************************************
@@ -181,6 +188,18 @@ Functs called by Admin
 
 void DataHandler::addOfficialToRecords(string hashedPw, string ID)
 {
-	vector <string> userData = {hashedPw, "official"};
+	vector<string> userData = {hashedPw, "official"};
 	allTables.userTable.insertWithList(ID, userData); //creates record of Official inside table; allows login to occur
+}
+
+void DataHandler::addAdminToRecords(string hashedPw, string ID)
+{
+	vector<string> userData = {hashedPw, "admin"};
+	allTables.userTable.insertWithList(ID, userData); //creates record of Official inside table; allows login to occur
+}
+
+vector<string> DataHandler::getLoginInfo(string userID)
+{
+	vector<string> accountInfo = allTables.userTable.returnMappedItems(userID); //formatted {hashedPw, user type} 
+	return accountInfo;
 }
