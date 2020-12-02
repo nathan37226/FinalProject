@@ -819,6 +819,49 @@ void adminLogin(string userID)
             }
             case 5: //Change pw
             {
+                string userName = "", newPassword = "", userType = "";
+                cout << "Enter the User ID: ";
+                getline(cin, userName);
+
+                if (DataHandler::isValidUserID(userName))
+                {
+                    cout << "Enter the New Password: ";
+                    getline(cin, newPassword);
+                    admin.resetPassword(userName, newPassword);
+                    admin.setRecentActivity("Reset Password for: " + userName);
+                    admin.saveUser();
+
+                    //now to reflect update in other user acct
+                    userType = DataHandler::getLoginInfo(userName)[1];
+
+                    if (userType == "client")
+                    {
+                        Client user;
+                        user.buildUser("UserData/" + userName + ".txt");
+                        user.setRecentActivity("Password reset by: " + userID);
+                        user.saveUser();
+                    }
+                    else if (userType == "official")
+                    {
+                        Official user;
+                        user.buildUser("UserData/" + userName + ".txt");
+                        user.setRecentActivity("Password reset by: " + userID);
+                        user.saveUser();
+                    }
+                    else
+                    {
+                        Admin user;
+                        user.buildUser("UserData/" + userName + ".txt");
+                        user.setRecentActivity("Password reset by: " + userID);
+                        user.saveUser();
+                    }
+                    cout << endl << "The Password has been Changed!" << endl;
+                }
+                else
+                {
+                    cout << "Invalid User ID Entered" << endl << endl;
+                }
+                
                 break;
             }
             case 6: //view statistics
@@ -1135,17 +1178,17 @@ void adminRetrieveUserID(Admin &admin)
             case 1: //display all Officials
             {
                 admin.displayAllOfficials();
-                cout << endl;
                 admin.setRecentActivity("Displayed All Official User IDs");
                 admin.saveUser();
+                cout << endl;
                 break;
             }
             case 2: //display all Admins
             {
                 admin.displayAllAdmins();
-                cout << endl;
                 admin.setRecentActivity("Displayed All Admin User IDs");
                 admin.saveUser();
+                cout << endl;
                 break;
             }
             case 3: //Search For Client by acct num
