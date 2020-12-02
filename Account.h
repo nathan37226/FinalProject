@@ -64,10 +64,13 @@ private:
     void setAccountBalance(double amount);
     string convertTimeToString(time_t inputTime);
     string incrementAcctNum(string lastAcctNum);
+    void saveTransaction(string type, double amount);
+
+    friend void accountInit();
 
 public:
     // Constructor for new account
-    Account(string acctTypeName, string acctFirstName = "", string acctLastName = "", string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0);
+    Account(string acctTypeName, string acctFirstName, string acctLastName, string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0);
     // Constructor for existing account
     Account(string acctNum);
     //Account(string accountNumber);
@@ -95,10 +98,11 @@ public:
     bool getOpenStatus();
     string deposit(double amount); // returns string of what happened
     string withdraw(double amount);
-    void displayHistory(string beginning, string ending);
+    void displayHistory(string startDate, string endDate);
     static time_t displayHistoryHelper(string date);
     string saveToFile();
     void buildFromFile(string acctNum);
+    static void saveNextAccountNumbers();
 
 };
 #endif
