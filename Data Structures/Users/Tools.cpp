@@ -96,4 +96,3 @@ string DateTools::getCurrentTime()
 	currentTime.append(IntToString(systemTime.wMilliseconds));
 	return currentTime;
 }
-
