@@ -1,3 +1,6 @@
+#ifndef TOOLS_H
+#define TOOLS_H
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -41,6 +44,7 @@ public:
 	void SetDay(int day);
 	
 	string IntToString(int number);
+	int StringToInt(string number);
 	string getCurrentTime();
 	
 
@@ -49,3 +53,6 @@ private:
 	int _Month;
 	int _Day;
 };
+
+#include "Tools.cpp"
+#endif
