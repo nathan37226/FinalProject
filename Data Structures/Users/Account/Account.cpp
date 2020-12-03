@@ -245,17 +245,17 @@ Account::Account(string acctTypeName, string userID, string acctFirstName, strin
 : AccountType(acctTypeName)
 {
     // Set Account Number
-    if(acctTypeName == "checking")
+    if(acctTypeName == "Basic Checking")
     {
         accountNumber = nextCheckingAccountNumber;
         nextCheckingAccountNumber = incrementAcctNum(nextCheckingAccountNumber);
     }
-    else if(acctTypeName == "savings")
+    else if(acctTypeName == "Entry Saving")
     {
         accountNumber = nextSavingsAccountNumber;
         nextSavingsAccountNumber = incrementAcctNum(nextSavingsAccountNumber);
     }
-    else if(acctTypeName == "CD")
+    else if(acctTypeName == "Certificate of Deposit")
     {
         accountNumber = nextCDAccountNumber;
         nextCDAccountNumber = incrementAcctNum(nextCDAccountNumber);
@@ -400,7 +400,7 @@ string Account::getAccountHolderInfo()
 string Account::getAccountTableInfo()
 {
     string openOrNot = (openStatus == true) ? "Open: " : "Closed: ";
-    return openOrNot+" "+getAccountTypeName()+" $"+getDisplayNum(accountBalance)+" "+accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress+" "+accountHolderUserID;
+    return openOrNot+getAccountTypeName()+" $"+getDisplayNum(accountBalance)+" "+accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress+" "+accountHolderUserID;
 }
 
 time_t Account::getOpenDate()

@@ -79,16 +79,26 @@ void clientLogin(string userID)
             }
             case 4: //open new acct
             {
-                string acctType = "a cool account type";
                 //Make sure to display all types of accts currently offered
                 //Upon user choosing, send request off to an official for confirmation!
                 //have all officials be able to access this list of requests!
                 //Each request needs: UserID requesting and acct type
                 //Upon accpeting request or denying request for new acct, update client recent activity message to display the choice
 
-                DataHandler::clientRequestNewAccount(userID, acctType);
-                user.setRecentActivity("Requested New Account: " + acctType);
-                cout << "Please be aware that a Bear Bank Official may take several business days to review this request." << endl << endl;
+                int maxOption = DataHandler::accountTypeList.size() + 1;
+                DataHandler::displayAccountTypes();
+                cout << "[" + to_string(maxOption) + "] Go Back" << endl;
+                cout << "Option: ";
+                int accountTypeOption = getUserOption(maxOption);
+                cout << endl;
+
+                if (accountTypeOption != maxOption)
+                {
+                    string acctType = DataHandler::accountTypeList[accountTypeOption - 1].getAccountTypeName();
+                    DataHandler::clientRequestNewAccount(userID, acctType);
+                    user.setRecentActivity("Requested New Account: " + acctType);
+                    cout << "Please be Aware that a Bear Bank Official may take Several Business Days to Review this Request." << endl << endl;
+                }
                 break;
             }
             case 5: //Log out

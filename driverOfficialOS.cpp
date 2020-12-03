@@ -122,26 +122,31 @@ void officialOpenAccounts(Official &officialUser)
                     }
                     else
                     {
+                        int maxOption = DataHandler::accountTypeList.size() + 1;
                         DataHandler::displayAccountTypes();
-                        cout << endl;
+                        cout << "[" + to_string(maxOption) + "] Go Back" << endl;
                         cout << "Enter an Option: ";
-                        int accountTypeOption = getUserOption(DataHandler::accountTypeList.size());
+                        int accountTypeOption = getUserOption(maxOption);
+                        cout << endl;
 
-                        Client clientUser;
-                        clientUser.buildUser("UserData/" + clientID + ".txt");
-                        string name = clientUser.getName(), firstName = "", lastName = "", address = clientUser.getAddress(), phoneNum = clientUser.getPhoneNum(), acctType = DataHandler::accountTypeList[accountTypeOption - 1].getAccountTypeName();
-                        firstName = name.substr(0, name.find(" "));
-                        lastName = name = name.substr(name.find(" ") + 1, string::npos);
-                        Account newAccount(acctType, clientID, firstName, lastName, phoneNum, address); //creating new account according to prexisting account type
-                        
-                        officialUser.addAccountToClient(clientUser, newAccount);
-                        officialUser.setRecentActivity("Added Account: " + acctType + " to User: " + clientID);
-                        officialUser.saveUser();
-                        clientUser.setRecentActivity("Account: " + acctType + " added!");
-                        clientUser.saveUser();
-                        newAccount.saveToFile();
+                        if (accountTypeOption != maxOption)
+                        {
+                            Client clientUser;
+                            clientUser.buildUser("UserData/" + clientID + ".txt");
+                            string name = clientUser.getName(), firstName = "", lastName = "", address = clientUser.getAddress(), phoneNum = clientUser.getPhoneNum(), acctType = DataHandler::accountTypeList[accountTypeOption - 1].getAccountTypeName();
+                            firstName = name.substr(0, name.find(" "));
+                            lastName = name = name.substr(name.find(" ") + 1, string::npos);
+                            Account newAccount(acctType, clientID, firstName, lastName, phoneNum, address); //creating new account according to prexisting account type
+                            
+                            officialUser.addAccountToClient(clientUser, newAccount);
+                            officialUser.setRecentActivity("Added Account: " + acctType + " to User: " + clientID);
+                            officialUser.saveUser();
+                            clientUser.setRecentActivity("Account: " + acctType + " added!");
+                            clientUser.saveUser();
+                            newAccount.saveToFile();
 
-                        cout << "Account: " + acctType + " was created!" << endl << endl;
+                            cout << "Account: " + acctType + " was created!" << endl << endl;
+                        }
                     }
                 }
                 break;
@@ -155,7 +160,7 @@ void officialOpenAccounts(Official &officialUser)
 
                 if (queue.isEmpty())
                 {
-                    cout << "There are no account openning requests to view!" << endl << endl;
+                    cout << "There are no account openning requests to view" << endl << endl;
                     queue.saveQueue();
                     break;
                 }
@@ -178,19 +183,21 @@ void officialOpenAccounts(Official &officialUser)
                         {
                             case 1: //Approve
                             {  
-                                string acctNum = "", dummyStr = "";
-                                //create a new acct obj of specified type
-                                //Account newAccount;
-                                //save new acct obj to create a record in files
-                                //update acctNum!
+                                string name = clientUser.getName(), firstName = "", lastName = "", address = clientUser.getAddress(), phoneNum = clientUser.getPhoneNum(), dummyStr = "";
+                                firstName = name.substr(0, name.find(" "));
+                                lastName = name = name.substr(name.find(" ") + 1, string::npos);
+                                
+                                Account newAccount(acctType, userID, firstName, lastName, phoneNum, address);
 
-                                //DataHandler::addClientAccountToRecords(user, newAccount); //updates all tables with new info!
+                                officialUser.addAccountToClient(clientUser, newAccount); //updates record in all tables!
                                 clientUser.setRecentActivity("Request for: " + acctType + " was approved!");
                                 clientUser.saveUser();
                                 officialUser.setRecentActivity("Approved Request from: " + userID + " for: " + acctType);
                                 officialUser.saveUser();
+                                newAccount.saveToFile(); //creates initial text file record for the account
+
                                 queue.dequeue(dummyStr); //dequeue needs a string& passed, so this just allows a value to be removed
-                                cout << "Approved Request" << endl;
+                                cout << endl << "Approved Request" << endl;
 
                                 cout << endl;
                                 break;
@@ -203,7 +210,7 @@ void officialOpenAccounts(Official &officialUser)
                                 officialUser.setRecentActivity("Denied Request from: " + userID + " for: " + acctType);
                                 officialUser.saveUser();
                                 queue.dequeue(dummyStr);
-                                cout << "Denied Request" << endl;
+                                cout << endl << "Denied Request" << endl;
 
                                 cout << endl;
                                 break;
@@ -328,10 +335,13 @@ void officialSearch(Official &officialUser)
             }
             case 7: //closed acct display -- must implement!!
             {
-                //get acct num
-                //display short into
-                //display who closed by
-                //display when closed
+                string acctNum = "";
+                cout << "Enter an Account Number: ";
+                getline(cin, acctNum);
+                cout << endl;
+                officialUser.searchForClosedAcct(acctNum);
+                officialUser.setRecentActivity("Searched for a Closed Bank Account");
+                officialUser.saveUser();
                 break; 
             }
             case 8: //go back
