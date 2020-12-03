@@ -3,7 +3,6 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
-#include "EncryptionBox.h"
 
 using namespace std;
 

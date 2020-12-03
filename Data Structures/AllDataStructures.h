@@ -6,10 +6,10 @@
 #include <vector>
 #include <fstream>
 
+#include "DataTables/EncryptionBox.h"
 #include "Users/Account/Account.h"
 
 #include "DataTables/AVL.h"
-#include "DataTables/EncryptionBox.h"
 #include "DataTables/AccountTable.h"
 #include "DataTables/AccountQueue.h"
 
