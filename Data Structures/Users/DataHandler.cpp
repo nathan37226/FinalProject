@@ -143,7 +143,6 @@ void DataHandler::clientRequestNewAccount(string userID, string acctType)
 bool DataHandler::clientDisplayAccounts(string userID)
 {
 	vector<string> acctList = DataHandler::allTables.userTable.returnMappedItems(userID); //formatted {hashedPw, user type, acct 1, acct 2, etc}
-
 	if (acctList.size() == 2) //i.e. no present accounts
 	{
 		return false;
