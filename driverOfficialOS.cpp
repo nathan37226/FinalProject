@@ -6,7 +6,7 @@ All functions related to an Official logging into Bear Bank
 void officialLogin(string userID);
 void officialOpenAccounts(Official &officialUser);
 void officialSearch(Official &officialUser);
-void officialAlterAccount(Official &officialUser);
+void officialAlterAccount(Official &officialUser, string acctNum);
 
 
 /************************************************
@@ -57,7 +57,18 @@ void officialLogin(string userID)
                     //make changes, if applicable to acct type
                     //update DataHandler.allTables.accountTable to have new info
                     //save acct
-                    officialAlterAccount(user);
+                    string acctNum = "", acctInfo = "";
+                    cout << "Enter the Account Number: ";
+                    acctInfo = DataHandler::getAccountInfo(acctNum);
+                    if (acctInfo == "false")
+                    {
+                        cout << "The Account Could not be Found" << endl;
+                    }
+                    else
+                    {
+                        officialAlterAccount(user, acctNum);
+                    }
+                    cout << endl;
                     break;
                 }
                 case 4: //Deposit into acct - needs user confirmation
@@ -356,7 +367,7 @@ void officialSearch(Official &officialUser)
     }
 }
 
-void officialAlterAccount(Official &officialUser)
+void officialAlterAccount(Official &officialUser, string acctNum)
 {
     string alterInterface = "[1] ";
     bool wantsToExit = false;
