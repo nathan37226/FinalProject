@@ -49,6 +49,7 @@ private:
     string accountHolderLastName;
     string accountHolderPhoneNumber;
     string accountHolderAddress;
+    string accountClosedBy;
     time_t openDate;
     time_t closeDate;
     time_t maturityDate;
@@ -91,6 +92,9 @@ public:
     void setAccountHolderAddress(string address);
     string getAccountHolderAddress();
     string getAccountHolderInfo();
+    string getAccountTableInfo();
+    string getAccountClosedBy();
+    void setAccountClosedBy(string officialName);
     time_t getOpenDate();
     void setCloseDate(time_t date); // same as just closing?
     time_t getMaturityDate();

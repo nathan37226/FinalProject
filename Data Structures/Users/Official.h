@@ -18,8 +18,9 @@ public:
 	void searchByAccountNum(string acctNum);
 	void searchByPhoneNum(string phoneNum);
 	void searchByAddress(string address);
+	void searchForClosedAcct(string acctNum);
 
-	
+	void addAccountToClient(Client &user, Account &acct);	
 
 	string getState();
 	void setState(string newState);

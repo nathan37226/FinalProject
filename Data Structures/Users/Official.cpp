@@ -199,3 +199,25 @@ void Official::searchByAddress(string address)
 		}
 	}
 }
+
+void Official::addAccountToClient(Client &user, Account &acct)
+{
+	DataHandler::addClientAccountToRecords(user, acct);
+}
+
+void Official::searchForClosedAcct(string acctNum)
+{
+	string accountInfo = DataHandler::allTables.accountTable.search(acctNum);
+	if (accountInfo == "false")
+	{
+		cout << "No results found" << endl << endl;
+	}
+	else
+	{
+		Account closedAcct(acctNum);
+		cout << accountInfo << endl;
+		//cout << "Closed by: " << closedAcct.getAccountClosedBy() << endl;
+		//cout << "At: " << closedAcct.getCloseDate() << endl;
+		cout << "Get closing date here!" << endl;
+	}
+}
