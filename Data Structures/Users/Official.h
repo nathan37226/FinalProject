@@ -19,7 +19,7 @@ public:
 	void searchByPhoneNum(string phoneNum);
 	void searchByAddress(string address);
 
-	
+	void addAccountToClient(Client &user, Account &acct);	
 
 	string getState();
 	void setState(string newState);

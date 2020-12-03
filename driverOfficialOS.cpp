@@ -110,8 +110,45 @@ void officialOpenAccounts(Official &officialUser)
                 //add acct to userTable and accountTable 
 
                 //make all of ^ into official funct!!!
-                DataHandler::displayAccountTypes();
+                cout << "Enter the User ID of the Recipient of this Account: ";
+                string clientID = "";
+                getline(cin, clientID);
                 cout << endl;
+
+                if (!DataHandler::isValidUserID(clientID))
+                {
+                    cout << "Entered User ID is Invalid" << endl << endl;
+                }
+                else
+                {
+                    string userType = DataHandler::clientGetAccountList(clientID)[1];
+                    if (userType != "client")
+                    {
+                        cout << "Entered User ID does not Belong to a Client" << endl << endl;
+                    }
+                    else
+                    {
+                        DataHandler::displayAccountTypes();
+                        cout << endl;
+                        cout << "Enter an Option: ";
+                        int accountTypeOption = getUserOption(DataHandler::accountTypeList.size());
+
+                        Client clientUser;
+                        clientUser.buildUser("UserData/" + clientID + ".txt");
+                        string name = clientUser.getName(), firstName = "", lastName = "", address = clientUser.getAddress(), phoneNum = clientUser.getPhoneNum(), acctType = DataHandler::accountTypeList[accountTypeOption - 1].getAccountTypeName();
+                        firstName = name.substr(0, name.find(" "));
+                        lastName = name = name.substr(name.find(" ") + 1, string::npos);
+                        Account newAccount(acctType, clientID, firstName, lastName, phoneNum, address); //creating new account according to prexisting account type
+                        
+                        officialUser.addAccountToClient(clientUser, newAccount);
+                        officialUser.setRecentActivity("Added Account: " + acctType + " to User: " + clientID);
+                        officialUser.saveUser();
+                        clientUser.setRecentActivity("Account: " + acctType + " added!");
+                        clientUser.saveUser();
+
+                        cout << "Account: " + acctType + " was created!" << endl << endl;
+                    }
+                }
                 break;
             }
             case 2: //View acct request queue

@@ -397,6 +397,11 @@ string Account::getAccountHolderInfo()
     return accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress;
 }
 
+string Account::getAccountTableInfo()
+{
+    return accountHolderUserID+" "+getAccountTypeName()+" $"+getDisplayNum(accountBalance)+" "+accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress;
+}
+
 time_t Account::getOpenDate()
 {
     return openDate;

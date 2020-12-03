@@ -178,8 +178,8 @@ void DataHandler::addClientAccountToRecords(Client &user, Account &acct)
 	allTables.phoneNumTable.insertWithItem(user.getPhoneNum(), acct.getAccountNumber());
 	allTables.userTable.insertWithItem(user.getID(), acct.getAccountNumber());
 
-	//accountEntry newEntry(acct.getAccountNumber(), acct.getAccountInfo()); //implemenent getAcctInfo later on!
-	//allTables.accountTable.insert(newEntry);
+	accountEntry newEntry(acct.getAccountNumber(), acct.getAccountTableInfo()); //implemenent getAcctInfo later on!
+	allTables.accountTable.insert(newEntry);
 }
 
 /************************************************

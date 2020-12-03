@@ -199,3 +199,8 @@ void Official::searchByAddress(string address)
 		}
 	}
 }
+
+void Official::addAccountToClient(Client &user, Account &acct)
+{
+	DataHandler::addClientAccountToRecords(user, acct);
+}
