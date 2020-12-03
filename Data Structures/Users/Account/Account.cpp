@@ -12,9 +12,9 @@ void accountExit();
 void accountInit()
 {
     cout << "Creating default account types..." << endl;
-    AccountType checkingAccount("checking", 0.0, 0.0, 0.0, -50.0);
-    AccountType savingsAccount("savings", 0.0, 0.0, 2.0, 0.0);
-    AccountType CD("CD", 0.0, 0.0, 5.0, 0.0);
+    AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0);
+    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 0.0);
+    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0);
     cout << "Loading Data..." << endl;
     ifstream inFile;
     inFile.open("AccountData/nextAccountNumbers.txt");
@@ -47,6 +47,7 @@ void accountInit()
         Account::nextUniqueAccountNumber = "U000000001";
     }
     inFile.close();
+    cout << endl;
 }
 
 void accountExit()
@@ -244,17 +245,17 @@ Account::Account(string acctTypeName, string userID, string acctFirstName, strin
 : AccountType(acctTypeName)
 {
     // Set Account Number
-    if(acctTypeName == "checking")
+    if(acctTypeName == "Basic Checking")
     {
         accountNumber = nextCheckingAccountNumber;
         nextCheckingAccountNumber = incrementAcctNum(nextCheckingAccountNumber);
     }
-    else if(acctTypeName == "savings")
+    else if(acctTypeName == "Entry Saving")
     {
         accountNumber = nextSavingsAccountNumber;
         nextSavingsAccountNumber = incrementAcctNum(nextSavingsAccountNumber);
     }
-    else if(acctTypeName == "CD")
+    else if(acctTypeName == "Certificate of Deposit")
     {
         accountNumber = nextCDAccountNumber;
         nextCDAccountNumber = incrementAcctNum(nextCDAccountNumber);
@@ -394,6 +395,12 @@ string Account::getAccountHolderAddress()
 string Account::getAccountHolderInfo()
 {
     return accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress;
+}
+
+string Account::getAccountTableInfo()
+{
+    string openOrNot = (openStatus == true) ? "Open: " : "Closed: ";
+    return openOrNot+getAccountTypeName()+" $"+getDisplayNum(accountBalance)+" "+accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress+" "+accountHolderUserID;
 }
 
 time_t Account::getOpenDate()

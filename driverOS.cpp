@@ -70,9 +70,18 @@ void initialSetup()
     admin.saveUser();
     official.saveUser();
     house.saveUser();
+
+    accountInit();
+
+    AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0);
+    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 0.0);
+    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0);
+    DataHandler::accountTypeList.push_back(checkingAccount);
+    DataHandler::accountTypeList.push_back(savingsAccount);
+    DataHandler::accountTypeList.push_back(CD);
 }
 
-void savingTables()
+void savingBank()
 {
     DataHandler::allTables.accountTable.saveInfo("Tables/AccountTable.txt");
     DataHandler::allTables.firstNameTable.saveInfo("Tables/FirstNameTable.txt");
@@ -80,6 +89,7 @@ void savingTables()
     DataHandler::allTables.phoneNumTable.saveInfo("Tables/PhoneTable.txt");
     DataHandler::allTables.addressTable.saveInfo("Tables/AddressTable.txt");
     DataHandler::allTables.userTable.saveInfo("Tables/UserTable.txt");
+    accountExit(); //defined inside the account classs
 }
 
 //validates the user's input is within a range of options; max possible range is 1-99, for now
@@ -95,7 +105,7 @@ bool isValidOption(string input, int upperBound)
         {
             int option = stoi(input); //ensures input like a1 will fail
 
-            if ( (input.length()) == to_string(option).length() ) //this comparison catches inputs like 1a, where they start with an int but not all is an int
+            if ( input.length() == to_string(option).length() ) //this comparison catches inputs like 1a, where they start with an int but not all is an int
             {
                 bool returnValue = ( (option <= upperBound) && (option >= 1) ) ? true : false;
                 return returnValue;

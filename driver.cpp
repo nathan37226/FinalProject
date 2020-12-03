@@ -105,7 +105,7 @@ int main()
                 if (wantsToEnroll == 1)
                 {
                     //getting initial user info
-                    string firstName = "", lastName = "", phoneNum = "", address = "", userName = "", password = "";
+                    string firstName = "", lastName = "", phoneNum = "", address = "", clientID = "", password = "";
                     cout << "Your personal information must be gathered to create an account." << endl;
                     cout << "Enter your first name: ";
                     getline(cin, firstName);
@@ -121,22 +121,22 @@ int main()
                     bool isAvailableID = false;
                     cout << "Now, an online account will be created for you." << endl;
                     cout << "Enter your desired user ID: ";
-                    getline(cin, userName); //check for non duplicates!!!
-                    isAvailableID = DataHandler::isAvaliableUserID(userName);
+                    getline(cin, clientID); //check for non duplicates!!!
+                    isAvailableID = DataHandler::isAvaliableUserID(clientID);
 
-                    while (!isAvailableID) //validation check on userName
+                    while (!isAvailableID) //validation check on clientID
                     {
                         cout << "That user ID is not available." << endl;
                         cout << "Enter a new user ID: ";
-                        getline(cin, userName);
-                        isAvailableID = DataHandler::isAvaliableUserID(userName);
+                        getline(cin, clientID);
+                        isAvailableID = DataHandler::isAvaliableUserID(clientID);
                     }
                     cout << "Enter your new password: ";
                     getline(cin, password);
                     cout << endl;
 
                     //now to create the Client obj
-                    Client user(firstName + " " + lastName, userName, EncryptionBox::hash(password), "client", address, phoneNum);
+                    Client user(firstName + " " + lastName, clientID, EncryptionBox::hash(password), "client", address, phoneNum);
                     user.setRecentActivity("Just Enrolled!");
                     user.saveUser(); //creates a .txt file record
 
@@ -144,12 +144,15 @@ int main()
                     Official official;
                     official.buildUser("UserData/official.txt");
                     official.addNewClientUser(user);
-                    official.setRecentActivity("Enrolled new user: " + userName);
+                    official.setRecentActivity("Enrolled new user: " + clientID);
                     official.saveUser();
 
                     //create initial savings account for new client!
-                    //don't forget to update all tables with new acct!!
-                    //save accts in 'AccountData' folder!
+                    Account newAccount("Basic Checking", clientID, firstName, lastName, phoneNum, address);
+                    official.addAccountToClient(user, newAccount);
+                    newAccount.saveToFile();
+                    cout << "A Basic Checking Account has been Automatically Created for You." << endl;
+                    cout << "Happy Banking!" << endl << endl;
                 }
                 break;
             }
@@ -161,7 +164,7 @@ int main()
         }
     }
     
-    savingTables(); //saves all stored info accumulated or changed throughout program's runtime
+    savingBank(); //saves all stored info accumulated or changed throughout program's runtime
     return 0;
 }
 

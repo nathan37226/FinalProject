@@ -178,8 +178,8 @@ void DataHandler::addClientAccountToRecords(Client &user, Account &acct)
 	allTables.phoneNumTable.insertWithItem(user.getPhoneNum(), acct.getAccountNumber());
 	allTables.userTable.insertWithItem(user.getID(), acct.getAccountNumber());
 
-	//accountEntry newEntry(acct.getAccountNumber(), acct.getAccountInfo()); //implemenent getAcctInfo later on!
-	//allTables.accountTable.insert(newEntry);
+	accountEntry newEntry(acct.getAccountNumber(), acct.getAccountTableInfo()); //implemenent getAcctInfo later on!
+	allTables.accountTable.insert(newEntry);
 }
 
 /************************************************
@@ -202,4 +202,17 @@ vector<string> DataHandler::getLoginInfo(string userID)
 {
 	vector<string> accountInfo = allTables.userTable.returnMappedItems(userID); //formatted {hashedPw, user type} 
 	return accountInfo;
+}
+
+/************************************************
+AccountType operations
+************************************************/
+
+void DataHandler::displayAccountTypes()
+{
+	for (int i = 0; i < accountTypeList.size(); i++)
+	{
+		string line = "[" + to_string(i + 1) + "]" + " " + accountTypeList[i].getAccountTypeName();
+		cout << line << endl;
+	}
 }
