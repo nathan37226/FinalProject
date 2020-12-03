@@ -110,6 +110,8 @@ void officialOpenAccounts(Official &officialUser)
                 //add acct to userTable and accountTable 
 
                 //make all of ^ into official funct!!!
+                DataHandler::displayAccountTypes();
+                cout << endl;
                 break;
             }
             case 2: //View acct request queue

@@ -12,9 +12,9 @@ void accountExit();
 void accountInit()
 {
     cout << "Creating default account types..." << endl;
-    AccountType checkingAccount("checking", 0.0, 0.0, 0.0, -50.0);
-    AccountType savingsAccount("savings", 0.0, 0.0, 2.0, 0.0);
-    AccountType CD("CD", 0.0, 0.0, 5.0, 0.0);
+    AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0);
+    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 0.0);
+    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0);
     cout << "Loading Data..." << endl;
     ifstream inFile;
     inFile.open("AccountData/nextAccountNumbers.txt");

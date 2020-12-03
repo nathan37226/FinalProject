@@ -43,7 +43,7 @@ public:
 	static void addClientAccountToRecords(Client &user, Account &acct);
 
 	//AccountType operations
-
+	static void displayAccountTypes();
 };
 
 tableSet DataHandler::allTables = tableSet(); //static initialization

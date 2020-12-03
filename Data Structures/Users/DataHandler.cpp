@@ -203,3 +203,16 @@ vector<string> DataHandler::getLoginInfo(string userID)
 	vector<string> accountInfo = allTables.userTable.returnMappedItems(userID); //formatted {hashedPw, user type} 
 	return accountInfo;
 }
+
+/************************************************
+AccountType operations
+************************************************/
+
+void DataHandler::displayAccountTypes()
+{
+	for (int i = 0; i < accountTypeList.size(); i++)
+	{
+		string line = "[" + to_string(i + 1) + "]" + " " + accountTypeList[i].getAccountTypeName();
+		cout << line << endl;
+	}
+}
