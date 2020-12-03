@@ -149,7 +149,7 @@ int main()
 
                     //create initial savings account for new client!
                     //don't forget to update all tables with new acct!!
-                    //save accts in 'AccountData' folder!
+                    //save accts in 'AccountData' folder!!
                 }
                 break;
             }
