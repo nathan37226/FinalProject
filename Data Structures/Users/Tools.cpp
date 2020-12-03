@@ -73,6 +73,15 @@ string DateTools::IntToString(int number)
 	return _String;
 }
 
+int DateTools::StringToInt(string number)
+{
+	int _Number = 0;
+	stringstream ss;
+	ss << number;
+	ss >> _Number;
+	return _Number;
+}
+
 string DateTools::getCurrentTime()
 {
 	string currentTime;
