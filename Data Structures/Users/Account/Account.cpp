@@ -399,7 +399,8 @@ string Account::getAccountHolderInfo()
 
 string Account::getAccountTableInfo()
 {
-    return accountHolderUserID+" "+getAccountTypeName()+" $"+getDisplayNum(accountBalance)+" "+accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress;
+    string openOrNot = (openStatus == true) ? "Open: " : "Closed: ";
+    return openOrNot+" "+getAccountTypeName()+" $"+getDisplayNum(accountBalance)+" "+accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress+" "+accountHolderUserID;
 }
 
 time_t Account::getOpenDate()

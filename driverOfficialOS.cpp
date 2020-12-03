@@ -104,12 +104,6 @@ void officialOpenAccounts(Official &officialUser)
         {
             case 1: //Open new acct
             {
-                //get userID where acct will be added
-                //display acct types
-                //get selection
-                //add acct to userTable and accountTable 
-
-                //make all of ^ into official funct!!!
                 cout << "Enter the User ID of the Recipient of this Account: ";
                 string clientID = "";
                 getline(cin, clientID);
@@ -145,6 +139,7 @@ void officialOpenAccounts(Official &officialUser)
                         officialUser.saveUser();
                         clientUser.setRecentActivity("Account: " + acctType + " added!");
                         clientUser.saveUser();
+                        newAccount.saveToFile();
 
                         cout << "Account: " + acctType + " was created!" << endl << endl;
                     }

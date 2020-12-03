@@ -207,7 +207,7 @@ void AccountTable::getStatistics() const
     cout << "Load factor: " << loadFactor << endl;
     cout << "Load threshold: " << loadThreshold << endl;
     cout << "Avaliable entries before resizing: " << avaliableKeys << endl;
-    cout << "Max Collisions in a single index: " << maxCollisions << endl;
+    cout << "Max Collisions in a single index: " << maxCollisions - 1 << endl; // -1 since an obj in an entry by itself counts as a collision initially
     cout << "Array index usage: " << usagePercent << "%" << endl;
     cout << "Hashing algorithm: FNL-1a 64-bit" << endl;
 }
