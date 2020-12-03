@@ -161,7 +161,7 @@ int main()
         }
     }
     
-    savingTables(); //saves all stored info accumulated or changed throughout program's runtime
+    savingBank(); //saves all stored info accumulated or changed throughout program's runtime
     return 0;
 }
 

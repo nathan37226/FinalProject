@@ -47,6 +47,7 @@ void accountInit()
         Account::nextUniqueAccountNumber = "U000000001";
     }
     inFile.close();
+    cout << endl;
 }
 
 void accountExit()
