@@ -48,6 +48,42 @@ void officialLogin(string userID)
                 }
                 case 2: //Close acct
                 {
+                    string acctNumToClose = "", acctToCloseInfo = "";
+                    cout << "Enter the Account Number: ";
+                    getline(cin, acctNumToClose);
+                    acctToCloseInfo = DataHandler::getAccountInfo(acctNumToClose);
+                    cout << endl;
+
+                    if (acctToCloseInfo == "false")
+                    {
+                        cout << "Invalid Account Number Entered" << endl;
+                    }
+                    else
+                    {
+                        if (acctToCloseInfo.substr(0, 1) == "C")
+                        {
+                            cout << "The Account is Already Closed" << endl;
+                        }
+                        else //actually closing the account
+                        {
+                            Account acctToClose(acctNumToClose);
+                            acctToClose.setCloseDate( time(0) );
+                            acctToClose.setOpenStatus(false); //actually closing
+                            acctToClose.setAccountClosedBy(user.getID());
+                            acctToClose.saveToFile();
+                            string clientID = acctToClose.getAccountHolderUserID();
+
+                            Client clientUser;
+                            clientUser.buildUser("UserData/" + clientID + ".txt");
+                            clientUser.setRecentActivity("Account: " + acctNumToClose + " has been Closed");
+                            clientUser.saveUser();
+                            user.setRecentActivity("Closed Account: " + acctNumToClose);
+                            user.saveUser();
+
+                            cout << "Account: " + acctNumToClose + " has been Closed" << endl;
+                        }
+                    }
+                    cout << endl;
                     break;
                 }
                 case 3: //Alter existing acct - changing things like interest rate, term length, maturity date, open status, etc etc

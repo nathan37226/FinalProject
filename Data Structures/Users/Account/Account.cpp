@@ -354,6 +354,11 @@ void Account::setOpenStatus(bool status)
     openStatus = status;
 }
 
+void Account::setAccountClosedBy(string name)
+{
+    accountClosedBy = name;
+}
+
 /**********************************************************
 / Getters
 *//////////////////////////////////////////////////////////
@@ -431,6 +436,11 @@ bool Account::getRestrictedStatus()
 bool Account::getOpenStatus()
 {
     return openStatus;
+}
+
+string Account::getAccountClosedBy()
+{
+    return accountClosedBy;
 }
 
 /**********************************************************

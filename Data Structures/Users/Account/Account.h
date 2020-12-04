@@ -94,6 +94,8 @@ public:
     string getAccountHolderAddress();
     string getAccountHolderInfo();
     string getAccountTableInfo();
+    void setAccountClosedBy(string name);
+    string getAccountClosedBy();
     time_t getOpenDate();
     void setCloseDate(time_t date); // same as just closing?
     time_t getMaturityDate();
