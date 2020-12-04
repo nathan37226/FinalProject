@@ -314,7 +314,7 @@ void adminModifyAdmin(Admin &admin)
                 }
                 break;
             }
-            case 3:
+            case 3: //go back
             {
                 wantsToExit = true;
                 break;
@@ -338,6 +338,8 @@ void adminModifyAccountTypes(Admin &admin)
         {
             case 1: //View all
             {
+                DataHandler::displayAccountTypes();
+                cout << endl;
                 break;
             }
             case 2: //Create new
@@ -447,6 +449,25 @@ void adminRetrieveUserID(Admin &admin)
             }
             case 4: //Search For Client by acct num
             {
+                string acctNum = "", acctInfo = "";
+                cout << "Enter the Account Number: ";
+                getline(cin, acctNum);
+                acctInfo = DataHandler::getAccountInfo(acctNum);
+
+                if (acctInfo == "false")
+                {
+                    cout << "No Results were Found" << endl;
+                }
+                else
+                {
+                    string clientID = admin.returnUserID(acctNum);
+                    cout << "The User ID of " + acctNum + " is: " + clientID << endl;
+                    admin.setRecentActivity("Searched for User ID through Account Number");
+                    admin.saveUser();
+                }
+                
+
+                cout << endl;
                 break;
             }
             case 5:

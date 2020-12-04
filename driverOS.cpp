@@ -74,12 +74,7 @@ void initialSetup()
 
     accountInit();
 
-    AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0);
-    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 0.0);
-    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0);
-    DataHandler::accountTypeList.push_back(checkingAccount);
-    DataHandler::accountTypeList.push_back(savingsAccount);
-    DataHandler::accountTypeList.push_back(CD);
+    DataHandler::buildAccountTypesFomeFile(); //will auto initialize the default 3 if no file is found
 }
 
 void savingBank()
@@ -176,8 +171,8 @@ void userLoginReset()
                     admin.buildUser("UserData/admin.txt");
                     admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
 
-                    string userID = admin.returnUserID(accountNum); //Implement Later!!!!!
-                    cout << "Your User ID is: " << userID << endl;
+                    string userID = admin.returnUserID(accountNum);
+                    cout << "Your User ID is: " << userID << endl << endl;
 
                     string description = "Provided user '" + userID + "' the User ID to the online account";
                     admin.setRecentActivity(description);

@@ -408,9 +408,9 @@ string Account::getAccountTableInfo()
     return openOrNot+getAccountTypeName()+" $"+getDisplayNum(accountBalance)+" "+accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress+" "+accountHolderUserID;
 }
 
-time_t Account::getOpenDate()
+string Account::getOpenDate()
 {
-    return openDate;
+    return convertTimeToString(openDate);
 }
 
 time_t Account::getMaturityDate()
