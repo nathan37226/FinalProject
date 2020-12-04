@@ -278,13 +278,12 @@ void AccountTable::refreshInfo()
                 accountEntry oldAcctEntry;
                 dict[i].peekFirst(oldAcctEntry); //takes on value
                 dict[i].delFirst();
-                /*
-                Account acctObj;
-                acctObj.buildFromFile(oldAcctEntry.key);
-                string acctInfo = ""; //here is where needs work!!!!
+                
+                Account acctObj(oldAcctEntry.key);
+                string acctInfo = acctObj.getAccountInfo(); //here is where needs work!!!!
                 accountEntry newAcctEntry(oldAcctEntry.key, acctInfo);
                 newList.append(newAcctEntry);
-                */
+                
             }
             
             dict[i] = newList; //will deep copy new values over

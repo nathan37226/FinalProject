@@ -294,8 +294,11 @@ Account::Account(string acctTypeName, string userID, string acctFirstName, strin
 *//////////////////////////////////////////////////////////
 Account::Account(string acctNum) : AccountType("blank")
 {
-    buildFromFile(acctNum);
-    interestCalc();
+    if(acctNum != "")
+    {
+        buildFromFile(acctNum);
+        interestCalc();
+    }
 }
 /**********************************************************
 / Setters
