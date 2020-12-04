@@ -111,6 +111,7 @@ public:
     string saveToFile();
     void buildFromFile(string acctNum);
     static void saveNextAccountNumbers();
+    void doServiceCharge();
 
 };
 
