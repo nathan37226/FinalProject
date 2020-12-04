@@ -447,6 +447,23 @@ void adminRetrieveUserID(Admin &admin)
             }
             case 4: //Search For Client by acct num
             {
+                string acctNum = "", acctInfo = "";
+                cout << "Enter the Account Number: ";
+                getline(cin, acctNum);
+                acctInfo = DataHandler::getAccountInfo(acctNum);
+
+                if (acctInfo == "false")
+                {
+                    cout << "No Results were Found" << endl;
+                }
+                else
+                {
+                    string clientID = acctInfo.substr(acctInfo.rfind(" ") + 1, string::npos); //very last element in the string
+                    cout << "The User ID of " + acctNum + " is: " + clientID << endl;
+                }
+                
+
+                cout << endl;
                 break;
             }
             case 5:
