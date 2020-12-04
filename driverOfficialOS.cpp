@@ -90,11 +90,6 @@ void officialLogin(string userID)
                 }
                 case 3: //Alter existing acct - changing things like interest rate, term length, maturity date, open status, etc etc
                 {
-                    //build acct
-                    //check if open
-                    //make changes, if applicable to acct type
-                    //update DataHandler.allTables.accountTable to have new info
-                    //save acct
                     string acctNum = "", acctInfo = "";
                     cout << "Enter the Account Number: ";
                     getline(cin, acctNum);
@@ -117,6 +112,60 @@ void officialLogin(string userID)
                 }
                 case 4: //Deposit into acct - needs user confirmation
                 {
+                    string acctNum = "", acctInfo = "";
+                    cout << "Enter the Account Number: ";
+                    getline(cin, acctNum);
+                    acctInfo = DataHandler::getAccountInfo(acctNum);
+                    cout << endl;
+
+                    if (acctInfo == "false")
+                    {
+                        cout << "The Account Could not be Found" << endl;
+                    }
+                    else if (acctInfo.substr(0, 1) == "C")
+                    {
+                        cout << "The Account is Closed" << endl;
+                    }
+                    else //making the deposit
+                    {
+                        Account clientAcct(acctNum);
+                        string enteredClientPw = "", clientHashedPw = DataHandler::clientGetAccountList(clientAcct.getAccountHolderUserID())[0]; // formatted {hashedPw, user type, acct1, acct2, etc}, so 0th index is what we want
+                        cout << "Enter the Client's Password: ";
+                        getline(cin, enteredClientPw);
+
+                        if (EncryptionBox::hash(enteredClientPw) != clientHashedPw)
+                        {
+                            cout << endl << "This Deposit does not have the Requiste Authorization" << endl << "Deposit Cancelled" << endl;
+                        }
+                        else //valid pw!
+                        {
+                            string depositAmount = "";
+                            cout << "Enter the Amount to Deposit: ";
+                            getline(cin, depositAmount);
+
+                            bool isValidAmount = isValidNumber(depositAmount);
+                            if ( (!isValidAmount) || (Account::roundNum(stod(depositAmount), 2) != stod(depositAmount)) )
+                            {
+                                cout << "Invalid Amount Entered" << endl << "Deposit Cancelled" << endl;
+                            }                           
+                            else //making deposit happen!
+                            {
+                                Account clientAcct(acctNum);
+                                clientAcct.deposit( stod(depositAmount) );
+                                clientAcct.saveToFile();
+                                DataHandler::updateAccountInfo(acctNum, clientAcct.getAccountTableInfo());
+
+                                Client clientUser;
+                                clientUser.buildUser("UserData/" + clientAcct.getAccountHolderUserID() + ".txt");
+                                clientUser.setRecentActivity("Official: " + user.getID() + " Deposited $" + depositAmount + " into: " + acctNum);
+                                clientUser.saveUser();
+                                user.setRecentActivity("Deposited $" + depositAmount + " into: " + acctNum);
+                                user.saveUser();
+                                cout << endl << "Successfully Deposited $" + depositAmount << endl;
+                            }
+                        }
+                    }
+                    cout << endl;
                     break;
                 }
                 case 5: //Withdraw from acct - needs user confirmation
