@@ -529,25 +529,25 @@ string Account::withdraw(double amount)
         double tempBalance = accountBalance - roundNum(amount, 2);
         if(tempBalance < getMinimumBalance())
         {
-            return "Insufficient Funds.";
+            return "Insufficient Funds";
         }
         else if(tempBalance < 0 && tempBalance > getMinimumBalance())
         {
             accountBalance = tempBalance - getPenaltyFee();
             saveTransaction("Withdrawl",amount);
             saveTransaction("Overdraft",-1 * getPenaltyFee());
-            return "Overdraft Penalty.";
+            return "Overdraft Penalty";
         }
         else
         {
             accountBalance = tempBalance;
             saveTransaction("Withdrawl",amount);
-            return "Amount Withdrawn.";
+            return "Amount Withdrawn";
         }
     }
     else
-        return "Account Restricted.";
-    return "Something else happened.";
+        return "Account Restricted";
+    return "Something else happened";
 }
 
 /**********************************************************

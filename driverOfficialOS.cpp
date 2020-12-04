@@ -170,6 +170,88 @@ void officialLogin(string userID)
                 }
                 case 5: //Withdraw from acct - needs user confirmation
                 {
+                    string acctNum = "", acctInfo = "";
+                    cout << "Enter the Account Number: ";
+                    getline(cin, acctNum);
+                    acctInfo = DataHandler::getAccountInfo(acctNum);
+                    cout << endl;
+
+                    if (acctInfo == "false")
+                    {
+                        cout << "The Account Could not be Found" << endl;
+                    }
+                    else if (acctInfo.substr(0, 1) == "C")
+                    {
+                        cout << "The Account is Closed" << endl;
+                    }
+                    else //making the withdrawl
+                    {
+                        Account clientAcct(acctNum);
+                        string enteredClientPw = "", clientHashedPw = DataHandler::clientGetAccountList(clientAcct.getAccountHolderUserID())[0]; // formatted {hashedPw, user type, acct1, acct2, etc}, so 0th index is what we want
+                        cout << "Enter the Client's Password: ";
+                        getline(cin, enteredClientPw);
+
+                        if (EncryptionBox::hash(enteredClientPw) != clientHashedPw)
+                        {
+                            cout << endl << "This Withdrawl does not have the Requiste Authorization" << endl << "Withdrawl Cancelled" << endl;
+                        }
+                        else //valid pw!
+                        {
+                            string withdrawlAmount = "";
+                            cout << "Enter the Amount to Withdraw: ";
+                            getline(cin, withdrawlAmount);
+
+                            bool isValidAmount = isValidNumber(withdrawlAmount);
+                            if ( (!isValidAmount) || (Account::roundNum(stod(withdrawlAmount), 2) != stod(withdrawlAmount)) )
+                            {
+                                cout << "Invalid Amount Entered" << endl << "Withdrawl Cancelled" << endl;
+                            }                           
+                            else //making withdrawl happen!
+                            {
+                                Account clientAcct(acctNum);
+                                string withdrawlMsg = clientAcct.withdraw( stod(withdrawlAmount) );
+                                clientAcct.saveToFile();
+                                DataHandler::updateAccountInfo(acctNum, clientAcct.getAccountTableInfo());
+
+                                Client clientUser;
+                                clientUser.buildUser("UserData/" + clientAcct.getAccountHolderUserID() + ".txt");
+
+                                //Several cases can occur when withdrawing from an acct
+
+                                if (withdrawlMsg == "Insufficient Funds")
+                                {
+                                    clientUser.setRecentActivity("Attempted Withdrawl for: $" + withdrawlAmount + " Failed for Insufficient Funds");
+                                    user.setRecentActivity("Attempted to Help Client: " + clientUser.getID() + " withdraw $" + withdrawlAmount + "from: " + acctNum);
+                                    cout << endl << withdrawlMsg << endl << "Withdrawl Cancelled" << endl;
+                                }
+                                else if (withdrawlMsg == "Overdraft Penalty")
+                                {
+                                    clientUser.setRecentActivity("Attempted Withdrawl for: $" + withdrawlAmount + " Failed for Insufficient Funds and Incurred an Overdraft Penalty");
+                                    user.setRecentActivity("Attempted to Help Client: " + clientUser.getID() + " withdraw $" + withdrawlAmount + "from: " + acctNum);
+                                    cout << endl << withdrawlMsg << endl << "Withdrawl Cancelled" << endl;
+                                }
+                                else if (withdrawlMsg == "Amount Withdrawn")
+                                {
+                                    clientUser.setRecentActivity("Withdrew $" + withdrawlAmount);
+                                    user.setRecentActivity("Assisted Client: " + clientUser.getID() + " withdraw $" + withdrawlAmount + "from: " + acctNum);
+                                    cout << endl << withdrawlMsg << endl << "Withdrawl Successful" << endl;
+                                }
+                                else if (withdrawlMsg == "Account Restricted")
+                                {
+                                    clientUser.setRecentActivity("Attempted Withdrawl for: $" + withdrawlAmount + " Failed due to being a Restricted Account");
+                                    user.setRecentActivity("Attempted to Help Client: " + clientUser.getID() + " withdraw $" + withdrawlAmount + "from: " + acctNum);
+                                    cout << endl << withdrawlMsg << endl << "Withdrawl Cancelled" << endl;
+                                }
+                                else
+                                {
+                                    cout << "An Error Occurred" << endl << "Withdrawl Cancelled" << endl;
+                                }
+                                clientUser.saveUser();
+                                user.saveUser();
+                            }
+                        }
+                    }
+                    cout << endl;
                     break;
                 }
                 case 6: //Search for acct by userID, first name, last name, phone num, address, acct num
