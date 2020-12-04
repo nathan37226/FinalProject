@@ -41,6 +41,7 @@ public:
 
 	//official operations
 	static void addClientAccountToRecords(Client &user, Account &acct);
+	static void updateAccountInfo(string acctNum, string newInfo);
 
 	//AccountType operations
 	static void displayAccountTypes();

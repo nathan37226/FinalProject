@@ -6,7 +6,11 @@ All functions related to an Official logging into Bear Bank
 void officialLogin(string userID);
 void officialOpenAccounts(Official &officialUser);
 void officialSearch(Official &officialUser);
+<<<<<<< HEAD
 void officialAlterAccount(Official &officialUser);
+=======
+void officialAlterAccount(Official &officialUser, string acctNum);
+>>>>>>> origin/Official
 
 
 /************************************************
@@ -48,6 +52,42 @@ void officialLogin(string userID)
                 }
                 case 2: //Close acct
                 {
+                    string acctNumToClose = "", acctToCloseInfo = "";
+                    cout << "Enter the Account Number: ";
+                    getline(cin, acctNumToClose);
+                    acctToCloseInfo = DataHandler::getAccountInfo(acctNumToClose);
+                    cout << endl;
+
+                    if (acctToCloseInfo == "false")
+                    {
+                        cout << "Invalid Account Number Entered" << endl;
+                    }
+                    else
+                    {
+                        if (acctToCloseInfo.substr(0, 1) == "C")
+                        {
+                            cout << "The Account is Already Closed" << endl;
+                        }
+                        else //actually closing the account
+                        {
+                            Account acctToClose(acctNumToClose);
+                            acctToClose.setCloseDate( time(0) );
+                            acctToClose.setOpenStatus(false); //actually closing
+                            acctToClose.setAccountClosedBy(user.getID());
+                            acctToClose.saveToFile();
+                            string clientID = acctToClose.getAccountHolderUserID();
+
+                            Client clientUser;
+                            clientUser.buildUser("UserData/" + clientID + ".txt");
+                            clientUser.setRecentActivity("Account: " + acctNumToClose + " has been Closed");
+                            clientUser.saveUser();
+                            user.setRecentActivity("Closed Account: " + acctNumToClose);
+                            user.saveUser();
+
+                            cout << "Account: " + acctNumToClose + " has been Closed" << endl;
+                        }
+                    }
+                    cout << endl;
                     break;
                 }
                 case 3: //Alter existing acct - changing things like interest rate, term length, maturity date, open status, etc etc
@@ -57,7 +97,24 @@ void officialLogin(string userID)
                     //make changes, if applicable to acct type
                     //update DataHandler.allTables.accountTable to have new info
                     //save acct
-                    officialAlterAccount(user);
+                    string acctNum = "", acctInfo = "";
+                    cout << "Enter the Account Number: ";
+                    getline(cin, acctNum);
+                    acctInfo = DataHandler::getAccountInfo(acctNum);
+
+                    if (acctInfo == "false")
+                    {
+                        cout << "The Account Could not be Found" << endl;
+                    }
+                    else if (acctInfo.substr(0, 1) == "C")
+                    {
+                        cout << "The Account is Closed and Cannot be Altered" << endl;
+                    }
+                    else
+                    {
+                        officialAlterAccount(user, acctNum);
+                    }
+                    cout << endl;
                     break;
                 }
                 case 4: //Deposit into acct - needs user confirmation
@@ -110,6 +167,7 @@ void officialOpenAccounts(Official &officialUser)
                 string clientID = "";
                 getline(cin, clientID);
                 cout << endl;
+<<<<<<< HEAD
 
                 if (!DataHandler::isValidUserID(clientID))
                 {
@@ -147,6 +205,45 @@ void officialOpenAccounts(Official &officialUser)
                             clientUser.saveUser();
                             newAccount.saveToFile();
 
+=======
+
+                if (!DataHandler::isValidUserID(clientID))
+                {
+                    cout << "Entered User ID is Invalid" << endl << endl;
+                }
+                else
+                {
+                    string userType = DataHandler::clientGetAccountList(clientID)[1];
+                    if (userType != "client")
+                    {
+                        cout << "Entered User ID does not Belong to a Client" << endl << endl;
+                    }
+                    else
+                    {
+                        int maxOption = DataHandler::accountTypeList.size() + 1;
+                        DataHandler::displayAccountTypes();
+                        cout << "[" + to_string(maxOption) + "] Go Back" << endl;
+                        cout << "Enter an Option: ";
+                        int accountTypeOption = getUserOption(maxOption);
+                        cout << endl;
+
+                        if (accountTypeOption != maxOption)
+                        {
+                            Client clientUser;
+                            clientUser.buildUser("UserData/" + clientID + ".txt");
+                            string name = clientUser.getName(), firstName = "", lastName = "", address = clientUser.getAddress(), phoneNum = clientUser.getPhoneNum(), acctType = DataHandler::accountTypeList[accountTypeOption - 1].getAccountTypeName();
+                            firstName = name.substr(0, name.find(" "));
+                            lastName = name = name.substr(name.find(" ") + 1, string::npos);
+                            Account newAccount(acctType, clientID, firstName, lastName, phoneNum, address); //creating new account according to prexisting account type
+                            
+                            officialUser.addAccountToClient(clientUser, newAccount);
+                            officialUser.setRecentActivity("Added Account: " + acctType + " to User: " + clientID);
+                            officialUser.saveUser();
+                            clientUser.setRecentActivity("Account: " + acctType + " added!");
+                            clientUser.saveUser();
+                            newAccount.saveToFile();
+
+>>>>>>> origin/Official
                             cout << "Account: " + acctType + " was created!" << endl << endl;
                         }
                     }
@@ -344,6 +441,10 @@ void officialSearch(Official &officialUser)
                 officialUser.searchForClosedAcct(acctNum);
                 officialUser.setRecentActivity("Searched for a Closed Bank Account");
                 officialUser.saveUser();
+<<<<<<< HEAD
+=======
+                cout << endl;
+>>>>>>> origin/Official
                 break; 
             }
             case 8: //go back
@@ -356,6 +457,7 @@ void officialSearch(Official &officialUser)
     }
 }
 
+<<<<<<< HEAD
 void officialAlterAccount(Official &officialUser)
 {
     string alterInterface = "[1] ";
@@ -368,3 +470,137 @@ void officialAlterAccount(Official &officialUser)
 
     }
 }
+=======
+void officialAlterAccount(Official &officialUser, string acctNum)
+{
+    string clientID = "", alterInterface = "[1] Alter Interest Rate\n[2] Alter Restricted Status\n[3] Alter Monthly Fee\n[4] Go Back";
+    bool wantsToExit = false;
+
+    Account clientAcct(acctNum);
+    clientID = clientAcct.getAccountHolderUserID();
+
+    Client clientUser;
+    clientUser.buildUser("UserData/" + clientID + ".txt");
+
+    cout << endl;
+    while (!wantsToExit)
+    {
+        cout << alterInterface << endl << "Option: ";
+        int alterOption = getUserOption(4);
+
+        switch (alterOption)
+        {
+            case 1: //int rate
+            {
+                string newRate = "";
+                cout << endl << "Enter the New Interest Rate: ";
+                getline(cin, newRate);
+                bool isValidRate = isValidNumber(newRate);
+                if (!isValidRate)
+                {
+                    cout << "Invalid Rate Entered" << endl;
+                }
+                else
+                {
+                    isValidRate = clientAcct.setInterestRate( stod(newRate) ); //only occur between 0 and 5, returns boolean value if occured or not
+                    if (isValidRate)
+                    {
+                        officialUser.setRecentActivity("Altered Interest Rate on: " + acctNum + " to: " + newRate);
+                        clientUser.setRecentActivity("New Interest Rate of: " + newRate + " on: " + acctNum);
+                        officialUser.saveUser();
+                        clientUser.saveUser();
+                        cout << "Interest Rate Altered" << endl;
+                    }
+                    else
+                    {
+                        cout << "The Interest Rate Must be Between 0% and 5%" << endl;
+                    }
+                }
+                cout << endl;
+                break;
+            }
+            case 2: //status
+            {
+                string accountStatusOptions = "[1] Make Unrestricted\n[2] Make Restricted\n[3] Go Back";
+                cout << endl << accountStatusOptions << endl << "Option: ";
+                int statusOption = getUserOption(3);
+
+                if (statusOption != 3)
+                {
+                    bool newStatus = (statusOption == 1) ? false : true;
+                    bool existingStatus = clientAcct.getRestrictedStatus();
+
+                    if (newStatus == existingStatus)
+                    {
+                        cout << endl << "The Account is in that Status Already" << endl;
+                    }
+                    else if (!newStatus) //if 0, or false
+                    {
+                        clientAcct.setRestrictedStatus(false);
+                        clientAcct.saveToFile();
+                        officialUser.setRecentActivity("Unrestricted: " + acctNum);
+                        clientUser.setRecentActivity("Account: " + acctNum + " has been Unrestricted");
+                        officialUser.saveUser();
+                        clientUser.saveUser();
+                        cout << endl << "The Account: " + acctNum + " has been Unrestricted" << endl;
+                    }
+                    else
+                    {
+                        clientAcct.setRestrictedStatus(true);
+                        clientAcct.saveToFile();
+                        officialUser.setRecentActivity("Restricted: " + acctNum);
+                        clientUser.setRecentActivity("Account: " + acctNum + " has been Restricted");
+                        officialUser.saveUser();
+                        clientUser.saveUser();
+                        cout << endl << "The Account: " + acctNum + " has been Restricted" << endl;
+                    }
+                }
+                cout << endl;
+                break;
+            }
+            case 3: //monthly fee
+            {
+                string newFee = "";
+                cout << endl << "Enter the New Monthly Fee: ";
+                getline(cin, newFee);
+                bool isValidFee = isValidNumber(newFee);
+                if (!isValidFee)
+                {
+                    cout << "Invalid Fee Entered" << endl;
+                }
+                else
+                {
+                    double fee = Account::roundNum(stod(newFee), 2);
+                    if (fee != stod(newFee))
+                    {
+                        cout << "Invalid Fee Entered" << endl;
+                    }
+                    else if (fee > 30)
+                    {
+                        cout << "Fee Alteration can only Occur for Amounts Between $0.00 and $30.00, Inclusive" << endl;
+                    }
+                    else //change fee!
+                    {
+                        clientAcct.setMonthlyFee(fee);
+                        officialUser.setRecentActivity("Altered Monthly Fee on: " + acctNum + " to: " + newFee); //newFee is str version of fee
+                        clientUser.setRecentActivity("New Monthly Fee of: " + newFee + " on: " + newFee);
+                        officialUser.saveUser();
+                        clientUser.saveUser();
+                        cout << "Monthly Fee Altered" << endl;
+                    }  
+                }
+                cout << endl;
+                break;
+            }
+            case 4: //go back
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
+    }
+
+    DataHandler::updateAccountInfo(acctNum, clientAcct.getAccountTableInfo());
+    clientAcct.saveToFile();
+}
+>>>>>>> origin/Official

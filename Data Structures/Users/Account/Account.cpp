@@ -188,7 +188,7 @@ string AccountType::getAccountTypeName()
 }
 
 /**********************************************************
-/ roundNum (protected) rounds a floating point number to
+/ roundNum rounds a floating point number to
 / a specified number of decimals
 /
 / parameters:
@@ -357,6 +357,11 @@ void Account::setOpenStatus(bool status)
     openStatus = status;
 }
 
+void Account::setAccountClosedBy(string name)
+{
+    accountClosedBy = name;
+}
+
 /**********************************************************
 / Getters
 *//////////////////////////////////////////////////////////
@@ -434,6 +439,11 @@ bool Account::getRestrictedStatus()
 bool Account::getOpenStatus()
 {
     return openStatus;
+}
+
+string Account::getAccountClosedBy()
+{
+    return accountClosedBy;
 }
 
 /**********************************************************
