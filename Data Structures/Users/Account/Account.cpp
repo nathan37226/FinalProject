@@ -188,7 +188,7 @@ string AccountType::getAccountTypeName()
 }
 
 /**********************************************************
-/ roundNum (protected) rounds a floating point number to
+/ roundNum rounds a floating point number to
 / a specified number of decimals
 /
 / parameters:
@@ -354,6 +354,11 @@ void Account::setOpenStatus(bool status)
     openStatus = status;
 }
 
+void Account::setAccountClosedBy(string name)
+{
+    accountClosedBy = name;
+}
+
 /**********************************************************
 / Getters
 *//////////////////////////////////////////////////////////
@@ -431,6 +436,16 @@ bool Account::getRestrictedStatus()
 bool Account::getOpenStatus()
 {
     return openStatus;
+}
+
+string Account::getAccountClosedBy()
+{
+    return accountClosedBy;
+}
+
+string Account::getCloseDate()
+{
+    return convertTimeToString(closeDate); //returns readable form of time_t
 }
 
 /**********************************************************
@@ -514,25 +529,25 @@ string Account::withdraw(double amount)
         double tempBalance = accountBalance - roundNum(amount, 2);
         if(tempBalance < getMinimumBalance())
         {
-            return "Insufficient Funds.";
+            return "Insufficient Funds";
         }
         else if(tempBalance < 0 && tempBalance > getMinimumBalance())
         {
             accountBalance = tempBalance - getPenaltyFee();
             saveTransaction("Withdrawl",amount);
             saveTransaction("Overdraft",-1 * getPenaltyFee());
-            return "Overdraft Penalty.";
+            return "Overdraft Penalty";
         }
         else
         {
             accountBalance = tempBalance;
             saveTransaction("Withdrawl",amount);
-            return "Amount Withdrawn.";
+            return "Amount Withdrawn";
         }
     }
     else
-        return "Account Restricted.";
-    return "Something else happened.";
+        return "Account Restricted";
+    return "Something else happened";
 }
 
 /**********************************************************
@@ -679,6 +694,9 @@ string Account::saveToFile()
     outFile << EncryptionBox::encrypt(getDisplayNum(getMinimumBalance())) << endl;
     outFile << EncryptionBox::encrypt(getAccountTypeName()) << endl;
 
+    //acct closed by name
+    outFile << EncryptionBox::encrypt(accountClosedBy) << endl;
+
     outFile.close();
     return "Saved";
 }
@@ -745,6 +763,10 @@ void Account::buildFromFile(string acctNum)
         setMinimumBalance(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
         getline(inFile, line);
         setAccountTypeName(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+
+        //account closed by
+        getline(inFile, line);
+        accountClosedBy = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
     }
     else
     {

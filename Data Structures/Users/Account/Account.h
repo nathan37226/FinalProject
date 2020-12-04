@@ -15,8 +15,8 @@ private:
     double interestRate;
     double minimumBalance;
 
-protected:
-    double roundNum(double amount, int precision);
+
+    
 
 public:
     // Constructor for new account type
@@ -36,6 +36,7 @@ public:
     void setAccountTypeName(string name);
     string getAccountTypeName();
     static string getDisplayNum(double input);
+    static double roundNum(double amount, int precision);
 
 };
 
@@ -93,8 +94,11 @@ public:
     string getAccountHolderAddress();
     string getAccountHolderInfo();
     string getAccountTableInfo();
+    void setAccountClosedBy(string name);
+    string getAccountClosedBy();
     time_t getOpenDate();
     void setCloseDate(time_t date); // same as just closing?
+    string getCloseDate();
     time_t getMaturityDate();
     time_t getTermLength();
     double getAccountBalance();

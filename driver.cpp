@@ -25,9 +25,6 @@ using namespace std;
 
 int main()
 {
-    /*
-    Perform intial start-up of all related tables and bank accounts!
-    */
     initialSetup(); //not finished--need to do interest on accounts
 
     string loginScreen = "Welcome to BearBank!\n";

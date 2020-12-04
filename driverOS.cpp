@@ -10,6 +10,7 @@ void savingTables();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
+bool isValidNumber(string inputNum);
 
 
 /************************************************
@@ -31,7 +32,7 @@ void initialSetup()
     queue.buildQueue();
     queue.saveQueue(); //so that if file's not there, won't display that message during runtime
 
-    DataHandler::allTables.accountTable.refreshInfo(); //need to finish function, but will do the interest computation
+    DataHandler::allTables.accountTable.refreshInfo();
 
     //ensuring hard coded user account types of each; if already saved in .txt file, will have no effect
     string hashedPw = EncryptionBox::hash("password1");
@@ -259,3 +260,23 @@ void userLoginReset()
     }
 }
 
+bool isValidNumber(string inputNum)
+{
+    string validNumbers = "0123456789.";
+    bool match = false; 
+    int count = 0;   
+
+    for (int n = 0; n < inputNum.length(); n++)
+    {
+        if (validNumbers.find( inputNum[n] ) == string::npos)
+        {
+            return false;
+        }
+        else if (inputNum[n] == validNumbers[10]) //if it's a decimal
+        {
+            count++; //keeps track of how many decimals there are
+        }   
+    }   
+    bool returnValue = (count <= 1) ? true : false; //can only be <=1 decimals in a valid number
+    return returnValue;
+}
