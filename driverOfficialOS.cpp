@@ -147,14 +147,14 @@ Start of Official Login Helper Functions
 
 void officialOpenAccounts(Official &officialUser)
 {
-    string openAcctInterface = "[1] Open a new Account\n[2] View User Requested Accounts\n[3] Go Back";
+    string openAcctInterface = "[1] Open a new Account\n[2] View User Requested Accounts\n[3] Open a Closed Account\n[4] Go Back";
     string requestedAcctInterface = "[1] Approve Request\n[2] Deny Request\n[3] Go Back";
     bool wantsToExit = false;
     
     while (!wantsToExit)
     {
         cout << openAcctInterface << endl << "Option: ";
-        int mainOption = getUserOption(3);
+        int mainOption = getUserOption(4);
         cout << endl;
         
         switch (mainOption)
@@ -293,7 +293,49 @@ void officialOpenAccounts(Official &officialUser)
 
                 break;
             }
-            case 3: //Go back
+            case 3: //Open an already closed acct
+            {
+                string closedAcctNum = "", closedAcctInfo = "";
+                cout << "Enter the Account Number: ";
+                getline(cin, closedAcctNum);
+                closedAcctInfo = DataHandler::getAccountInfo(closedAcctNum);
+                cout << endl;
+
+                if (closedAcctInfo == "false")
+                {
+                    cout << "Invalid Account Number Entered" << endl;
+                }
+                else
+                {
+                    if (closedAcctInfo.substr(0, 1) == "O")
+                    {
+                        cout << "The Account is Already Open" << endl;
+                    }
+                    else //openning the account
+                    {
+                        Account acctToOpen(closedAcctNum);
+                        acctToOpen.setCloseDate( 0 );
+                        acctToOpen.setOpenStatus(true); //actually closing
+                        acctToOpen.setAccountClosedBy("N/A");
+                        acctToOpen.saveToFile();
+                        string clientID = acctToOpen.getAccountHolderUserID();
+
+                        Client clientUser;
+                        clientUser.buildUser("UserData/" + clientID + ".txt");
+                        clientUser.setRecentActivity("Account: " + closedAcctNum + " has been Openned");
+                        clientUser.saveUser();
+                        officialUser.setRecentActivity("Openned Account: " + closedAcctNum);
+                        officialUser.saveUser();
+
+                        DataHandler::updateAccountInfo(closedAcctNum, acctToOpen.getAccountTableInfo()); //refreshes current info of acct inside table
+
+                        cout << "Account: " + closedAcctNum + " has been Openned" << endl;
+                    }
+                }
+                cout << endl;
+                break;
+            }
+            case 4: //Go back
             {
                 wantsToExit = true;
                 break;
