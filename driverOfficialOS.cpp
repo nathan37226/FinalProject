@@ -415,7 +415,7 @@ void officialSearch(Official &officialUser)
 
 void officialAlterAccount(Official &officialUser, string acctNum)
 {
-    string clientID = "", alterInterface = "[1] Alter Interest Rate\n[2] Alter Restricted Status\n[3] Alter Monthly Fee\n[4] Go Back";
+    string clientID = "", alterInterface = "[1] Alter Interest Rate\n[2] Alter Restricted Status\n[3] Alter Monthly Fee\n[4] Alter Service Fee\n[5] Go Back";
     bool wantsToExit = false;
 
     Account clientAcct(acctNum);
@@ -428,7 +428,7 @@ void officialAlterAccount(Official &officialUser, string acctNum)
     while (!wantsToExit)
     {
         cout << alterInterface << endl << "Option: ";
-        int alterOption = getUserOption(4);
+        int alterOption = getUserOption(5);
 
         switch (alterOption)
         {
@@ -519,13 +519,13 @@ void officialAlterAccount(Official &officialUser, string acctNum)
                     }
                     else if (fee > 30)
                     {
-                        cout << "Fee Alteration can only Occur for Amounts Between $0.00 and $30.00, Inclusive" << endl;
+                        cout << "Monthly Fee Alteration can only Occur for Amounts Between $0.00 and $30.00, Inclusive" << endl;
                     }
                     else //change fee!
                     {
                         clientAcct.setMonthlyFee(fee);
                         officialUser.setRecentActivity("Altered Monthly Fee on: " + acctNum + " to: " + newFee); //newFee is str version of fee
-                        clientUser.setRecentActivity("New Monthly Fee of: " + newFee + " on: " + newFee);
+                        clientUser.setRecentActivity("New Monthly Fee of: " + newFee + " on: " + acctNum);
                         officialUser.saveUser();
                         clientUser.saveUser();
                         cout << "Monthly Fee Altered" << endl;
@@ -534,7 +534,41 @@ void officialAlterAccount(Official &officialUser, string acctNum)
                 cout << endl;
                 break;
             }
-            case 4: //go back
+            case 4: //service fee
+            {
+                string newFee = "";
+                cout << endl << "Enter the New Service Fee: ";
+                getline(cin, newFee);
+                bool isValidFee = isValidNumber(newFee);
+                if (!isValidFee)
+                {
+                    cout << "Invalid Fee Entered" << endl;
+                }
+                else
+                {
+                    double fee = Account::roundNum(stod(newFee), 2);
+                    if (fee != stod(newFee))
+                    {
+                        cout << "Invalid Fee Entered" << endl;
+                    }
+                    else if (fee > 15)
+                    {
+                        cout << "Service Fee Alteration can only Occur for Amounts Between $0.00 and $15.00, Inclusive" << endl;
+                    }
+                    else //change fee!
+                    {
+                        clientAcct.setServiceFee(fee);
+                        officialUser.setRecentActivity("Altered Service Fee on: " + acctNum + " to: " + newFee); //newFee is str version of fee
+                        clientUser.setRecentActivity("New Service Fee of: " + newFee + " on: " + acctNum);
+                        officialUser.saveUser();
+                        clientUser.saveUser();
+                        cout << "Service Fee Altered" << endl;
+                    }  
+                }
+                cout << endl;
+                break;
+            }
+            case 5: //go back
             {
                 wantsToExit = true;
                 break;
