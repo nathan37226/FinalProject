@@ -314,7 +314,7 @@ void adminModifyAdmin(Admin &admin)
                 }
                 break;
             }
-            case 3:
+            case 3: //go back
             {
                 wantsToExit = true;
                 break;
@@ -458,8 +458,10 @@ void adminRetrieveUserID(Admin &admin)
                 }
                 else
                 {
-                    string clientID = acctInfo.substr(acctInfo.rfind(" ") + 1, string::npos); //very last element in the string
+                    string clientID = admin.returnUserID(acctNum);
                     cout << "The User ID of " + acctNum + " is: " + clientID << endl;
+                    admin.setRecentActivity("Searched for User ID through Account Number");
+                    admin.saveUser();
                 }
                 
 
