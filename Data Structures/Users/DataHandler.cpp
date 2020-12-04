@@ -151,8 +151,10 @@ bool DataHandler::clientDisplayAccounts(string userID)
 	{
 		for (int i = 2; i < acctList.size(); i++)
 		{
+			string acctInfo = allTables.accountTable.search(acctList[i]);
+			acctInfo = acctInfo.substr(0, acctInfo.find(".") + 3); //shortening so extra info is not added
 			cout << acctList[i] << endl;
-			cout << allTables.accountTable.search(acctList[i]) << endl; //short snippet of acct
+			cout << acctInfo << endl; //short snippet of acct
 		}
 		cout << endl;
 		return true;
@@ -179,6 +181,11 @@ void DataHandler::addClientAccountToRecords(Client &user, Account &acct)
 
 	accountEntry newEntry(acct.getAccountNumber(), acct.getAccountTableInfo()); //implemenent getAcctInfo later on!
 	allTables.accountTable.insert(newEntry);
+}
+
+void DataHandler::updateAccountInfo(string acctNum, string newInfo)
+{
+	allTables.accountTable.updateInfo(acctNum, newInfo);
 }
 
 /************************************************

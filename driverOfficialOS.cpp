@@ -59,10 +59,16 @@ void officialLogin(string userID)
                     //save acct
                     string acctNum = "", acctInfo = "";
                     cout << "Enter the Account Number: ";
+                    getline(cin, acctNum);
                     acctInfo = DataHandler::getAccountInfo(acctNum);
+
                     if (acctInfo == "false")
                     {
                         cout << "The Account Could not be Found" << endl;
+                    }
+                    else if (acctInfo.substr(0, 1) == "C")
+                    {
+                        cout << "The Account is Closed and Cannot be Altered" << endl;
                     }
                     else
                     {
@@ -369,13 +375,100 @@ void officialSearch(Official &officialUser)
 
 void officialAlterAccount(Official &officialUser, string acctNum)
 {
-    string alterInterface = "[1] ";
+    string clientID = "", alterInterface = "[1] Alter Interest Rate\n[2] Alter Restricted Status\n[3] Alter Monthly Fee\n[4] Go Back";
     bool wantsToExit = false;
 
+    Account clientAcct(acctNum);
+    clientID = clientAcct.getAccountHolderUserID();
+
+    Client clientUser;
+    clientUser.buildUser("UserData/" + clientID + ".txt");
+
+    cout << endl;
     while (!wantsToExit)
     {
         cout << alterInterface << endl << "Option: ";
-        int alterOption = getUserOption(-2);
+        int alterOption = getUserOption(4);
 
+        switch (alterOption)
+        {
+            case 1: //int rate
+            {
+                string newRate = "";
+                cout << "Enter the New Interest Rate: ";
+                getline(cin, newRate);
+                bool isValidRate = isValidNumber(newRate);
+                if (!isValidRate)
+                {
+                    cout << "Invalid Rate Entered" << endl;
+                }
+                else
+                {
+                    isValidRate = clientAcct.setInterestRate( stod(newRate) );
+                    if (isValidRate)
+                    {
+                        cout << "Interest Rate Altered" << endl;
+                        officialUser.setRecentActivity("Altered Interest Rate on: " + acctNum + " to: " + newRate);
+                        clientUser.setRecentActivity("New Interest Rate of: " + newRate + " on: " + acctNum);
+                        officialUser.saveUser();
+                        clientUser.saveUser();
+                    }
+                    else
+                    {
+                        cout << "The Interest Rate Must be Between 0% and 5%" << endl;
+                    }
+                }
+                cout << endl;
+                break;
+            }
+            case 2: //status
+            {
+                string accountStatusOptions = "[1] Make Unrestricted\n[2] Make Restricted";
+                cout << endl << accountStatusOptions << endl << "Option: ";
+                int statusOption = getUserOption(2);
+                bool newStatus = (statusOption == 1) ? false : true;
+                bool existingStatus = clientAcct.getRestrictedStatus();
+
+                if (newStatus == existingStatus)
+                {
+                    cout << endl << "The Account is in that Status Already" << endl;
+                }
+                else if (!newStatus) //if 0, or false
+                {
+                    clientAcct.setRestrictedStatus(false);
+                    clientAcct.saveToFile();
+                    officialUser.setRecentActivity("Unrestricted: " + acctNum);
+                    clientUser.setRecentActivity("Account: " + acctNum + " has been Unrestricted");
+                    officialUser.saveUser();
+                    clientUser.saveUser();
+                    cout << endl << "The Account: " + acctNum + " has been Unrestricted" << endl;
+                }
+                else
+                {
+                    clientAcct.setRestrictedStatus(true);
+                    clientAcct.saveToFile();
+                    officialUser.setRecentActivity("Restricted: " + acctNum);
+                    clientUser.setRecentActivity("Account: " + acctNum + " has been Restricted");
+                    officialUser.saveUser();
+                    clientUser.saveUser();
+                    cout << endl << "The Account: " + acctNum + " has been Restricted" << endl;
+                }
+
+                cout << endl;
+                break;
+            }
+            case 3: //monthly fee
+            {
+                break;
+            }
+            case 4: //go back
+            {
+                wantsToExit = true;
+                break;
+            }
+        }
     }
+
+    DataHandler::updateAccountInfo(acctNum, clientAcct.getAccountTableInfo());
+    clientAcct.saveToFile();
 }
