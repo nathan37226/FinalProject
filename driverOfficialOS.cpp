@@ -453,14 +453,14 @@ void officialOpenAccounts(Official &officialUser)
 
                         Client clientUser;
                         clientUser.buildUser("UserData/" + clientID + ".txt");
-                        clientUser.setRecentActivity("Account: " + closedAcctNum + " has been Openned");
+                        clientUser.setRecentActivity("Account: " + closedAcctNum + " has been Opened");
                         clientUser.saveUser();
-                        officialUser.setRecentActivity("Openned Account: " + closedAcctNum);
+                        officialUser.setRecentActivity("Opened Account: " + closedAcctNum);
                         officialUser.saveUser();
 
                         DataHandler::updateAccountInfo(closedAcctNum, acctToOpen.getAccountTableInfo()); //refreshes current info of acct inside table
 
-                        cout << "Account: " + closedAcctNum + " has been Openned" << endl;
+                        cout << "Account: " + closedAcctNum + " has been Opened" << endl;
                     }
                 }
                 cout << endl;
