@@ -361,6 +361,7 @@ void officialSearch(Official &officialUser)
                 officialUser.searchForClosedAcct(acctNum);
                 officialUser.setRecentActivity("Searched for a Closed Bank Account");
                 officialUser.saveUser();
+                cout << endl;
                 break; 
             }
             case 8: //go back
