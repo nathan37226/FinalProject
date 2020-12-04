@@ -338,6 +338,8 @@ void adminModifyAccountTypes(Admin &admin)
         {
             case 1: //View all
             {
+                DataHandler::displayAccountTypes();
+                cout << endl;
                 break;
             }
             case 2: //Create new

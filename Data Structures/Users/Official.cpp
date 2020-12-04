@@ -217,9 +217,10 @@ void Official::searchForClosedAcct(string acctNum)
 		if (accountInfo.substr(0, 1) == "C")
 		{
 			Account closedAcct(acctNum);
-			cout << accountInfo << endl;
+			cout << accountInfo.substr(0, accountInfo.rfind(" ")) << endl;
+			cout << "Opened at: " << closedAcct.getOpenDate() << endl;
+			cout << "Closed at: " << closedAcct.getCloseDate() << endl;
 			cout << "Closed by: " << closedAcct.getAccountClosedBy() << endl;
-			cout << "At: " << closedAcct.getCloseDate() << endl;
 		}
 		else
 		{

@@ -44,7 +44,10 @@ public:
 	static void updateAccountInfo(string acctNum, string newInfo);
 
 	//AccountType operations
+	static void createInitialAccountTypes();
 	static void displayAccountTypes();
+	static void saveAccountTypes();
+	static void buildAccountTypesFomeFile();
 };
 
 tableSet DataHandler::allTables = tableSet(); //static initialization

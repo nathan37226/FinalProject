@@ -69,7 +69,7 @@ void officialLogin(string userID)
                             Account acctToClose(acctNumToClose);
                             acctToClose.setCloseDate( time(0) );
                             acctToClose.setOpenStatus(false); //actually closing
-                            acctToClose.setAccountClosedBy(user.getID());
+                            acctToClose.setAccountClosedBy(user.getName() + ", ID: " + user.getID());
                             acctToClose.saveToFile();
                             string clientID = acctToClose.getAccountHolderUserID();
 

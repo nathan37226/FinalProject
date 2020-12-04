@@ -96,7 +96,7 @@ public:
     string getAccountTableInfo();
     void setAccountClosedBy(string name);
     string getAccountClosedBy();
-    time_t getOpenDate();
+    string getOpenDate();
     void setCloseDate(time_t date); // same as just closing?
     string getCloseDate();
     time_t getMaturityDate();
