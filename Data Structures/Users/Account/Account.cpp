@@ -188,7 +188,7 @@ string AccountType::getAccountTypeName()
 }
 
 /**********************************************************
-/ roundNum (protected) rounds a floating point number to
+/ roundNum rounds a floating point number to
 / a specified number of decimals
 /
 / parameters:

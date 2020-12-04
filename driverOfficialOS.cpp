@@ -395,7 +395,7 @@ void officialAlterAccount(Official &officialUser, string acctNum)
             case 1: //int rate
             {
                 string newRate = "";
-                cout << "Enter the New Interest Rate: ";
+                cout << endl << "Enter the New Interest Rate: ";
                 getline(cin, newRate);
                 bool isValidRate = isValidNumber(newRate);
                 if (!isValidRate)
@@ -404,14 +404,14 @@ void officialAlterAccount(Official &officialUser, string acctNum)
                 }
                 else
                 {
-                    isValidRate = clientAcct.setInterestRate( stod(newRate) );
+                    isValidRate = clientAcct.setInterestRate( stod(newRate) ); //only occur between 0 and 5, returns boolean value if occured or not
                     if (isValidRate)
                     {
-                        cout << "Interest Rate Altered" << endl;
                         officialUser.setRecentActivity("Altered Interest Rate on: " + acctNum + " to: " + newRate);
                         clientUser.setRecentActivity("New Interest Rate of: " + newRate + " on: " + acctNum);
                         officialUser.saveUser();
                         clientUser.saveUser();
+                        cout << "Interest Rate Altered" << endl;
                     }
                     else
                     {
@@ -423,42 +423,75 @@ void officialAlterAccount(Official &officialUser, string acctNum)
             }
             case 2: //status
             {
-                string accountStatusOptions = "[1] Make Unrestricted\n[2] Make Restricted";
+                string accountStatusOptions = "[1] Make Unrestricted\n[2] Make Restricted\n[3] Go Back";
                 cout << endl << accountStatusOptions << endl << "Option: ";
-                int statusOption = getUserOption(2);
-                bool newStatus = (statusOption == 1) ? false : true;
-                bool existingStatus = clientAcct.getRestrictedStatus();
+                int statusOption = getUserOption(3);
 
-                if (newStatus == existingStatus)
+                if (statusOption != 3)
                 {
-                    cout << endl << "The Account is in that Status Already" << endl;
-                }
-                else if (!newStatus) //if 0, or false
-                {
-                    clientAcct.setRestrictedStatus(false);
-                    clientAcct.saveToFile();
-                    officialUser.setRecentActivity("Unrestricted: " + acctNum);
-                    clientUser.setRecentActivity("Account: " + acctNum + " has been Unrestricted");
-                    officialUser.saveUser();
-                    clientUser.saveUser();
-                    cout << endl << "The Account: " + acctNum + " has been Unrestricted" << endl;
-                }
-                else
-                {
-                    clientAcct.setRestrictedStatus(true);
-                    clientAcct.saveToFile();
-                    officialUser.setRecentActivity("Restricted: " + acctNum);
-                    clientUser.setRecentActivity("Account: " + acctNum + " has been Restricted");
-                    officialUser.saveUser();
-                    clientUser.saveUser();
-                    cout << endl << "The Account: " + acctNum + " has been Restricted" << endl;
-                }
+                    bool newStatus = (statusOption == 1) ? false : true;
+                    bool existingStatus = clientAcct.getRestrictedStatus();
 
+                    if (newStatus == existingStatus)
+                    {
+                        cout << endl << "The Account is in that Status Already" << endl;
+                    }
+                    else if (!newStatus) //if 0, or false
+                    {
+                        clientAcct.setRestrictedStatus(false);
+                        clientAcct.saveToFile();
+                        officialUser.setRecentActivity("Unrestricted: " + acctNum);
+                        clientUser.setRecentActivity("Account: " + acctNum + " has been Unrestricted");
+                        officialUser.saveUser();
+                        clientUser.saveUser();
+                        cout << endl << "The Account: " + acctNum + " has been Unrestricted" << endl;
+                    }
+                    else
+                    {
+                        clientAcct.setRestrictedStatus(true);
+                        clientAcct.saveToFile();
+                        officialUser.setRecentActivity("Restricted: " + acctNum);
+                        clientUser.setRecentActivity("Account: " + acctNum + " has been Restricted");
+                        officialUser.saveUser();
+                        clientUser.saveUser();
+                        cout << endl << "The Account: " + acctNum + " has been Restricted" << endl;
+                    }
+                }
                 cout << endl;
                 break;
             }
             case 3: //monthly fee
             {
+                string newFee = "";
+                cout << endl << "Enter the New Monthly Fee: ";
+                getline(cin, newFee);
+                bool isValidFee = isValidNumber(newFee);
+                if (!isValidFee)
+                {
+                    cout << "Invalid Fee Entered" << endl;
+                }
+                else
+                {
+                    double fee = Account::roundNum(stod(newFee), 2);
+                    if (fee != stod(newFee))
+                    {
+                        cout << "Invalid Fee Entered" << endl;
+                    }
+                    else if (fee > 30)
+                    {
+                        cout << "Fee Alteration can only Occur for Amounts Between $0.00 and $30.00, Inclusive" << endl;
+                    }
+                    else //change fee!
+                    {
+                        clientAcct.setMonthlyFee(fee);
+                        officialUser.setRecentActivity("Altered Monthly Fee on: " + acctNum + " to: " + newFee); //newFee is str version of fee
+                        clientUser.setRecentActivity("New Monthly Fee of: " + newFee + " on: " + newFee);
+                        officialUser.saveUser();
+                        clientUser.saveUser();
+                        cout << "Monthly Fee Altered" << endl;
+                    }  
+                }
+                cout << endl;
                 break;
             }
             case 4: //go back
