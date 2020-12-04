@@ -98,6 +98,7 @@ public:
     string getAccountClosedBy();
     time_t getOpenDate();
     void setCloseDate(time_t date); // same as just closing?
+    string getCloseDate();
     time_t getMaturityDate();
     time_t getTermLength();
     double getAccountBalance();

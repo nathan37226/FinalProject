@@ -80,6 +80,8 @@ void officialLogin(string userID)
                             user.setRecentActivity("Closed Account: " + acctNumToClose);
                             user.saveUser();
 
+                            DataHandler::updateAccountInfo(acctNumToClose, acctToClose.getAccountTableInfo()); //refreshes current info of acct inside table
+
                             cout << "Account: " + acctNumToClose + " has been Closed" << endl;
                         }
                     }
@@ -309,6 +311,7 @@ void officialSearch(Official &officialUser)
     {
         cout << searchInterface << endl << "Option: ";
         int searchOption = getUserOption(8);
+        cout << endl;
 
         switch (searchOption)
         {

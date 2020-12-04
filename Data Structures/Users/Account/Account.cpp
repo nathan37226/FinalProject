@@ -443,6 +443,11 @@ string Account::getAccountClosedBy()
     return accountClosedBy;
 }
 
+string Account::getCloseDate()
+{
+    return convertTimeToString(closeDate); //returns readable form of time_t
+}
+
 /**********************************************************
 / convertTime (private) converts the ctime integer time_t
 / to a string of the exact date in the format:
@@ -689,6 +694,9 @@ string Account::saveToFile()
     outFile << EncryptionBox::encrypt(getDisplayNum(getMinimumBalance())) << endl;
     outFile << EncryptionBox::encrypt(getAccountTypeName()) << endl;
 
+    //acct closed by name
+    outFile << EncryptionBox::encrypt(accountClosedBy) << endl;
+
     outFile.close();
     return "Saved";
 }
@@ -755,6 +763,10 @@ void Account::buildFromFile(string acctNum)
         setMinimumBalance(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
         getline(inFile, line);
         setAccountTypeName(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+
+        //account closed by
+        getline(inFile, line);
+        accountClosedBy = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
     }
     else
     {
