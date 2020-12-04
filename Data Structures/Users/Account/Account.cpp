@@ -293,8 +293,11 @@ Account::Account(string acctTypeName, string userID, string acctFirstName, strin
 *//////////////////////////////////////////////////////////
 Account::Account(string acctNum) : AccountType("blank")
 {
-    buildFromFile(acctNum);
-    interestCalc();
+    if(acctNum != "")
+    {
+        buildFromFile(acctNum);
+        interestCalc();
+    }
 }
 /**********************************************************
 / Setters
@@ -394,6 +397,11 @@ string Account::getAccountHolderAddress()
 string Account::getAccountHolderInfo()
 {
     return accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress;
+}
+
+string Account::getAccountInfo()
+{
+    return accountHolderUserID+" "+getAccountTypeName()+" "+accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress+" "+getDisplayNum(accountBalance);
 }
 
 time_t Account::getOpenDate()

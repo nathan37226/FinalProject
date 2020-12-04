@@ -201,6 +201,19 @@ void clientMakeAccountChanges(Client &user, int option)
 //Needs Finishing!
 void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
 {
+    // promt user to chose account 
+    cout << "Choose from the following accounts: " << endl;
+    for(int i = 2; i < acctList.length(); i++)
+        cout << "[" << i-1 << "] " << acctList[i] << endl;
+
+    int acctChoice = getUserOption(acctList.length());
+
+    Account acct(acctList[acctChoice+1]);
+
+    cout << acct.getAccountInfo() << endl;
+
+    
+    
     switch (option)
     {
         case 1: //deposit
@@ -217,7 +230,7 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
         }
         case 4: //view history
         {
-            user.getAccountHistory(acctList); //Needs to be finished!!!
+            //user.getAccountHistory(acct); //Needs to be finished!!!
             break;
         }
     }
