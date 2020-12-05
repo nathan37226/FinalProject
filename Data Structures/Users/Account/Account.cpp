@@ -550,6 +550,11 @@ string Account::withdraw(double amount)
     return "Something else happened";
 }
 
+void Account::doServiceCharge()
+{
+    accountBalance -= getServiceFee();
+}
+
 /**********************************************************
 / interestCalc (private) calculates the accululated interest
 / since the account was last saved

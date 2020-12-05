@@ -85,6 +85,7 @@ void savingBank()
     DataHandler::allTables.phoneNumTable.saveInfo("Tables/PhoneTable.txt");
     DataHandler::allTables.addressTable.saveInfo("Tables/AddressTable.txt");
     DataHandler::allTables.userTable.saveInfo("Tables/UserTable.txt");
+    DataHandler::saveAccountTypes();
     accountExit(); //defined inside the account classs
 }
 
