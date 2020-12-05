@@ -579,7 +579,7 @@ void officialSearch(Official &officialUser)
                 officialUser.saveUser();
                 break;
             }
-            case 7: //closed acct display -- must implement!!
+            case 7: //closed acct display
             {
                 string acctNum = "";
                 cout << "Enter an Account Number: ";

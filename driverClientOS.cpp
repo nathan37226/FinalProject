@@ -142,7 +142,7 @@ void clientMakeAccountChanges(Client &user, int option)
             user.setRecentActivity("Changed First Name");
 
             //need to reflect changes on all accts and tables as well
-            DataHandler::changeClientFirstName(userID, oldName, name); //needs finishing
+            DataHandler::changeClientFirstName(userID, oldName, name); 
 
             break;
         }
@@ -160,7 +160,7 @@ void clientMakeAccountChanges(Client &user, int option)
             user.setRecentActivity("Changed Last Name");
 
             //changing name inside the tables
-            DataHandler::changeClientLastName(userID, oldName, name); //needs finishing
+            DataHandler::changeClientLastName(userID, oldName, name);
 
             break;
         }
@@ -175,7 +175,7 @@ void clientMakeAccountChanges(Client &user, int option)
             user.setRecentActivity("Changed Address");
 
             //changing address in table
-            DataHandler::changeClientAddress(user.getID(), oldAddress, newAddress); //needs finishing
+            DataHandler::changeClientAddress(user.getID(), oldAddress, newAddress);
 
             break;
         }
@@ -190,7 +190,7 @@ void clientMakeAccountChanges(Client &user, int option)
             user.setRecentActivity("Changed Phone Number");
 
             //changing address in table
-            DataHandler::changeClientPhoneNum(user.getID(), oldNum, newNum); //needs finishing
+            DataHandler::changeClientPhoneNum(user.getID(), oldNum, newNum);
             break;
         }
         case 5: //change password
@@ -228,7 +228,7 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             getline(cin, depAmount);
             if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
             {
-                string transactionResult = otherAcct.deposit(stod(depAmount));
+                string transactionResult = acct.deposit(stod(depAmount));
                 cout << transactionResult << endl;
                 acct.saveToFile();
                 DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
@@ -250,7 +250,7 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             getline(cin, witAmount);
             if(isValidNumber(witAmount) && witAmount == witAmount.substr(0,witAmount.find(".")+3))
             {
-                string transactionResult = otherAcct.withdraw(stod(witAmount));
+                string transactionResult = acct.withdraw(stod(witAmount));
                 cout << transactionResult << endl;
                 acct.saveToFile();
                 if(transactionResult == "Amount Withdrawn, Overdraft Penalty" || transactionResult == "Amount Withdrawn")

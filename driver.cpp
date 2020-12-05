@@ -26,9 +26,9 @@ int main()
 {
     initialSetup(); //not finished--need to do interest on accounts
 
-    string loginScreen = "Welcome to BearBank!\n";
+    string loginScreen = "Welcome to BearBank!\nRouting Number: " + Account::routingNumber;
     bool wantsToCloseBearBank = false;
-    cout << loginScreen << endl;
+    cout << loginScreen << endl << endl;
 
     while (!wantsToCloseBearBank)
     {

@@ -46,7 +46,6 @@ public:
 class Account : public AccountType
 {
 private:
-    static const string routingNumber;
     string accountNumber;
     string accountHolderUserID;
     string accountHolderFirstName;
@@ -77,6 +76,8 @@ private:
     friend void accountInit();
 
 public:
+    static const string routingNumber;
+
     // Constructor for new account
     Account(string acctTypeName, string userID, string acctFirstName, string acctLastName, string acctPhoneNumber = "", string acctAddress = "", time_t mDate = 0, double acctBalance = 0.0);
     // Constructor for existing account
