@@ -227,7 +227,7 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             cout << "Enter Deposit amount: " << endl << "$";
             string depAmount;
             getline(cin, depAmount);
-            if(isValidNumber(depAmount))
+            if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
             {
                 cout << acct.deposit(stod(depAmount)) << endl;
                 acct.saveToFile();
@@ -246,7 +246,7 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             cout << "Enter Withdraw amount: " << endl << "$";
             string witAmount;
             getline(cin, witAmount);
-            if(isValidNumber(witAmount))
+            if(isValidNumber(witAmount) && witAmount == witAmount.substr(0,witAmount.find(".")+3))
             {
                 cout << acct.withdraw(stod(witAmount)) << endl;
                 acct.saveToFile();
@@ -270,7 +270,7 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
                 cout << "Enter Deposit amount: " << endl << "$";
                 string depAmount;
                 getline(cin, depAmount);
-                if(isValidNumber(depAmount))
+                if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
                 {
                     cout << otherAcct.deposit(stod(depAmount)) << endl;
                     // save transaction
