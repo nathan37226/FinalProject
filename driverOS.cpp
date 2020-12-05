@@ -38,10 +38,8 @@ void initialSetup()
     string hashedPw = EncryptionBox::hash("password1");
     vector<string> adminInfo = {hashedPw, "admin"};
     vector<string> offInfo = {hashedPw, "official"};
-    vector<string> clientInfo = {hashedPw, "client"};
     DataHandler::allTables.userTable.insertWithList("admin", adminInfo); //rewrites the admin acct to have the pw as password1
     DataHandler::allTables.userTable.insertWithList("official", offInfo);
-    DataHandler::allTables.userTable.insertWithList("house", clientInfo);
 
 	//creating record of these default users, i.e. saving to .txt files
 	Admin admin;
@@ -59,18 +57,8 @@ void initialSetup()
     official.setUserType("official");
     official.setState("active");
 
-    Client house;
-    house.buildUser("UserData/house.txt");
-    house.setName("House Account");
-    house.setAddress("1234 Made Up Avenue, Springfield, MO");
-    house.setPhoneNum("417-555-1234");
-    house.setID("house");
-    house.setPassword(EncryptionBox::hash("password1"));
-    house.setUserType("client");
-
     admin.saveUser();
     official.saveUser();
-    house.saveUser();
 
     accountInit();
 
