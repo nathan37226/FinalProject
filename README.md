@@ -8,16 +8,11 @@
     -Tables
     
 ### To Compile and Run:
-cygwin:
+Cygwin on Windows:
 
     g++ driver.cpp -o GroupEightProject
 
     ./GroupEightProject
-clang:
-
-    NA
-    
-    NA
 
 ### Folders:
 
