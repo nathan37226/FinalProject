@@ -140,7 +140,7 @@ void officialLogin(string userID)
                         else //valid pw!
                         {
                             string depositAmount = "";
-                            cout << "Enter the Amount to Deposit: ";
+                            cout << "Enter the Amount to Deposit:" << endl << "$";
                             getline(cin, depositAmount);
 
                             bool isValidAmount = isValidNumber(depositAmount);
@@ -198,7 +198,7 @@ void officialLogin(string userID)
                         else //valid pw!
                         {
                             string withdrawalAmount = "";
-                            cout << "Enter the Amount to Withdraw: ";
+                            cout << "Enter the Amount to Withdraw:" << endl << "$";
                             getline(cin, withdrawalAmount);
 
                             bool isValidAmount = isValidNumber(withdrawalAmount);
@@ -236,8 +236,8 @@ void officialLogin(string userID)
                                     cout << endl << withdrawalMsg << endl << "Withdrawal Successful" << endl;
                                     if (clientAcct.getServiceFee() > 0.00)
                                     {
-                                        //clientAcct.chargeServiceFee();
-                                        //cout << "You have been Charged a Service Fee of: " << clientAcct.getServiceFee() << endl;
+                                        clientAcct.doServiceCharge();
+                                        cout << "You have been Charged a Service Fee of: $" << Account::getDisplayNum(clientAcct.getServiceFee()) << endl;
                                     }
                                 }
                                 else if (withdrawalMsg == "Account Restricted")
@@ -367,7 +367,7 @@ void officialOpenAccounts(Official &officialUser)
                         Client clientUser;
                         clientUser.buildUser("UserData/" + userID + ".txt");
 
-                        cout << request << endl;
+                        cout << request << endl << endl;
 
                         cout << requestedAcctInterface << endl << "Option: ";
                         int reviewOption = getUserOption(3);
