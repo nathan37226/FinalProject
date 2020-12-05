@@ -313,12 +313,7 @@ Account::Account(string acctTypeName, string userID, string acctFirstName, strin
     openStatus = true;
 
     // set accountBalance
-    if( acctBalance >= getMinimumBalance())
-    {
-        accountBalance = acctBalance;
-    }
-    else
-        accountBalance = getMinimumBalance();
+    accountBalance = acctBalance;
 
     // set last time interest was calculated
     time(&lastInterestCalculation);
