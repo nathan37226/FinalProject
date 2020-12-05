@@ -210,7 +210,6 @@ void officialLogin(string userID)
                             {
                                 Account clientAcct(acctNum);
                                 string withdrawalMsg = clientAcct.withdraw( stod(withdrawalAmount) );
-                                clientAcct.saveToFile();
                                 DataHandler::updateAccountInfo(acctNum, clientAcct.getAccountTableInfo());
 
                                 Client clientUser;
@@ -253,6 +252,7 @@ void officialLogin(string userID)
                                 }
                                 clientUser.saveUser();
                                 user.saveUser();
+                                clientAcct.saveToFile();
                             }
                         }
                     }
