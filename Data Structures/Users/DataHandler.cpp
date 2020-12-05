@@ -63,6 +63,7 @@ void DataHandler::changeClientFirstName(string userID, string oldName, string ne
 
 		Account acct = Account(acctList[i]); //build account from .txt file with acctList[i] as the acctNum
 		acct.setAccountHolderFirstName(newName);
+		cout << "New name: " << newName << endl;
 		acct.saveToFile(); //save to .txt file
 		allTables.accountTable.updateInfo(acctList[i], acct.getAccountTableInfo());
 	}

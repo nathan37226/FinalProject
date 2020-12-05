@@ -137,8 +137,7 @@ void clientMakeAccountChanges(Client &user, int option)
             //changing name in user obj
             cout << "Enter your new first name: ";
             getline(cin, name);
-            name = name + " " + lastName;
-            user.setName(name);
+            user.setName(name + " " + lastName);
             user.setRecentActivity("Changed First Name");
 
             //need to reflect changes on all accts and tables as well
@@ -155,8 +154,7 @@ void clientMakeAccountChanges(Client &user, int option)
             //changing name in user obj
             cout << "Enter your new last name: ";
             getline(cin, name);
-            name = firstName + " " + name;
-            user.setName(name);
+            user.setName(firstName + " " + name);
             user.setRecentActivity("Changed Last Name");
 
             //changing name inside the tables
