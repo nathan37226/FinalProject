@@ -37,7 +37,6 @@ string Client::getPhoneNum() const
 	return clientPhoneNum;
 }
 
-//Needs Finishing!!
 void Client::getAccountHistory(vector<string> acctList) const
 {
 	//acctList is formatted {hashedPw, user type, acct 1, acct 2, etc}
@@ -71,9 +70,20 @@ void Client::getAccountHistory(vector<string> acctList) const
 
 	string startDate = "", endDate = "";
 	//Display Account Info Here!!
-	//Account userAcct(accountNum); //to build acct
+	Account userAcct(accountNum); //to build acct
 	//get start and end date from user
-	//userAcct.displayHistory(startDate, endDate);
+	cout << "Enter oldest date you want the transaction history from: MM/DD/YYYY" << endl << "Date: ";
+	cin >> startDate;
+	cout << "Enter most recent date: MM/DD/YYYY" << endl << "Date: ";
+	cin >> endDate;
+	try
+	{
+		userAcct.displayHistory(startDate + " 00:00:00", endDate + " 00:00:00");
+	}
+	catch(...)
+	{
+		cout << "Invalid Date Entry" << endl;
+	}
 }
 
 void Client::saveUser() const

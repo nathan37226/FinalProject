@@ -74,9 +74,9 @@ void initialSetup()
 
     accountInit();
 
-    AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0);
-    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 0.0);
-    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0);
+    AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0, false);
+    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 5.0, false);
+    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0, true);
     DataHandler::accountTypeList.push_back(checkingAccount);
     DataHandler::accountTypeList.push_back(savingsAccount);
     DataHandler::accountTypeList.push_back(CD);

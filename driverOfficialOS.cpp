@@ -6,11 +6,7 @@ All functions related to an Official logging into Bear Bank
 void officialLogin(string userID);
 void officialOpenAccounts(Official &officialUser);
 void officialSearch(Official &officialUser);
-<<<<<<< HEAD
-void officialAlterAccount(Official &officialUser);
-=======
 void officialAlterAccount(Official &officialUser, string acctNum);
->>>>>>> origin/Official
 
 
 /************************************************
@@ -167,7 +163,6 @@ void officialOpenAccounts(Official &officialUser)
                 string clientID = "";
                 getline(cin, clientID);
                 cout << endl;
-<<<<<<< HEAD
 
                 if (!DataHandler::isValidUserID(clientID))
                 {
@@ -205,45 +200,6 @@ void officialOpenAccounts(Official &officialUser)
                             clientUser.saveUser();
                             newAccount.saveToFile();
 
-=======
-
-                if (!DataHandler::isValidUserID(clientID))
-                {
-                    cout << "Entered User ID is Invalid" << endl << endl;
-                }
-                else
-                {
-                    string userType = DataHandler::clientGetAccountList(clientID)[1];
-                    if (userType != "client")
-                    {
-                        cout << "Entered User ID does not Belong to a Client" << endl << endl;
-                    }
-                    else
-                    {
-                        int maxOption = DataHandler::accountTypeList.size() + 1;
-                        DataHandler::displayAccountTypes();
-                        cout << "[" + to_string(maxOption) + "] Go Back" << endl;
-                        cout << "Enter an Option: ";
-                        int accountTypeOption = getUserOption(maxOption);
-                        cout << endl;
-
-                        if (accountTypeOption != maxOption)
-                        {
-                            Client clientUser;
-                            clientUser.buildUser("UserData/" + clientID + ".txt");
-                            string name = clientUser.getName(), firstName = "", lastName = "", address = clientUser.getAddress(), phoneNum = clientUser.getPhoneNum(), acctType = DataHandler::accountTypeList[accountTypeOption - 1].getAccountTypeName();
-                            firstName = name.substr(0, name.find(" "));
-                            lastName = name = name.substr(name.find(" ") + 1, string::npos);
-                            Account newAccount(acctType, clientID, firstName, lastName, phoneNum, address); //creating new account according to prexisting account type
-                            
-                            officialUser.addAccountToClient(clientUser, newAccount);
-                            officialUser.setRecentActivity("Added Account: " + acctType + " to User: " + clientID);
-                            officialUser.saveUser();
-                            clientUser.setRecentActivity("Account: " + acctType + " added!");
-                            clientUser.saveUser();
-                            newAccount.saveToFile();
-
->>>>>>> origin/Official
                             cout << "Account: " + acctType + " was created!" << endl << endl;
                         }
                     }
@@ -441,10 +397,7 @@ void officialSearch(Official &officialUser)
                 officialUser.searchForClosedAcct(acctNum);
                 officialUser.setRecentActivity("Searched for a Closed Bank Account");
                 officialUser.saveUser();
-<<<<<<< HEAD
-=======
                 cout << endl;
->>>>>>> origin/Official
                 break; 
             }
             case 8: //go back
@@ -457,20 +410,6 @@ void officialSearch(Official &officialUser)
     }
 }
 
-<<<<<<< HEAD
-void officialAlterAccount(Official &officialUser)
-{
-    string alterInterface = "[1] ";
-    bool wantsToExit = false;
-
-    while (!wantsToExit)
-    {
-        cout << alterInterface << endl << "Option: ";
-        int alterOption = getUserOption(-2);
-
-    }
-}
-=======
 void officialAlterAccount(Official &officialUser, string acctNum)
 {
     string clientID = "", alterInterface = "[1] Alter Interest Rate\n[2] Alter Restricted Status\n[3] Alter Monthly Fee\n[4] Go Back";
@@ -603,4 +542,3 @@ void officialAlterAccount(Official &officialUser, string acctNum)
     DataHandler::updateAccountInfo(acctNum, clientAcct.getAccountTableInfo());
     clientAcct.saveToFile();
 }
->>>>>>> origin/Official

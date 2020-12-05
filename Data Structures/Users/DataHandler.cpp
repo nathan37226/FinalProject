@@ -61,13 +61,10 @@ void DataHandler::changeClientFirstName(string userID, string oldName, string ne
 		allTables.firstNameTable.delMappedItem(oldName, acctList[i]); //removes acct from old name node
 		allTables.firstNameTable.insertWithItem(newName, acctList[i]); //inserts to new name node the acct
 
-		/*
-		build account from .txt file with acctList[i] as the acctNum
-		insert new first name
-		save to .txt file
-		get new info for acct from built account object
-		insert new info into with command: allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
-		*/
+		Account acct = Account(acctList[i]); //build account from .txt file with acctList[i] as the acctNum
+		acct.setAccountHolderFirstName(newName);
+		acct.saveToFile(); //save to .txt file
+		allTables.accountTable.updateInfo(acctList[i], acct.getAccountTableInfo());
 	}
 }
 
@@ -81,13 +78,10 @@ void DataHandler::changeClientLastName(string userID, string oldName, string new
 		allTables.lastNameTable.delMappedItem(oldName, acctList[i]); //removes acct from old name node
 		allTables.lastNameTable.insertWithItem(newName, acctList[i]); //inserts to new name node the acct
 
-		/*
-		build account from .txt file with acctList[i] as the acctNum
-		insert new last name
-		save to .txt file
-		get new info for acct from built account object
-		insert new info into with command: allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
-		*/
+		Account acct = Account(acctList[i]); //build account from .txt file with acctList[i] as the acctNum
+		acct.setAccountHolderLastName(newName);
+		acct.saveToFile(); //save to .txt file
+		allTables.accountTable.updateInfo(acctList[i], acct.getAccountTableInfo());
 	}
 }
 
@@ -100,14 +94,10 @@ void DataHandler::changeClientAddress(string userID, string oldAddress, string n
 		allTables.addressTable.delMappedItem(oldAddress, acctList[i]);
 		allTables.addressTable.insertWithItem(newAddress, acctList[i]);
 
-		/*
-		build account from .txt file with acctList[i] as the acctNum
-		insert new address
-		save to .txt file
-		get new info for acct from built account object
-		insert new info into with command: 
-		allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
-		*/
+		Account acct = Account(acctList[i]); //build account from .txt file with acctList[i] as the acctNum
+		acct.setAccountHolderAddress(newAddress);
+		acct.saveToFile(); //save to .txt file
+		allTables.accountTable.updateInfo(acctList[i], acct.getAccountTableInfo());
 	 }
 }
 
@@ -120,14 +110,10 @@ void DataHandler::changeClientPhoneNum(string userID, string oldNum, string newN
 		allTables.phoneNumTable.delMappedItem(oldNum, acctList[i]);
 		allTables.phoneNumTable.insertWithItem(newNum, acctList[i]);
 
-		/*
-		build account from .txt file with acctList[i] as the acctNum
-		insert new phone number
-		save to .txt file
-		get new info for acct from built account object
-		insert new info into with command: 
-		allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
-		*/
+		Account acct = Account(acctList[i]); //build account from .txt file with acctList[i] as the acctNum
+		acct.setAccountHolderAddress(newNum);
+		acct.saveToFile(); //save to .txt file
+		allTables.accountTable.updateInfo(acctList[i], acct.getAccountTableInfo());
 	 }
 }
 

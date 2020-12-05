@@ -11,11 +11,9 @@ void accountExit();
 
 void accountInit()
 {
-    cout << "Creating default account types..." << endl;
-    AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0);
-    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 0.0);
-    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0);
-    cout << "Loading Data..." << endl;
+    AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0, false);
+    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 5.0, false);
+    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0, true);
     ifstream inFile;
     inFile.open("AccountData/nextAccountNumbers.txt");
     if(inFile)
@@ -62,7 +60,7 @@ double AccountType::penaltyFee;
 /**********************************************************
 / Constructor
 *//////////////////////////////////////////////////////////
-AccountType::AccountType(string acctTypeName, double monFee, double servFee, double interestR, double minBalance)
+AccountType::AccountType(string acctTypeName, double monFee, double servFee, double interestR, double minBalance, bool isCert)
 {
     if(acctTypeName == "blank")
     {
@@ -70,6 +68,7 @@ AccountType::AccountType(string acctTypeName, double monFee, double servFee, dou
         serviceFee = 0.0;
         interestRate = 0.0;
         minimumBalance = 0.0;
+        isCertificate = false;
         accountTypeName = "";
     }
     else
@@ -81,6 +80,12 @@ AccountType::AccountType(string acctTypeName, double monFee, double servFee, dou
         {
             EncryptionBox::positionInFile = 0;
             string line = "";
+            getline(inFile,line);
+            line = line.substr(0, line.rfind("\r"));
+            if(EncryptionBox::decrypt(line) == "True")
+                isCertificate = true;
+            else
+                isCertificate = false;
             getline(inFile,line);
             line = line.substr(0, line.rfind("\r"));
             monthlyFee = stod(EncryptionBox::decrypt(line));
@@ -104,9 +109,14 @@ AccountType::AccountType(string acctTypeName, double monFee, double servFee, dou
             interestRate = interestR;
             minimumBalance = minBalance;
             accountTypeName = acctTypeName;
+            isCertificate = isCert;
             // save account type to file
             EncryptionBox::positionInFile = 0;
             ofstream outFile("AccountData/"+acctTypeName+".txt", ofstream::trunc);
+            if(isCert)
+                outFile << EncryptionBox::encrypt("True") << endl;
+            else
+                outFile << EncryptionBox::encrypt("False") << endl;
             outFile << EncryptionBox::encrypt(getDisplayNum(monFee)) << endl;
             outFile << EncryptionBox::encrypt(getDisplayNum(servFee)) << endl;
             outFile << EncryptionBox::encrypt(getDisplayNum(interestR)) << endl;
@@ -153,6 +163,11 @@ void AccountType::setAccountTypeName(string name)
     accountTypeName = name;
 }
 
+void AccountType::setIsCertificate(bool setting)
+{
+    isCertificate = setting;
+}
+
 /**********************************************************
 / Getters
 *//////////////////////////////////////////////////////////
@@ -185,6 +200,11 @@ double AccountType::getMinimumBalance()
 string AccountType::getAccountTypeName()
 {
     return accountTypeName;
+}
+
+bool AccountType::getIsCertificate()
+{
+    return isCertificate;
 }
 
 /**********************************************************
@@ -276,14 +296,28 @@ Account::Account(string acctTypeName, string userID, string acctFirstName, strin
     // set dates
     time(&openDate); // set open date as current time
     closeDate = 0;
-    maturityDate = mDate;
+    if(getIsCertificate()) // if the account type is a certificate of deposit
+    {
+        if(mDate >= openDate + 31556926) // set the minimum maturity date to one year
+            maturityDate = mDate;
+        else
+            maturityDate = openDate + 31556926;
+    }
+    else
+        maturityDate = 0;
+    
 
     // set status
     restrictedStatus = false;
     openStatus = true;
 
     // set accountBalance
-    accountBalance = acctBalance;
+    if( acctBalance >= getMinimumBalance())
+    {
+        accountBalance = acctBalance;
+    }
+    else
+        accountBalance = getMinimumBalance();
 
     // set last time interest was calculated
     time(&lastInterestCalculation);
@@ -355,6 +389,11 @@ void Account::setRestrictedStatus(bool status)
 void Account::setOpenStatus(bool status)
 {
     openStatus = status;
+    if(!status)
+    {
+        if(time(0) < getMaturityDate())
+            accountBalance -= getPenaltyFee();
+    }
 }
 
 void Account::setAccountClosedBy(string name)
@@ -527,25 +566,25 @@ string Account::withdraw(double amount)
         double tempBalance = accountBalance - roundNum(amount, 2);
         if(tempBalance < getMinimumBalance())
         {
-            return "Insufficient Funds.";
+            return "Insufficient Funds";
         }
         else if(tempBalance < 0 && tempBalance > getMinimumBalance())
         {
             accountBalance = tempBalance - getPenaltyFee();
             saveTransaction("Withdrawl",amount);
             saveTransaction("Overdraft",-1 * getPenaltyFee());
-            return "Overdraft Penalty.";
+            return "Overdraft Penalty";
         }
         else
         {
             accountBalance = tempBalance;
             saveTransaction("Withdrawl",amount);
-            return "Amount Withdrawn.";
+            return "Amount Withdrawn";
         }
     }
     else
-        return "Account Restricted.";
-    return "Something else happened.";
+        return "Account Restricted";
+    return "Something else happened";
 }
 
 void Account::doServiceCharge()
@@ -591,8 +630,8 @@ void Account::interestCalc()
 void Account::displayHistory(string beginning, string ending)
 {
     // Convert date strings in to time_t to use in AVL search tree
-    time_t startDate = displayHistoryHelper(beginning);
-    time_t endDate = displayHistoryHelper(ending);
+    time_t startDate = convertDateToTimeT(beginning);
+    time_t endDate = convertDateToTimeT(ending);
     time_t tempDate;
 
     if(endDate < startDate)
@@ -609,7 +648,6 @@ void Account::displayHistory(string beginning, string ending)
         EncryptionBox::positionInFile = 0;
         line = line.substr(0, line.rfind("\r"));
         line = EncryptionBox::decrypt(line);
-
         tempDate = stoi(line.substr(0,line.find(" ")));
         if(tempDate > startDate && tempDate < endDate)
             cout << convertTimeToString(tempDate) + " " + line.substr(line.find(" ")+1,line.length()) << endl;
@@ -626,7 +664,7 @@ void Account::displayHistory(string beginning, string ending)
 / returns:
 /   time_t
 *//////////////////////////////////////////////////////////
-time_t Account::displayHistoryHelper(string date)
+time_t Account::convertDateToTimeT(string date)
 {
     // parse out time info from string
     int month = stoi(date.substr(0,2));
@@ -691,6 +729,10 @@ string Account::saveToFile()
     outFile << EncryptionBox::encrypt(to_string(lastInterestCalculation)) << endl;
     
     // Store accountType data (must use getters since inherited atributes are private)
+    if(getIsCertificate())
+        outFile << EncryptionBox::encrypt("True") << endl;
+    else
+        outFile << EncryptionBox::encrypt("False") << endl;
     outFile << EncryptionBox::encrypt(getDisplayNum(getMonthlyFee())) << endl;
     outFile << EncryptionBox::encrypt(getDisplayNum(getServiceFee())) << endl;
     outFile << EncryptionBox::encrypt(getDisplayNum(getInterestRate())) << endl;
@@ -719,54 +761,60 @@ void Account::buildFromFile(string acctNum)
     if(inFile)
     {
         getline(inFile, line);
-        accountNumber = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        accountNumber = EncryptionBox::decrypt(line.substr(0,line.rfind("\r")));
         getline(inFile, line);
-        accountHolderUserID = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        accountHolderUserID = EncryptionBox::decrypt(line.substr(0,line.rfind("\r")));
         getline(inFile, line);
-        accountHolderFirstName = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        accountHolderFirstName = EncryptionBox::decrypt(line.substr(0,line.rfind("\r")));
         getline(inFile, line);
-        accountHolderLastName = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        accountHolderLastName = EncryptionBox::decrypt(line.substr(0,line.rfind("\r")));
         getline(inFile, line);
-        accountHolderPhoneNumber = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        accountHolderPhoneNumber = EncryptionBox::decrypt(line.substr(0,line.rfind("\r")));
         getline(inFile, line);
-        accountHolderAddress = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
+        accountHolderAddress = EncryptionBox::decrypt(line.substr(0,line.rfind("\r")));
         getline(inFile, line);
-        openDate = stoi(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        openDate = stoi(EncryptionBox::decrypt(line.substr(0,line.rfind("\r"))));
         getline(inFile, line);
-        closeDate = stoi(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        closeDate = stoi(EncryptionBox::decrypt(line.substr(0,line.rfind("\r"))));
         getline(inFile, line);
-        maturityDate = stoi(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        line = EncryptionBox::decrypt(line.substr(0,line.rfind("\r")));
+        maturityDate = stoi(line);
         getline(inFile, line);
-        accountBalance = stod(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        accountBalance = stod(EncryptionBox::decrypt(line.substr(0,line.rfind("\r"))));
         getline(inFile, line);
-        if(EncryptionBox::decrypt(line.substr(0,line.find("\r"))) == "True")
+        if(EncryptionBox::decrypt(line.substr(0,line.rfind("\r"))) == "True")
             restrictedStatus = true;
         else
             restrictedStatus = false;
         getline(inFile, line);
-        if(EncryptionBox::decrypt(line.substr(0,line.find("\r"))) == "True")
+        if(EncryptionBox::decrypt(line.substr(0,line.rfind("\r"))) == "True")
             openStatus = true;
         else
             openStatus = false;
         
         getline(inFile, line);
-        lastInterestCalculation = stoi(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        lastInterestCalculation = stoi(EncryptionBox::decrypt(line.substr(0,line.rfind("\r"))));
 
         // defind accountType attributes (must use setters since attributes are inaccessible)
         getline(inFile, line);
-        setMonthlyFee(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
+        if(EncryptionBox::decrypt(line.substr(0,line.rfind("\r"))) == "True")
+            setIsCertificate(true);
+        else
+            setIsCertificate(false);
         getline(inFile, line);
-        setServiceFee(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
+        setMonthlyFee(stod(EncryptionBox::decrypt(line.substr(0,line.rfind("\r")))));
         getline(inFile, line);
-        setInterestRate(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
+        setServiceFee(stod(EncryptionBox::decrypt(line.substr(0,line.rfind("\r")))));
         getline(inFile, line);
-        setMinimumBalance(stod(EncryptionBox::decrypt(line.substr(0,line.find("\r")))));
+        setInterestRate(stod(EncryptionBox::decrypt(line.substr(0,line.rfind("\r")))));
         getline(inFile, line);
-        setAccountTypeName(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+        setMinimumBalance(stod(EncryptionBox::decrypt(line.substr(0,line.rfind("\r")))));
+        getline(inFile, line);
+        setAccountTypeName(EncryptionBox::decrypt(line.substr(0,line.rfind("\r"))));
     }
     else
     {
-        cout << "File not found." << endl;
+        cout << "File not found" << endl;
     }
     inFile.close();
 }
