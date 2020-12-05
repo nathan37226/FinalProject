@@ -221,45 +221,55 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
         {
             // prompt user to pick account
             Account acct = Account(getAccountFromList(acctList));
-            cout << "Enter Deposit amount: " << endl << "$";
-            string depAmount;
-            getline(cin, depAmount);
-            if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
-            {
-                string transactionResult = acct.deposit(stod(depAmount));
-                cout << transactionResult << endl;
-                acct.saveToFile();
-                DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
-                user.setRecentActivity("Deposited: $" + depAmount + " into account: " + acct.getAccountNumber());
-                user.saveUser();
+            if(acct.getOpenStatus())
+            {   
+                cout << "Enter Deposit amount: " << endl << "$";
+                string depAmount;
+                getline(cin, depAmount);
+                if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
+                {
+                    string transactionResult = acct.deposit(stod(depAmount));
+                    cout << transactionResult << endl;
+                    acct.saveToFile();
+                    DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
+                    user.setRecentActivity("Deposited: $" + depAmount + " into account: " + acct.getAccountNumber());
+                    user.saveUser();
+                }
+                else
+                    cout << "Invalid Entry" << endl;
+                cout << endl;
             }
             else
-                cout << "Invalid Entry" << endl;
-
-            cout << endl;
+                cout << "Account " + acct.getAccountNumber() + " is closed" << endl << endl;
             break;
         }
         case 2: //withdraw
         {
             // prompt user to chose an account
             Account acct = Account(getAccountFromList(acctList));
-            cout << "Enter Withdrawal amount: " << endl << "$";
-            string witAmount;
-            getline(cin, witAmount);
-            if(isValidNumber(witAmount) && witAmount == witAmount.substr(0,witAmount.find(".")+3))
-            {
-                string transactionResult = acct.withdraw(stod(witAmount));
-                cout << transactionResult << endl;
-                acct.saveToFile();
-                if(transactionResult == "Amount Withdrawn, Overdraft Penalty" || transactionResult == "Amount Withdrawn")
+            if(acct.getOpenStatus())
+            {   
+                cout << "Enter Withdrawal amount: " << endl << "$";
+                string witAmount;
+                getline(cin, witAmount);
+                if(isValidNumber(witAmount) && witAmount == witAmount.substr(0,witAmount.find(".")+3))
                 {
-                    DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
-                    user.setRecentActivity("Withdrew: $" + witAmount + " from account: " + acct.getAccountNumber());
-                    user.saveUser();
+                    string transactionResult = acct.withdraw(stod(witAmount));
+                    cout << transactionResult << endl;
+                    acct.saveToFile();
+                    if(transactionResult == "Amount Withdrawn, Overdraft Penalty" || transactionResult == "Amount Withdrawn")
+                    {
+                        DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
+                        user.setRecentActivity("Withdrew: $" + witAmount + " from account: " + acct.getAccountNumber());
+                        user.saveUser();
+                    }
                 }
+                else
+                    cout << "Invalid Entry" << endl;    
+                cout << endl;
             }
             else
-                cout << "Invalid Entry" << endl;
+                cout << "Account " + acct.getAccountNumber() + " is closed" << endl << endl;
             break;
         }
         case 3: //deposit into another acct in Bear Bank
@@ -271,21 +281,27 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             if(DataHandler::getAccountInfo(otherAcctNum) != "false")
             {
                 Account otherAcct = Account(otherAcctNum);
-                cout << "Enter Deposit amount: " << endl << "$";
-                string depAmount;
-                getline(cin, depAmount);
-                if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
-                {
-                    string transactionResult = otherAcct.deposit(stod(depAmount));
-                    cout << transactionResult << endl;
-                    // save transaction
-                    otherAcct.saveToFile();
-                    DataHandler::updateAccountInfo(otherAcct.getAccountNumber(), otherAcct.getAccountTableInfo());
-                    user.setRecentActivity("Deposited: $" + depAmount + " into account: " + otherAcct.getAccountNumber()); //save user activity
-                    user.saveUser();//save user
+                if(otherAcct.getOpenStatus())
+                {   
+                    cout << "Enter Deposit amount: " << endl << "$";
+                    string depAmount;
+                    getline(cin, depAmount);
+                    if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
+                    {
+                        string transactionResult = otherAcct.deposit(stod(depAmount));
+                        cout << transactionResult << endl;
+                        // save transaction
+                        otherAcct.saveToFile();
+                        DataHandler::updateAccountInfo(otherAcct.getAccountNumber(), otherAcct.getAccountTableInfo());
+                        user.setRecentActivity("Deposited: $" + depAmount + " into account: " + otherAcct.getAccountNumber()); //save user activity
+                        user.saveUser();//save user
+                    }
+                    else
+                        cout << "Invalid Entry" << endl;    
+                    cout << endl;
                 }
                 else
-                    cout << "Invalid Entry" << endl;
+                    cout << "Account " + otherAcct.getAccountNumber() + " is closed" << endl << endl;
                 break;
             }
             else
