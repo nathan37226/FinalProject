@@ -549,7 +549,7 @@ string Account::deposit(double amount)
 {
     accountBalance += roundNum(amount, 2);
     saveTransaction("Deposit",amount);
-    return "Amount added.";
+    return "Amount added";
 }
 
 /**********************************************************
@@ -579,7 +579,7 @@ string Account::withdraw(double amount)
             accountBalance = tempBalance - getPenaltyFee();
             saveTransaction("Withdrawl",-1 * amount);
             saveTransaction("Overdraft",-1 * getPenaltyFee());
-            return "Overdraft Penalty";
+            return "Amount Withdrawn, Overdraft Penalty";
         }
         else
         {
@@ -640,9 +640,9 @@ void Account::displayHistory(string beginning, string ending)
     time_t endDate = convertDateToTimeT(ending);
     time_t tempDate;
 
-    if(endDate < startDate)
+    if(endDate < startDate || endDate == 0 || startDate == 0)
     {
-        cout << "Invalid Dates" << endl;
+        cout << "Invalid Dates" << endl << endl << endl;
         return;
     }
 
@@ -673,25 +673,67 @@ void Account::displayHistory(string beginning, string ending)
 *//////////////////////////////////////////////////////////
 time_t Account::convertDateToTimeT(string date)
 {
+    int month;
+    int day;
+    int year;
+    int hour;
+    int minute;
+    int second;
     // parse out time info from string
-    int month = stoi(date.substr(0,2));
-    int day = stoi(date.substr(3,5));
-    int year = stoi(date.substr(6,10));
-    int hour = stoi(date.substr(11,13));
-    int minute = stoi(date.substr(14,16));
-    int second = stoi(date.substr(17,19));
+    if(isValidNumber(date.substr(0,2)))
+        month = stoi(date.substr(0,2));
+    else
+        return 0;
+    if(isValidNumber(date.substr(3,2)))
+        day = stoi(date.substr(3,2));
+    else
+        return 0;
+    if(isValidNumber(date.substr(6,4)))
+        year = stoi(date.substr(6,4));
+    else
+        return 0;
+    if(isValidNumber(date.substr(11,2)))
+        hour = stoi(date.substr(11,2));
+    else
+        return 0;
+    if(isValidNumber(date.substr(14,2)))
+        minute = stoi(date.substr(14,2));
+    else
+        return 0;
+    if(isValidNumber(date.substr(17,2)))
+        second = stoi(date.substr(17,2));
+    else
+        return 0;
 
     // build struct tm
     time_t rawtime;
     struct tm * timeinfo;
     time ( &rawtime );
     timeinfo = localtime ( &rawtime );
-    timeinfo->tm_year = year - 1900;
-    timeinfo->tm_mon = month - 1;
-    timeinfo->tm_mday = day;
-    timeinfo->tm_hour = hour;
-    timeinfo->tm_min = minute;
-    timeinfo->tm_sec = second;
+    if(year >= 1900)
+        timeinfo->tm_year = year - 1900;
+    else
+        return 0;
+    if(month >= 1 && month <= 12)
+        timeinfo->tm_mon = month - 1;
+    else
+        return 0;
+    if(day >= 0 && day <= 31 && !(day > 30 && (month == 4 || month == 6 || month == 9 || month == 11)) && !(day > 29 && month == 2))
+        timeinfo->tm_mday = day;
+    else
+        return 0;
+    if(hour >= 0 && hour < 24)
+        timeinfo->tm_hour = hour;
+    else
+        return 0;
+    if(minute >= 0 && minute < 60)
+        timeinfo->tm_min = minute;
+    else
+        return 0;
+    if(second >= 0 && second < 60)
+        timeinfo->tm_sec = second;
+    else
+        return 0;
     mktime(timeinfo); // automatically set the rest of timeinfo
 
     timeinfo->tm_hour = hour; // fix hour if daylight saving time
@@ -875,4 +917,25 @@ void Account::saveTransaction(string type, double amount)
     string transactionInfo = to_string(date) + " " + getDisplayNum(amount) + " " + type;
     outFile <<  EncryptionBox::encrypt(transactionInfo) << endl;
     outFile.close();
+}
+
+bool Account::isValidNumber(string inputNum)
+{
+    string validNumbers = "0123456789.";
+    bool match = false; 
+    int count = 0;   
+
+    for (int n = 0; n < inputNum.length(); n++)
+    {
+        if (validNumbers.find( inputNum[n] ) == string::npos)
+        {
+            return false;
+        }
+        else if (inputNum[n] == validNumbers[10]) //if it's a decimal
+        {
+            count++; //keeps track of how many decimals there are
+        }   
+    }   
+    bool returnValue = (count <= 1) ? true : false; //can only be <=1 decimals in a valid number
+    return returnValue;
 }

@@ -77,14 +77,7 @@ void Client::getAccountHistory(vector<string> acctList) const
 	cout << "Enter most recent date: MM/DD/YYYY" << endl << "Date: ";
 	getline(cin, endDate);
 	cout << endl;
-	try
-	{
-		userAcct.displayHistory(startDate + " 00:00:00", endDate + " 00:00:00");
-	}
-	catch(...)
-	{
-		cout << "Invalid Date Entry" << endl;
-	}
+	userAcct.displayHistory(startDate + " 00:00:00", endDate + " 00:00:00");
 }
 
 void Client::saveUser() const

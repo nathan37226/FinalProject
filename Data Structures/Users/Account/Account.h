@@ -72,6 +72,7 @@ private:
     string incrementAcctNum(string lastAcctNum);
     void saveTransaction(string type, double amount);
     void interestCalc();
+    static bool isValidNumber(string inputNum);
 
     friend void accountInit();
 

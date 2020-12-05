@@ -229,7 +229,8 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             getline(cin, depAmount);
             if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
             {
-                cout << acct.deposit(stod(depAmount)) << endl;
+                string transactionResult = otherAcct.deposit(stod(depAmount));
+                cout << transactionResult << endl;
                 acct.saveToFile();
                 DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
                 user.setRecentActivity("Deposited: $" + depAmount + " into account: " + acct.getAccountNumber());
@@ -248,11 +249,15 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             getline(cin, witAmount);
             if(isValidNumber(witAmount) && witAmount == witAmount.substr(0,witAmount.find(".")+3))
             {
-                cout << acct.withdraw(stod(witAmount)) << endl;
+                string transactionResult = otherAcct.withdraw(stod(witAmount));
+                cout << transactionResult << endl;
                 acct.saveToFile();
-                DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
-                user.setRecentActivity("Withdrew: $" + witAmount + " from account: " + acct.getAccountNumber());
-                user.saveUser();
+                if(transactionResult == "Amount Withdrawn, Overdraft Penalty" || transactionResult == "Amount Withdrawn")
+                {
+                    DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
+                    user.setRecentActivity("Withdrew: $" + witAmount + " from account: " + acct.getAccountNumber());
+                    user.saveUser();
+                }
             }
             else
                 cout << "Invalid Entry" << endl;
@@ -272,7 +277,8 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
                 getline(cin, depAmount);
                 if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
                 {
-                    cout << otherAcct.deposit(stod(depAmount)) << endl;
+                    string transactionResult = otherAcct.deposit(stod(depAmount));
+                    cout << transactionResult << endl;
                     // save transaction
                     otherAcct.saveToFile();
                     DataHandler::updateAccountInfo(otherAcct.getAccountNumber(), otherAcct.getAccountTableInfo());
