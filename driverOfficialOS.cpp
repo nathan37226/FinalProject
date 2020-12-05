@@ -235,6 +235,11 @@ void officialLogin(string userID)
                                     clientUser.setRecentActivity("Withdrew $" + withdrawalAmount);
                                     user.setRecentActivity("Assisted Client: " + clientUser.getID() + " withdraw $" + withdrawalAmount + "from: " + acctNum);
                                     cout << endl << withdrawalMsg << endl << "Withdrawal Successful" << endl;
+                                    if (clientAcct.getServiceFee() > 0.00)
+                                    {
+                                        //clientAcct.chargeServiceFee();
+                                        //cout << "You have been Charged a Service Fee of: " << clientAcct.getServiceFee() << endl;
+                                    }
                                 }
                                 else if (withdrawalMsg == "Account Restricted")
                                 {
