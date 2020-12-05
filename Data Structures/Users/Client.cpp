@@ -72,10 +72,11 @@ void Client::getAccountHistory(vector<string> acctList) const
 	//Display Account Info Here!!
 	Account userAcct(accountNum); //to build acct
 	//get start and end date from user
-	cout << "Enter oldest date you want the transaction history from: MM/DD/YYYY" << endl << "Date: ";
-	cin >> startDate;
+	cout << endl << "Enter oldest date you want the transaction history from: MM/DD/YYYY" << endl << "Date: ";
+	getline(cin, startDate);
 	cout << "Enter most recent date: MM/DD/YYYY" << endl << "Date: ";
-	cin >> endDate;
+	getline(cin, endDate);
+	cout << endl;
 	try
 	{
 		userAcct.displayHistory(startDate + " 00:00:00", endDate + " 00:00:00");

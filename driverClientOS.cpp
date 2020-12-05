@@ -226,26 +226,17 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             Account acct = Account(getAccountFromList(acctList));
             cout << "Enter Deposit amount: " << endl << "$";
             string depAmount;
-            cin >> depAmount;
-            try
+            getline(cin, depAmount);
+            if(isValidNumber(depAmount))
             {
-                double amount = stod(depAmount);
-                // deposit
-                acct.deposit(amount);
+                cout << acct.deposit(stod(depAmount)) << endl;
+                acct.saveToFile();
+                DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
+                user.setRecentActivity("Deposited: $" + depAmount + " into account: " + acct.getAccountNumber());
+                user.saveUser();
             }
-            catch (const std::invalid_argument& ia){
-                std::cerr << "Invalid argument: " << ia.what() << '\n';
-                break;
-            }
-            catch (const std::out_of_range& oor){
-                std::cerr << "Out of Range error: " << oor.what() << '\n';
-                break;
-            }
-            // save transaction
-            acct.saveToFile();
-            DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
-            user.setRecentActivity("Deposited: $" + depAmount + " into account: " + acct.getAccountNumber()); //save user activity
-            user.saveUser();//save user
+            else
+                cout << "Invalid Entry" << endl;
             break;
         }
         case 2: //withdraw
@@ -254,63 +245,47 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             Account acct = Account(getAccountFromList(acctList));
             cout << "Enter Withdraw amount: " << endl << "$";
             string witAmount;
-            cin >> witAmount;
-            try
+            getline(cin, witAmount);
+            if(isValidNumber(witAmount))
             {
-                double amount = stod(witAmount);
-                // withdraw
-                acct.withdraw(amount);
+                cout << acct.withdraw(stod(witAmount)) << endl;
+                acct.saveToFile();
+                DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
+                user.setRecentActivity("Withdrew: $" + witAmount + " from account: " + acct.getAccountNumber());
+                user.saveUser();
             }
-            catch (const std::invalid_argument& ia){
-                std::cerr << "Invalid argument: " << ia.what() << '\n';
-                break;
-            }
-            catch (const std::out_of_range& oor){
-                std::cerr << "Out of Range error: " << oor.what() << '\n';
-                break;
-            }
-            // save transaction
-            acct.saveToFile();
-            DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
-            user.setRecentActivity("Withdrew: $" + witAmount + " from account: " + acct.getAccountNumber()); //save user activity
-            user.saveUser();//save user
+            else
+                cout << "Invalid Entry" << endl;
             break;
         }
         case 3: //deposit into another acct in Bear Bank
         {
             cout << "Enter the account number you wish to deposit into: " << endl;
             string otherAcctNum;
-            cin >> otherAcctNum;
+            getline(cin, otherAcctNum);
 
             if(DataHandler::getAccountInfo(otherAcctNum) != "false")
             {
                 Account otherAcct = Account(otherAcctNum);
                 cout << "Enter Deposit amount: " << endl << "$";
                 string depAmount;
-                cin >> depAmount;
-                try
+                getline(cin, depAmount);
+                if(isValidNumber(depAmount))
                 {
-                    double amount = stod(depAmount);
-                    otherAcct.deposit(amount);
+                    cout << otherAcct.deposit(stod(depAmount)) << endl;
+                    // save transaction
+                    otherAcct.saveToFile();
+                    DataHandler::updateAccountInfo(otherAcct.getAccountNumber(), otherAcct.getAccountTableInfo());
+                    user.setRecentActivity("Deposited: $" + depAmount + " into account: " + otherAcct.getAccountNumber()); //save user activity
+                    user.saveUser();//save user
                 }
-                catch (const std::invalid_argument& ia){
-                    std::cerr << "Invalid argument: " << ia.what() << '\n';
-                    break;
-                }
-                catch (const std::out_of_range& oor){
-                    std::cerr << "Out of Range error: " << oor.what() << '\n';
-                    break;
-                }
-                // save transaction
-                otherAcct.saveToFile();
-                DataHandler::updateAccountInfo(otherAcct.getAccountNumber(), otherAcct.getAccountTableInfo());
-                user.setRecentActivity("Deposited: $" + depAmount + " into account: " + otherAcct.getAccountNumber()); //save user activity
-                user.saveUser();//save user
+                else
+                    cout << "Invalid Entry" << endl;
                 break;
             }
             else
             {
-                cout << "Account: " << otherAcctNum << " does not exist." << endl;
+                cout << "Account: " << otherAcctNum << " does not exist." << endl << endl;
                 break;
             } 
         }

@@ -14,6 +14,7 @@ void accountInit()
     AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0, false);
     AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 5.0, false);
     AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0, true);
+    AccountType::setPenaltyFee(25.00);
     ifstream inFile;
     inFile.open("AccountData/nextAccountNumbers.txt");
     if(inFile)
@@ -571,7 +572,7 @@ string Account::withdraw(double amount)
         else if(tempBalance < 0 && tempBalance > getMinimumBalance())
         {
             accountBalance = tempBalance - getPenaltyFee();
-            saveTransaction("Withdrawl",amount);
+            saveTransaction("Withdrawl",-1 * amount);
             saveTransaction("Overdraft",-1 * getPenaltyFee());
             return "Overdraft Penalty";
         }
@@ -652,6 +653,7 @@ void Account::displayHistory(string beginning, string ending)
         if(tempDate > startDate && tempDate < endDate)
             cout << convertTimeToString(tempDate) + " " + line.substr(line.find(" ")+1,line.length()) << endl;
     }
+    cout << endl << endl;
 }
 
 /**********************************************************
