@@ -330,6 +330,11 @@ void officialOpenAccounts(Official &officialUser)
                             firstName = name.substr(0, name.find(" "));
                             lastName = name = name.substr(name.find(" ") + 1, string::npos);
                             Account newAccount(acctType, clientID, firstName, lastName, phoneNum, address); //creating new account according to prexisting account type
+                            double newBal = newAccount.getMinimumBalance();
+                            if (newBal > 0)
+                            {
+                                newAccount.deposit(newBal);
+                            }
                             
                             officialUser.addAccountToClient(clientUser, newAccount);
                             officialUser.setRecentActivity("Added Account: " + acctType + " to User: " + clientID);
@@ -381,6 +386,11 @@ void officialOpenAccounts(Official &officialUser)
                                 lastName = name = name.substr(name.find(" ") + 1, string::npos);
                                 
                                 Account newAccount(acctType, userID, firstName, lastName, phoneNum, address);
+                                double newBal = newAccount.getMinimumBalance();
+                                if (newBal > 0)
+                                {
+                                    newAccount.deposit(newBal);
+                                }
 
                                 officialUser.addAccountToClient(clientUser, newAccount); //updates record in all tables!
                                 clientUser.setRecentActivity("Request for: " + acctType + " was approved!");

@@ -6,6 +6,7 @@ All functions related to a Client logging into Bear Bank
 void clientLogin(string userID);
 void clientMakeAccountChanges(Client &user, int option);
 void clientHelpAccessAccount(Client &user, int option, vector<string> acctList);
+string getAccountFromList(vector<string> acctList);
 
 
 /************************************************
@@ -44,16 +45,20 @@ void clientLogin(string userID)
                 }
                 else //accounts have been displayed by DataHandler already
                 {
-                    string accountInterface = "[1] Deposit Into Account\n[2] Withdraw From Account\n[3] Deposit Into External Account\n[4] View an Accounts History\n[5] Go Back";
-                    cout << accountInterface << endl << "Option: ";
-                    int accountInterfaceOption = getUserOption(5);
-                    cout << endl;
-                    
-                    if (accountInterfaceOption != 5)
+                    int accountInterfaceOption = 0;
+                    while(accountInterfaceOption != 5)
                     {
-                        vector<string> acctList = DataHandler::clientGetAccountList(userID);
-                        clientHelpAccessAccount(user, accountInterfaceOption, acctList);
-                    }
+                        string accountInterface = "[1] Deposit Into Account\n[2] Withdraw From Account\n[3] Deposit Into External Account\n[4] View an Accounts History\n[5] Go Back";
+                        cout << accountInterface << endl << "Option: ";
+                        accountInterfaceOption = getUserOption(5);
+                        cout << endl;
+                        
+                        if (accountInterfaceOption != 5)
+                        {
+                            vector<string> acctList = DataHandler::clientGetAccountList(userID);
+                            clientHelpAccessAccount(user, accountInterfaceOption, acctList);
+                        }
+                    }    
                 }
                 break;
             }
@@ -65,16 +70,20 @@ void clientLogin(string userID)
             }
             case 3: //change info
             {
-                cout << "Which piece of information would you like to change?" << endl;
-                cout << "[1] First Name\n[2] Last Name\n[3] Address\n[4] Phone Number\n[5] Password\n[6] Go Back" << endl;
-                cout << "Option: ";
-                int option = getUserOption(6);
-                if (option != 6)
+                int option = 0;
+                while(option != 6)
                 {
+                    cout << "Which piece of information would you like to change?" << endl;
+                    cout << "[1] First Name\n[2] Last Name\n[3] Address\n[4] Phone Number\n[5] Password\n[6] Go Back" << endl;
+                    cout << "Option: ";
+                    option = getUserOption(6);
+                    if (option != 6)
+                    {
+                        cout << endl;
+                        clientMakeAccountChanges(user, option);
+                    }
                     cout << endl;
-                    clientMakeAccountChanges(user, option);
                 }
-                cout << endl;
                 break;
             }
             case 4: //open new acct
@@ -116,7 +125,6 @@ Start of Client Login Helper Functions
 ************************************************/
 
 
-//Needs Finishing!
 void clientMakeAccountChanges(Client &user, int option)
 {
     switch (option)
@@ -208,28 +216,119 @@ void clientMakeAccountChanges(Client &user, int option)
     user.saveUser();
 }
 
-//Needs Finishing!
 void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
 {
     switch (option)
     {
         case 1: //deposit
         {
+            // prompt user to pick account
+            Account acct = Account(getAccountFromList(acctList));
+            cout << "Enter Deposit amount: " << endl << "$";
+            string depAmount;
+            getline(cin, depAmount);
+            if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
+            {
+                cout << acct.deposit(stod(depAmount)) << endl;
+                acct.saveToFile();
+                DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
+                user.setRecentActivity("Deposited: $" + depAmount + " into account: " + acct.getAccountNumber());
+                user.saveUser();
+            }
+            else
+                cout << "Invalid Entry" << endl;
+
+            cout << endl;
             break;
         }
         case 2: //withdraw
         {
+            // prompt user to chose an account
+            Account acct = Account(getAccountFromList(acctList));
+            cout << "Enter Withdrawal amount: " << endl << "$";
+            string witAmount;
+            getline(cin, witAmount);
+            if(isValidNumber(witAmount) && witAmount == witAmount.substr(0,witAmount.find(".")+3))
+            {
+                cout << acct.withdraw(stod(witAmount)) << endl;
+                acct.saveToFile();
+                DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
+                user.setRecentActivity("Withdrew: $" + witAmount + " from account: " + acct.getAccountNumber());
+                user.saveUser();
+            }
+            else
+                cout << "Invalid Entry" << endl;
+
+            cout << endl;
             break;
         }
         case 3: //deposit into another acct in Bear Bank
         {
-            break;
+            cout << "Enter the account number you wish to deposit into: " << endl;
+            string otherAcctNum;
+            getline(cin, otherAcctNum);
+
+            if(DataHandler::getAccountInfo(otherAcctNum) != "false")
+            {
+                Account otherAcct = Account(otherAcctNum);
+                cout << "Enter Deposit amount: " << endl << "$";
+                string depAmount;
+                getline(cin, depAmount);
+                if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
+                {
+                    cout << otherAcct.deposit(stod(depAmount)) << endl;
+                    // save transaction
+                    otherAcct.saveToFile();
+                    DataHandler::updateAccountInfo(otherAcct.getAccountNumber(), otherAcct.getAccountTableInfo());
+                    user.setRecentActivity("Deposited: $" + depAmount + " into account: " + otherAcct.getAccountNumber()); //save user activity
+                    user.saveUser();//save user
+                }
+                else
+                    cout << "Invalid Entry" << endl;
+                break;
+            }
+            else
+            {
+                cout << "Account: " << otherAcctNum << " does not exist." << endl << endl;
+                break;
+            } 
         }
         case 4: //view history
         {
-            user.getAccountHistory(acctList); //Needs to be finished!!!
+            user.getAccountHistory(acctList);
             break;
         }
     }
 }
 
+string getAccountFromList(vector<string> acctList)
+{
+    string accountNum = "";
+	bool isPresent = false;
+	cout << endl << "Enter the Account Number: ";
+	getline(cin, accountNum);
+	
+	for (int i = 2; i < acctList.size(); i++) //normal iteration--a BST is not needed here since so few possible options
+	{
+		if (accountNum == acctList[i])
+		{
+			isPresent = true;
+			break;
+		}
+	}
+	while (!isPresent)
+	{
+		cout << "Invalid Account Number." << endl << "Enter Again: ";
+		getline(cin, accountNum);
+
+		for (int i = 2; i < acctList.size(); i++) //normal iteration--a BST is not needed here since so few possible options
+		{
+			if (accountNum == acctList[i])
+			{
+				isPresent = true;
+				break;
+			}
+		}
+	}
+    return accountNum;
+}

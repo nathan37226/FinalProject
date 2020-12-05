@@ -325,13 +325,18 @@ void adminModifyAdmin(Admin &admin)
 
 void adminModifyAccountTypes(Admin &admin)
 {
-    string modifyAcctTypeInterface = "[1] View All Account Types\n[2] Create New Account Type\n[3] Delete Existing Account Type\n[4] Go Back";
+    string modifyAcctTypeInterface = "[1] View All Account Types\n[2] Create New Account Type\n[3] Delete Existing Account Type\n[4] Modify Existing Account Type\n[5] Go Back";
     bool wantsToExit = false;
+    string acctTypeName;
+    double monFee =0.0f;
+    double servFee =0.0f;
+    double interestR =0.0f;
+    double minBalance =0.0f;
 
     while (!wantsToExit)
     {
         cout << modifyAcctTypeInterface << endl << "Option: ";
-        int modifyAcctTypeOption = getUserOption(4);
+        int modifyAcctTypeOption = getUserOption(5);
         cout << endl;
         
         switch (modifyAcctTypeOption)
@@ -344,13 +349,142 @@ void adminModifyAccountTypes(Admin &admin)
             }
             case 2: //Create new
             {
+                string acctTypeName = "", monFee = "", servFee = "", interestR = "", minBalance = "";
+                bool isValidInput = false, areAllValid = false;
+                cout << "Please Enter the Account Type Name: ";
+                getline(cin, acctTypeName);
+                bool checkSameName = DataHandler::checkAccountTypeName(acctTypeName);
+                if(checkSameName)
+                {
+                    cout<<"That Account Type Name has Already Exists!"<<endl << endl;
+                    break;
+                }
+                else
+                {
+                    if(DataHandler::nameValid(acctTypeName))
+                    {
+                        cout << "Please Enter Monthly Fee: ";
+                        getline(cin, monFee);
+                        isValidInput = isValidNumber(monFee);
+                        areAllValid = isValidInput;
+                        cout << "Please Enter Service Fee: ";
+                        getline(cin, servFee);
+                        isValidInput = isValidNumber(servFee);
+                        areAllValid = (isValidInput && areAllValid) ? true : false;
+                        cout << "Please Enter Interest Rate: ";
+                        getline(cin, interestR);
+                        isValidInput = isValidNumber(interestR);
+                        areAllValid = (isValidInput && areAllValid) ? true : false;
+                        cout << "Please Enter Minimum Balance: ";
+                        getline(cin, minBalance);
+                        isValidInput = isValidNumber(minBalance);
+                        areAllValid = (isValidInput && areAllValid) ? true : false;
+
+                        cout << endl;
+                        if (!areAllValid) //if any input numbers are not a good number
+                        {
+                            cout << "An Invalid Input has Occured" << endl;
+                        }
+                        else
+                        {
+                            double realServFee = Account::roundNum(stod(servFee), 2);
+                            double realMonFee = Account::roundNum(stod(monFee), 2);
+                            double realMinBalance = Account::roundNum(stod(minBalance), 2);
+                            if (  ( (realServFee != stod(servFee)) || (realMonFee != stod(monFee)) )   ||    (realMinBalance != stod(minBalance))   )
+                            {
+                                cout << "Invalid Number Input" << endl;
+                            }
+                            else if ( !(stod(interestR) > 0 && stod(interestR) < 5.0) )
+                            {
+                                cout << "Invalid Interest Rate Input" << endl << "Must be Between 0% and 5%" << endl;
+                            }
+                            else
+                            {
+                                DataHandler::createAccountType(acctTypeName, realMonFee, realServFee, stod(interestR), realMinBalance);
+                                cout << "A New account Type for: " << acctTypeName << " has been created" << endl << endl;
+                            }
+                        }
+                    }
+                }
+                cout << endl;
                 break;
             }
             case 3: //Delete existing
             {
+                string acctTypeName = "";
+                cout << "Enter the Account Type Name you want to Delete: ";
+                getline(cin, acctTypeName);
+                if(!DataHandler::nameValid(acctTypeName))
+                {
+                    return;
+                }
+                DataHandler::deleteAccountType(acctTypeName);
+                cout << endl;
                 break;
             }
-            case 4:
+            case 4: //Modify existing 
+            {
+                string acctTypeName = "", monFee = "", servFee = "", interestR = "", minBalance = "";
+                bool isValidInput = false, areAllValid = false;
+
+                cout << "Please Enter the Account Type Name: ";
+                getline(cin, acctTypeName);
+                if(DataHandler::nameValid(acctTypeName))
+                {
+                    bool checkName = DataHandler::checkAccountTypeName(acctTypeName);
+                    if (checkName)
+                    {
+                        cout << "Please Enter Monthly Fee: ";
+                        getline(cin, monFee);
+                        isValidInput = isValidNumber(monFee);
+                        areAllValid = isValidInput;
+                        cout << "Please Enter Service Fee: ";
+                        getline(cin, servFee);
+                        isValidInput = isValidNumber(servFee);
+                        areAllValid = (isValidInput && areAllValid) ? true : false;
+                        cout << "Please Enter Interest Rate: ";
+                        getline(cin, interestR);
+                        isValidInput = isValidNumber(interestR);
+                        areAllValid = (isValidInput && areAllValid) ? true : false;
+                        cout << "Please Enter Minimum Balance: ";
+                        getline(cin, minBalance);
+                        isValidInput = isValidNumber(minBalance);
+                        areAllValid = (isValidInput && areAllValid) ? true : false;
+
+                        cout << endl;
+                        if (!areAllValid) //if any input numbers are not a good number
+                        {
+                            cout << "An Invalid Input has Occured" << endl;
+                        }
+                        else
+                        {
+                            double realServFee = Account::roundNum(stod(servFee), 2);
+                            double realMonFee = Account::roundNum(stod(monFee), 2);
+                            double realMinBalance = Account::roundNum(stod(minBalance), 2);
+                            if (  ( (realServFee != stod(servFee)) || (realMonFee != stod(monFee)) )   ||    (realMinBalance != stod(minBalance))   )
+                            {
+                                cout << "Invalid Number Input" << endl;
+                            }
+                            else if ( !(stod(interestR) > 0 && stod(interestR) < 5.0) )
+                            {
+                                cout << "Invalid Interest Rate Input" << endl << "Must be Between 0% and 5%" << endl;
+                            }
+                            else
+                            {
+                                DataHandler::alterAccountType(acctTypeName, realMonFee, realServFee, stod(interestR), realMinBalance);
+                                cout << "Modification Successful" << endl;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    cout << "The Account Type does not Exist" << endl;
+                }
+                cout << endl;
+                break;
+            }
+            case 5:
             {
                 wantsToExit = true;
                 break;

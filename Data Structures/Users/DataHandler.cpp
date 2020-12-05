@@ -61,13 +61,10 @@ void DataHandler::changeClientFirstName(string userID, string oldName, string ne
 		allTables.firstNameTable.delMappedItem(oldName, acctList[i]); //removes acct from old name node
 		allTables.firstNameTable.insertWithItem(newName, acctList[i]); //inserts to new name node the acct
 
-		/*
-		build account from .txt file with acctList[i] as the acctNum
-		insert new first name
-		save to .txt file
-		get new info for acct from built account object
-		insert new info into with command: allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
-		*/
+		Account acct = Account(acctList[i]); //build account from .txt file with acctList[i] as the acctNum
+		acct.setAccountHolderFirstName(newName);
+		acct.saveToFile(); //save to .txt file
+		allTables.accountTable.updateInfo(acctList[i], acct.getAccountTableInfo());
 	}
 }
 
@@ -81,13 +78,10 @@ void DataHandler::changeClientLastName(string userID, string oldName, string new
 		allTables.lastNameTable.delMappedItem(oldName, acctList[i]); //removes acct from old name node
 		allTables.lastNameTable.insertWithItem(newName, acctList[i]); //inserts to new name node the acct
 
-		/*
-		build account from .txt file with acctList[i] as the acctNum
-		insert new last name
-		save to .txt file
-		get new info for acct from built account object
-		insert new info into with command: allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
-		*/
+		Account acct = Account(acctList[i]); //build account from .txt file with acctList[i] as the acctNum
+		acct.setAccountHolderLastName(newName);
+		acct.saveToFile(); //save to .txt file
+		allTables.accountTable.updateInfo(acctList[i], acct.getAccountTableInfo());
 	}
 }
 
@@ -100,14 +94,10 @@ void DataHandler::changeClientAddress(string userID, string oldAddress, string n
 		allTables.addressTable.delMappedItem(oldAddress, acctList[i]);
 		allTables.addressTable.insertWithItem(newAddress, acctList[i]);
 
-		/*
-		build account from .txt file with acctList[i] as the acctNum
-		insert new address
-		save to .txt file
-		get new info for acct from built account object
-		insert new info into with command: 
-		allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
-		*/
+		Account acct = Account(acctList[i]); //build account from .txt file with acctList[i] as the acctNum
+		acct.setAccountHolderAddress(newAddress);
+		acct.saveToFile(); //save to .txt file
+		allTables.accountTable.updateInfo(acctList[i], acct.getAccountTableInfo());
 	 }
 }
 
@@ -120,14 +110,10 @@ void DataHandler::changeClientPhoneNum(string userID, string oldNum, string newN
 		allTables.phoneNumTable.delMappedItem(oldNum, acctList[i]);
 		allTables.phoneNumTable.insertWithItem(newNum, acctList[i]);
 
-		/*
-		build account from .txt file with acctList[i] as the acctNum
-		insert new phone number
-		save to .txt file
-		get new info for acct from built account object
-		insert new info into with command: 
-		allTables.accountTable.updateInfo(<acctNum>, <newInfo>);
-		*/
+		Account acct = Account(acctList[i]); //build account from .txt file with acctList[i] as the acctNum
+		acct.setAccountHolderAddress(newNum);
+		acct.saveToFile(); //save to .txt file
+		allTables.accountTable.updateInfo(acctList[i], acct.getAccountTableInfo());
 	 }
 }
 
@@ -272,4 +258,71 @@ void DataHandler::buildAccountTypesFomeFile()
 		createInitialAccountTypes();
 	}
 	inFile.close();
+}
+
+void DataHandler::createAccountType(string acctTypeName, double monFee, double servFee, double interestR, double minBalance)
+{
+	AccountType newType(acctTypeName, monFee, servFee, interestR, minBalance);
+	accountTypeList.push_back(newType);
+}
+
+bool DataHandler::deleteAccountType(string acctTypeName)
+{
+	if(acctTypeName=="Basic Checking"||acctTypeName=="Entry Saving"||acctTypeName=="Certificate of Deposit")
+	{
+		cout<<"Cannot delete it!"<<endl;
+		return false;
+	}
+	for (int i = 0; i < accountTypeList.size(); i++)
+	{
+		if (accountTypeList[i].getAccountTypeName() == acctTypeName)
+		{
+			accountTypeList.erase(accountTypeList.begin() + i);
+			cout << "Delete Success!" << endl;
+			return true;
+		}
+	}
+	cout<<"The Account Type does not Exist! "<<endl;
+	return false;
+}
+
+bool DataHandler::checkAccountTypeName(string acctTypeName)
+{
+	for (int i = 0; i < accountTypeList.size(); i++)
+	{
+		if (accountTypeList[i].getAccountTypeName() == acctTypeName)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool DataHandler::alterAccountType(string acctTypeName, double monFee, double servFee, double interestR, double minBalance)
+{
+	for (int i = 0; i < accountTypeList.size(); i++)
+	{
+		if (accountTypeList[i].getAccountTypeName() == acctTypeName)
+		{
+			accountTypeList[i].setMonthlyFee(monFee);
+			accountTypeList[i].setServiceFee(servFee);
+			accountTypeList[i].setInterestRate(interestR);
+			accountTypeList[i].setMinimumBalance(minBalance);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool DataHandler::nameValid(string acctTypeName)
+{
+	for (int i=0;i<acctTypeName.size();i++)
+	{
+		if(!isalpha(acctTypeName[i])&&acctTypeName[i]!=' ')
+		{
+			cout<<"Invalid Account Type Name"<<endl;
+			return false;
+		}
+	}
+	return true;
 }

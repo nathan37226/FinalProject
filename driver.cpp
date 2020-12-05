@@ -145,6 +145,11 @@ int main()
 
                     //create initial savings account for new client!
                     Account newAccount("Basic Checking", clientID, firstName, lastName, phoneNum, address);
+                    double newBal = newAccount.getMinimumBalance();
+                    if (newBal > 0)
+                    {
+                        newAccount.deposit(newBal);
+                    }
                     official.addAccountToClient(user, newAccount);
                     newAccount.saveToFile();
                     cout << "A Basic Checking Account has been Automatically Created for You." << endl;

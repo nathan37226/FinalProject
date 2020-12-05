@@ -14,13 +14,14 @@ private:
     static double penaltyFee;
     double interestRate;
     double minimumBalance;
+    bool isCertificate;
 
 
     
 
 public:
     // Constructor for new account type
-    AccountType(string acctTypeName, double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0);
+    AccountType(string acctTypeName, double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0, bool isCert = false);
     // Constructor for existing account type
     //AccountType(string acctTypeName);
     void setMonthlyFee(double fee);
@@ -33,6 +34,8 @@ public:
     double getInterestRate();
     void setMinimumBalance(double amount);
     double getMinimumBalance();
+    void setIsCertificate(bool setting);
+    bool getIsCertificate();
     void setAccountTypeName(string name);
     string getAccountTypeName();
     static string getDisplayNum(double input);
@@ -109,7 +112,7 @@ public:
     string deposit(double amount); // returns string of what happened
     string withdraw(double amount);
     void displayHistory(string startDate, string endDate);
-    static time_t displayHistoryHelper(string date);
+    static time_t convertDateToTimeT(string date);
     string saveToFile();
     void buildFromFile(string acctNum);
     static void saveNextAccountNumbers();
