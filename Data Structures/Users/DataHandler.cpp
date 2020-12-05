@@ -236,11 +236,11 @@ void DataHandler::displayAccountTypes()
 void DataHandler::saveAccountTypes()
 {
 	ofstream outFile("AccountData/AccountTypes.txt");
-	EncryptionBox::positionInFile = 0;
 	if (outFile)
 	{
 		for (int i = 0; i < accountTypeList.size(); i++)
 		{
+			EncryptionBox::positionInFile = 0;
 			outFile << EncryptionBox::encrypt(accountTypeList[i].getAccountTypeName()) << endl;
 		}
 	}
@@ -260,6 +260,7 @@ void DataHandler::buildAccountTypesFomeFile()
 		string line = "";
 		while (getline(inFile, line))
 		{
+			EncryptionBox::positionInFile = 0;
 			line = line.substr(0, line.rfind("\r"));
 			line = EncryptionBox::decrypt(line);
 			AccountType acctType(line);
