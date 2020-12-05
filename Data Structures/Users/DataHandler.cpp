@@ -259,3 +259,70 @@ void DataHandler::buildAccountTypesFomeFile()
 	}
 	inFile.close();
 }
+
+void DataHandler::createAccountType(string acctTypeName, double monFee, double servFee, double interestR, double minBalance)
+{
+	AccountType newType(acctTypeName, monFee, servFee, interestR, minBalance);
+	accountTypeList.push_back(newType);
+}
+
+bool DataHandler::deleteAccountType(string acctTypeName)
+{
+	if(acctTypeName=="Basic Checking"||acctTypeName=="Entry Saving"||acctTypeName=="Certificate of Deposit")
+	{
+		cout<<"Cannot delete it!"<<endl;
+		return false;
+	}
+	for (int i = 0; i < accountTypeList.size(); i++)
+	{
+		if (accountTypeList[i].getAccountTypeName() == acctTypeName)
+		{
+			accountTypeList.erase(accountTypeList.begin() + i);
+			cout << "Delete Success!" << endl;
+			return true;
+		}
+	}
+	cout<<"The Account Type does not Exist! "<<endl;
+	return false;
+}
+
+bool DataHandler::checkAccountTypeName(string acctTypeName)
+{
+	for (int i = 0; i < accountTypeList.size(); i++)
+	{
+		if (accountTypeList[i].getAccountTypeName() == acctTypeName)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool DataHandler::alterAccountType(string acctTypeName, double monFee, double servFee, double interestR, double minBalance)
+{
+	for (int i = 0; i < accountTypeList.size(); i++)
+	{
+		if (accountTypeList[i].getAccountTypeName() == acctTypeName)
+		{
+			accountTypeList[i].setMonthlyFee(monFee);
+			accountTypeList[i].setServiceFee(servFee);
+			accountTypeList[i].setInterestRate(interestR);
+			accountTypeList[i].setMinimumBalance(minBalance);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool DataHandler::nameValid(string acctTypeName)
+{
+	for (int i=0;i<acctTypeName.size();i++)
+	{
+		if(!isalpha(acctTypeName[i])&&acctTypeName[i]!=' ')
+		{
+			cout<<"Invalid Account Type Name"<<endl;
+			return false;
+		}
+	}
+	return true;
+}

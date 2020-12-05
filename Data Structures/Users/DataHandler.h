@@ -33,9 +33,6 @@ public:
 
 	//admin operations
 	static void addOfficialToRecords(string hashedPw, string ID);
-	static void createAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
-	static void deleteAccountType(string typeName);
-	static void alterAccountType(string typeName, double monthlyFee, double serviceFee, double penaltyFee, double interestRate, double minimumBalance);
 	static void addAdminToRecords(string hashedPw, string ID);
 	static vector<string> getLoginInfo(string userID);
 
@@ -48,6 +45,11 @@ public:
 	static void displayAccountTypes();
 	static void saveAccountTypes();
 	static void buildAccountTypesFomeFile();
+	static void createAccountType(string acctTypeName, double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0);
+ 	static bool deleteAccountType(string acctTypeName);
+ 	static bool checkAccountTypeName(string acctTypeName);
+ 	static bool alterAccountType(string acctTypeName, double monFee = 0.0, double servFee = 0.0, double interestR = 0.0, double minBalance = 0.0);
+	static bool nameValid(string acctTypeName);
 };
 
 tableSet DataHandler::allTables = tableSet(); //static initialization

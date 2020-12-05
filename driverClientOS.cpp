@@ -229,8 +229,12 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             getline(cin, depAmount);
             if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
             {
+<<<<<<< HEAD
                 string transactionResult = otherAcct.deposit(stod(depAmount));
                 cout << transactionResult << endl;
+=======
+                cout << acct.deposit(stod(depAmount)) << endl;
+>>>>>>> 4de29ba7afa8d9a07f33cf6cfd5678371c7b603e
                 acct.saveToFile();
                 DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
                 user.setRecentActivity("Deposited: $" + depAmount + " into account: " + acct.getAccountNumber());
@@ -238,17 +242,27 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             }
             else
                 cout << "Invalid Entry" << endl;
+<<<<<<< HEAD
+=======
+
+            cout << endl;
+>>>>>>> 4de29ba7afa8d9a07f33cf6cfd5678371c7b603e
             break;
         }
         case 2: //withdraw
         {
             // prompt user to chose an account
             Account acct = Account(getAccountFromList(acctList));
+<<<<<<< HEAD
             cout << "Enter Withdraw amount: " << endl << "$";
+=======
+            cout << "Enter Withdrawal amount: " << endl << "$";
+>>>>>>> 4de29ba7afa8d9a07f33cf6cfd5678371c7b603e
             string witAmount;
             getline(cin, witAmount);
             if(isValidNumber(witAmount) && witAmount == witAmount.substr(0,witAmount.find(".")+3))
             {
+<<<<<<< HEAD
                 string transactionResult = otherAcct.withdraw(stod(witAmount));
                 cout << transactionResult << endl;
                 acct.saveToFile();
@@ -261,6 +275,18 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
             }
             else
                 cout << "Invalid Entry" << endl;
+=======
+                cout << acct.withdraw(stod(witAmount)) << endl;
+                acct.saveToFile();
+                DataHandler::updateAccountInfo(acct.getAccountNumber(), acct.getAccountTableInfo());
+                user.setRecentActivity("Withdrew: $" + witAmount + " from account: " + acct.getAccountNumber());
+                user.saveUser();
+            }
+            else
+                cout << "Invalid Entry" << endl;
+
+            cout << endl;
+>>>>>>> 4de29ba7afa8d9a07f33cf6cfd5678371c7b603e
             break;
         }
         case 3: //deposit into another acct in Bear Bank
@@ -277,8 +303,12 @@ void clientHelpAccessAccount(Client &user, int option, vector<string> acctList)
                 getline(cin, depAmount);
                 if(isValidNumber(depAmount) && depAmount == depAmount.substr(0,depAmount.find(".")+3))
                 {
+<<<<<<< HEAD
                     string transactionResult = otherAcct.deposit(stod(depAmount));
                     cout << transactionResult << endl;
+=======
+                    cout << otherAcct.deposit(stod(depAmount)) << endl;
+>>>>>>> 4de29ba7afa8d9a07f33cf6cfd5678371c7b603e
                     // save transaction
                     otherAcct.saveToFile();
                     DataHandler::updateAccountInfo(otherAcct.getAccountNumber(), otherAcct.getAccountTableInfo());
@@ -333,4 +363,8 @@ string getAccountFromList(vector<string> acctList)
 		}
 	}
     return accountNum;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 4de29ba7afa8d9a07f33cf6cfd5678371c7b603e
