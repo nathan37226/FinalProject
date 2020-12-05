@@ -673,15 +673,12 @@ void Account::displayHistory(string beginning, string ending)
 *//////////////////////////////////////////////////////////
 time_t Account::convertDateToTimeT(string date)
 {
-<<<<<<< HEAD
     int month;
     int day;
     int year;
     int hour;
     int minute;
     int second;
-=======
->>>>>>> 4de29ba7afa8d9a07f33cf6cfd5678371c7b603e
     // parse out time info from string
     if(isValidNumber(date.substr(0,2)))
         month = stoi(date.substr(0,2));
