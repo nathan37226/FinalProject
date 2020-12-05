@@ -24,7 +24,9 @@ void Admin::resetPassword(string ID, string newPassword)
 //get funct to return from accountTable the userID in the info part of the acct entry
 string Admin::returnUserID(string acctNum)
 {
-	return "Must implement this later";
+	string acctInfo = DataHandler::getAccountInfo(acctNum);
+	string clientID = acctInfo.substr(acctInfo.rfind(" ") + 1, string::npos); //very last element in the string
+	return clientID;
 }
 
 void Admin::createOfficial(string fullName, string ID, string password)

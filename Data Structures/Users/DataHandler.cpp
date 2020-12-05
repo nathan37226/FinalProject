@@ -200,6 +200,16 @@ vector<string> DataHandler::getLoginInfo(string userID)
 AccountType operations
 ************************************************/
 
+void DataHandler::createInitialAccountTypes()
+{
+	AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0);
+    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 0.0);
+    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0);
+    DataHandler::accountTypeList.push_back(checkingAccount);
+    DataHandler::accountTypeList.push_back(savingsAccount);
+    DataHandler::accountTypeList.push_back(CD);
+}
+
 void DataHandler::displayAccountTypes()
 {
 	for (int i = 0; i < accountTypeList.size(); i++)
@@ -207,4 +217,45 @@ void DataHandler::displayAccountTypes()
 		string line = "[" + to_string(i + 1) + "]" + " " + accountTypeList[i].getAccountTypeName();
 		cout << line << endl;
 	}
+}
+
+void DataHandler::saveAccountTypes()
+{
+	ofstream outFile("AccountData/AccountTypes.txt");
+	if (outFile)
+	{
+		for (int i = 0; i < accountTypeList.size(); i++)
+		{
+			EncryptionBox::positionInFile = 0;
+			outFile << EncryptionBox::encrypt(accountTypeList[i].getAccountTypeName()) << endl;
+		}
+	}
+	else
+	{
+		cerr << "The file could not be openned at: " << endl << "AccountData/AccountTypes.txt" << endl;
+	}
+	outFile.close();
+}
+
+void DataHandler::buildAccountTypesFomeFile()
+{
+	ifstream inFile;
+	inFile.open("AccountData/AccountTypes.txt");
+	if (inFile)
+	{
+		string line = "";
+		while (getline(inFile, line))
+		{
+			EncryptionBox::positionInFile = 0;
+			line = line.substr(0, line.rfind("\r"));
+			line = EncryptionBox::decrypt(line);
+			AccountType acctType(line);
+			accountTypeList.push_back(acctType);
+		}
+	}
+	else //nothing saved, so create initial ones!
+	{
+		createInitialAccountTypes();
+	}
+	inFile.close();
 }

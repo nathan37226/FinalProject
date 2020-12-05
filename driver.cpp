@@ -14,7 +14,6 @@ Tables:
 Default User Accounts:              These are hard coded to work each time the program is launched
     Admin: admin - password1
     Official: official - password1
-    Client: house - password1
 */
 #include "Data Structures/AllDataStructures.h" //include all classes into this header! ensure all classes are in that folder, too
 #include "driverOS.cpp" //all functs used to run driver are placed in here to reduce clutter

@@ -38,10 +38,8 @@ void initialSetup()
     string hashedPw = EncryptionBox::hash("password1");
     vector<string> adminInfo = {hashedPw, "admin"};
     vector<string> offInfo = {hashedPw, "official"};
-    vector<string> clientInfo = {hashedPw, "client"};
     DataHandler::allTables.userTable.insertWithList("admin", adminInfo); //rewrites the admin acct to have the pw as password1
     DataHandler::allTables.userTable.insertWithList("official", offInfo);
-    DataHandler::allTables.userTable.insertWithList("house", clientInfo);
 
 	//creating record of these default users, i.e. saving to .txt files
 	Admin admin;
@@ -59,27 +57,12 @@ void initialSetup()
     official.setUserType("official");
     official.setState("active");
 
-    Client house;
-    house.buildUser("UserData/house.txt");
-    house.setName("House Account");
-    house.setAddress("1234 Made Up Avenue, Springfield, MO");
-    house.setPhoneNum("417-555-1234");
-    house.setID("house");
-    house.setPassword(EncryptionBox::hash("password1"));
-    house.setUserType("client");
-
     admin.saveUser();
     official.saveUser();
-    house.saveUser();
 
     accountInit();
 
-    AccountType checkingAccount("Basic Checking", 0.0, 0.0, 0.0, -50.0, false);
-    AccountType savingsAccount("Entry Saving", 0.0, 0.0, 2.0, 5.0, false);
-    AccountType CD("Certificate of Deposit", 0.0, 0.0, 5.0, 0.0, true);
-    DataHandler::accountTypeList.push_back(checkingAccount);
-    DataHandler::accountTypeList.push_back(savingsAccount);
-    DataHandler::accountTypeList.push_back(CD);
+    DataHandler::buildAccountTypesFomeFile(); //will auto initialize the default 3 if no file is found
 }
 
 void savingBank()
@@ -90,6 +73,7 @@ void savingBank()
     DataHandler::allTables.phoneNumTable.saveInfo("Tables/PhoneTable.txt");
     DataHandler::allTables.addressTable.saveInfo("Tables/AddressTable.txt");
     DataHandler::allTables.userTable.saveInfo("Tables/UserTable.txt");
+    DataHandler::saveAccountTypes();
     accountExit(); //defined inside the account classs
 }
 
@@ -176,8 +160,8 @@ void userLoginReset()
                     admin.buildUser("UserData/admin.txt");
                     admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
 
-                    string userID = admin.returnUserID(accountNum); //Implement Later!!!!!
-                    cout << "Your User ID is: " << userID << endl;
+                    string userID = admin.returnUserID(accountNum);
+                    cout << "Your User ID is: " << userID << endl << endl;
 
                     string description = "Provided user '" + userID + "' the User ID to the online account";
                     admin.setRecentActivity(description);

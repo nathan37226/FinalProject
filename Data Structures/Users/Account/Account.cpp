@@ -451,9 +451,9 @@ string Account::getAccountTableInfo()
     return openOrNot+getAccountTypeName()+" $"+getDisplayNum(accountBalance)+" "+accountHolderFirstName+" "+accountHolderLastName+" "+accountHolderPhoneNumber+" "+accountHolderAddress+" "+accountHolderUserID;
 }
 
-time_t Account::getOpenDate()
+string Account::getOpenDate()
 {
-    return openDate;
+    return convertTimeToString(openDate);
 }
 
 time_t Account::getMaturityDate()
@@ -484,6 +484,11 @@ bool Account::getOpenStatus()
 string Account::getAccountClosedBy()
 {
     return accountClosedBy;
+}
+
+string Account::getCloseDate()
+{
+    return convertTimeToString(closeDate); //returns readable form of time_t
 }
 
 /**********************************************************
@@ -741,6 +746,9 @@ string Account::saveToFile()
     outFile << EncryptionBox::encrypt(getDisplayNum(getMinimumBalance())) << endl;
     outFile << EncryptionBox::encrypt(getAccountTypeName()) << endl;
 
+    //acct closed by name
+    outFile << EncryptionBox::encrypt(accountClosedBy) << endl;
+
     outFile.close();
     return "Saved";
 }
@@ -812,7 +820,11 @@ void Account::buildFromFile(string acctNum)
         getline(inFile, line);
         setMinimumBalance(stod(EncryptionBox::decrypt(line.substr(0,line.rfind("\r")))));
         getline(inFile, line);
-        setAccountTypeName(EncryptionBox::decrypt(line.substr(0,line.rfind("\r"))));
+        setAccountTypeName(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
+
+        //account closed by
+        getline(inFile, line);
+        accountClosedBy = EncryptionBox::decrypt(line.substr(0,line.find("\r")));
     }
     else
     {
