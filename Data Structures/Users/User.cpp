@@ -20,10 +20,7 @@ User::User(string name, string ID, string pw, string type)
 	userID = ID;
 	userPassword = pw;
 	userType = type;
-}
-
-User::~User()
-{
+	mostRecentLogin = "No logins yet";
 }
 
 string User::getName() const

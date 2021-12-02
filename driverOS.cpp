@@ -1,16 +1,21 @@
 /*
-Implementation file for driver.cpp
+Nathan Obert M03134502
+Implementation file for driver.cpp, further broken down with each User Type having its own OS .cpp file
 This is a way of seperating functions that are used inside the driver to manipulate
 the user, account, and object data.
 */
 
 void initialSetup();
+void savingTables();
 bool isValidOption(string input, int upperBound);
 int getUserOption(int upperBound);
 void userLoginReset();
-void clientLogin(string userID);
-void officialLogin(string userID);
-void adminLogin(string userID);
+
+
+/************************************************
+Initial helper functions for main
+************************************************/
+
 
 //must add chking for house account!!
 void initialSetup()
@@ -21,6 +26,10 @@ void initialSetup()
     DataHandler::allTables.phoneNumTable.buildTree("Tables/PhoneTable.txt");
     DataHandler::allTables.addressTable.buildTree("Tables/AddressTable.txt");
     DataHandler::allTables.userTable.buildTree("Tables/UserTable.txt");
+
+    AccountQueue queue; //where user requested accounts are stored, inside a specific .txt file
+    queue.buildQueue();
+    queue.saveQueue(); //so that if file's not there, won't display that message during runtime
 
     DataHandler::allTables.accountTable.refreshInfo(); //need to finish function, but will do the interest computation
 
@@ -35,8 +44,8 @@ void initialSetup()
 
 	//creating record of these default users, i.e. saving to .txt files
 	Admin admin;
-    admin.buildUser("UserData/admin.txt");
-    admin.setName("Automated Admin");
+    admin.buildUser("UserData/admin.txt"); //this will preserve recent history, if there
+    admin.setName("Automated Admin"); //hard coding everything else abount the account
     admin.setID("admin");
     admin.setPassword(EncryptionBox::hash("password1"));
     admin.setUserType("admin");
@@ -47,10 +56,13 @@ void initialSetup()
     official.setID("official");
     official.setPassword(EncryptionBox::hash("password1"));
     official.setUserType("official");
+    official.setState("active");
 
     Client house;
     house.buildUser("UserData/house.txt");
     house.setName("House Account");
+    house.setAddress("1234 Made Up Avenue, Springfield, MO");
+    house.setPhoneNum("417-555-1234");
     house.setID("house");
     house.setPassword(EncryptionBox::hash("password1"));
     house.setUserType("client");
@@ -60,10 +72,20 @@ void initialSetup()
     house.saveUser();
 }
 
-//validates the user's input is within a range of options; max possible range is 1-9, for now
+void savingTables()
+{
+    DataHandler::allTables.accountTable.saveInfo("Tables/AccountTable.txt");
+    DataHandler::allTables.firstNameTable.saveInfo("Tables/FirstNameTable.txt");
+    DataHandler::allTables.lastNameTable.saveInfo("Tables/LastNameTable.txt");
+    DataHandler::allTables.phoneNumTable.saveInfo("Tables/PhoneTable.txt");
+    DataHandler::allTables.addressTable.saveInfo("Tables/AddressTable.txt");
+    DataHandler::allTables.userTable.saveInfo("Tables/UserTable.txt");
+}
+
+//validates the user's input is within a range of options; max possible range is 1-99, for now
 bool isValidOption(string input, int upperBound)
 {
-    if (input.length() > 1)
+    if (input.length() > 2)
     {
         return false;
     }
@@ -71,9 +93,15 @@ bool isValidOption(string input, int upperBound)
     {
         try
         {
-            int option = stoi(input); //since only 1 char is ensured, if 'a' is entered, will throw an error to catch block
-            bool returnValue = ( (option <= upperBound) && (option >= 1) ) ? true : false;
-            return returnValue;
+            int option = stoi(input); //ensures input like a1 will fail
+
+            if ( (input.length()) == to_string(option).length() ) //this comparison catches inputs like 1a, where they start with an int but not all is an int
+            {
+                bool returnValue = ( (option <= upperBound) && (option >= 1) ) ? true : false;
+                return returnValue;
+            }
+            
+            return false;
         }
 
         catch (...)
@@ -83,7 +111,7 @@ bool isValidOption(string input, int upperBound)
     }   
 }
 
-//upperBound is the max option possible, must be 1-9
+//upperBound is the max option possible, must be 1-99
 int getUserOption(int upperBound)
 {
     string userInput = "";
@@ -114,7 +142,7 @@ void userLoginReset()
 
     switch (userResetOption)
     {
-        case 1: //User ID display
+        case 1: //User ID display -- Will not work for admin or officials, by design
         {
             cout << "In order to provide you with your User ID, one of your Account Numbers is required." << endl;
             cout << "Do you know any of your Account Numbers?" << endl << endl;
@@ -130,14 +158,14 @@ void userLoginReset()
                 getline(cin, accountNum);
                 cout << endl;
 
-                accountInfo = DataHandler::allTables.accountTable.search(accountNum);
+                accountInfo = DataHandler::getAccountInfo(accountNum);
                 if (accountInfo != "false") //i.e. found valid account info from the acctNum
                 {
                     Admin admin; //creating the Automated Admin obj to change the password
                     admin.buildUser("UserData/admin.txt");
-                    admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
+                    admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
 
-                    string userID = admin.returnUserID(accountNum); //implement later!!!
+                    string userID = admin.returnUserID(accountNum); //Implement Later!!!!!
                     cout << "Your User ID is: " << userID << endl;
 
                     string description = "Provided user '" + userID + "' the User ID to the online account";
@@ -145,7 +173,7 @@ void userLoginReset()
                     admin.saveUser(); //saving change to file
 
                     //now to reflect changes made in user account!
-                    User user; //doesn't matter which type of user!
+                    Client user;
                     user.buildUser("UserData/"+userID+".txt");
                     user.setRecentActivity("Recieved User ID from Automated System Administrator");
                     user.saveUser();
@@ -172,24 +200,45 @@ void userLoginReset()
             getline(cin, userID);
             cout << endl;
 
-            vector<string> userLoginInfo = DataHandler::allTables.userTable.returnMappedItems(userID); // {hashedPW, user type} is returned
-            if (userLoginInfo.size() > 0)
+            vector<string> userInfo = DataHandler::clientGetAccountList(userID); // {hashedPW, user type, accts...} is returned
+
+            if (userInfo.size() > 0) //a user ID was found
             {
                 cout << "Enter your new password: ";
                 getline(cin, newPassword);
 
                 Admin admin; //creating the Automated Admin obj to change the password
                 admin.buildUser("UserData/admin.txt");
-                admin.setRecentLogin(DateTools().getCurrentDate().ToString()); //setting most recent login date as today
-                admin.resetPassword(userID, newPassword, userLoginInfo[1]);
+                admin.setRecentLogin(DateTools().getCurrentTime()); //setting most recent login date as today
+                admin.resetPassword(userID, newPassword); //updates tables
+                admin.setRecentActivity("Assisted Client '" + userID + "' Change Password");
+                admin.saveUser();
 
-                User user;
-                user.buildUser("UserData/"+userID+".txt");
-                user.setRecentActivity("Password was Reset by the Automated System Administrator");
-                user.saveUser();
-                cout << "Your password has been reset." << endl;
+                if (userInfo[1] == "client")
+                {
+                    Client user;
+                    user.buildUser("UserData/"+userID+".txt");
+                    user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
+                    user.setRecentActivity("Password was Reset by the Automated System Administrator");
+                    user.saveUser();
+                    cout << "Your password has been reset." << endl << endl;
+                }
+                else if (userInfo[1] == "official")
+                {
+                    Official user;
+                    user.buildUser("UserData/"+userID+".txt");
+                    user.setPassword(EncryptionBox::hash(newPassword)); //changing user's record
+                    user.setRecentActivity("Password was Reset by the Automated System Administrator");
+                    user.saveUser();
+                    cout << "Your password has been reset." << endl << endl;
+                }
+                else
+                {
+                    cout << "Admin Accounts Must Manually Reset Their Password." << endl << endl;
+                }
             }
-            else
+           
+            else //invalid user id
             {
                 cout << "The online account could not be located." << endl << endl;
                 cout << "We apologize for our automated system not being able to assist you further.\nPlease seek further help at your nearest branch office." << endl;
@@ -200,40 +249,3 @@ void userLoginReset()
     }
 }
 
-void clientLogin(string userID)
-{
-    Client user;
-    user.buildUser("UserData/" + userID + ".txt");
-    cout << "Welcome, " << user.getName() << endl;
-    cout << "Last Activity: " << user.getRecentActivity() << endl;
-    cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentDate().ToString());
-    //Display last login date up here!
-
-    string clientInterface = "[1] View Account Info\n[2] Deposit Into Account\n[3] Withdraw From Account\n[4] Deposit Into External Account\n[5] View Account History\n[6] Change Information";
-    cout << clientInterface << endl << "Option: ";
-}
-
-void officialLogin(string userID)
-{
-    Official user;
-    user.buildUser("UserData/" + userID + ".txt");
-    cout << "Welcome, " << user.getName() << endl;
-    cout << "Last Activity: " << user.getRecentActivity() << endl;
-    cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentDate().ToString());
-
-    string officialInterface = "";
-}
-
-void adminLogin(string userID)
-{
-    Admin user;
-    user.buildUser("UserData/" + userID + ".txt");
-    cout << "Welcome, " << user.getName() << endl;
-    cout << "Last Activity: " << user.getRecentActivity() << endl;
-    cout << "Last Login: " << user.getRecentLogin() << endl << endl;
-    user.setRecentLogin(DateTools().getCurrentDate().ToString());
-
-    string adminInterface = "";
-}

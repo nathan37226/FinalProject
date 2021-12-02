@@ -10,7 +10,6 @@ public:
 	User();
 	User(string name, string ID, string pw, string type, string login);
 	User(string name, string ID, string pw, string type);
-	virtual ~User();
 
 	string getName() const;
 	string getID() const;
@@ -28,13 +27,13 @@ public:
 
 	bool isValidLogin(string newName, string newPassword, string loginTime);
 
-	void saveUser() const;
-	void buildUser(string filename);
+	virtual void saveUser() const; //virtual because clients have additional attributes
+	virtual void buildUser(string filename);
 
-private:
+protected: //since need access for Client
 	string userName;//name of user
 	string userID;//id of user
-	string userPassword;
+	string userPassword; //used in Official adding user funct
 	string userType;
 	string mostRecentLogin;
 	string recentActivity;

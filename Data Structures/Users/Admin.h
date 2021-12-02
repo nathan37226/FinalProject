@@ -1,18 +1,27 @@
 #ifndef ADMIN_H
 #define ADMIN_H
 
-#include "User.h"
-
 class Admin : public User
 {
 public:
 	Admin();
 	Admin(string name, string ID, string pw, string type, string login);
 	Admin(string name, string ID, string pw, string type);
-	~Admin();
 
-	void resetPassword(string userID, string newPassword, string userType);
+	void resetPassword(string ID, string newPassword);
 	string returnUserID(string acctNum);
+	void createOfficial(string fullName, string ID, string password);
+	void setOfficialActive(Official &officialUser);
+	void setOfficialInactive(Official &officialUser);
+	void deleteOfficial(Official &officialUser);
+	void createAdmin(string fullName, string ID, string password);
+	void deleteAdmin(string ID);
+	void displayAllOfficials();
+	void displayAllAdmins();
+	
+
+protected:
+	void clearFile(string filename);
 
 private:
 	
