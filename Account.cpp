@@ -10,20 +10,6 @@ using namespace std;
 void accountInit();
 void accountExit();
 
-int main()
-{
-    accountInit();
-    //Account a("savings","dom14","Dominic","Zucchini","417-551-2422","1234 Some St Springfield, MO 65806",0,200.0);
-    Account a("S000000001");
-    //a.deposit(200.0);
-    //a.withdraw(83.30);
-    //a.displayHistory("12/01/2020 00:00:00", "12/05/2020 00:00:00");
-    cout << Account::getDisplayNum(a.getInterestRate()) << endl;
-    cout << Account::getDisplayNum(a.getAccountBalance()) << endl;
-    a.saveToFile();
-    accountExit();
-}
-
 void accountInit()
 {
     cout << "Creating default account types..." << endl;
