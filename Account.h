@@ -66,6 +66,7 @@ private:
     string convertTimeToString(time_t inputTime);
     string incrementAcctNum(string lastAcctNum);
     void saveTransaction(string type, double amount);
+    void interestCalc();
 
     friend void accountInit();
 

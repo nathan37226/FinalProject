@@ -10,6 +10,20 @@ using namespace std;
 void accountInit();
 void accountExit();
 
+int main()
+{
+    accountInit();
+    //Account a("savings","dom14","Dominic","Zucchini","417-551-2422","1234 Some St Springfield, MO 65806",0,200.0);
+    Account a("S000000001");
+    //a.deposit(200.0);
+    //a.withdraw(83.30);
+    //a.displayHistory("12/01/2020 00:00:00", "12/05/2020 00:00:00");
+    cout << Account::getDisplayNum(a.getInterestRate()) << endl;
+    cout << Account::getDisplayNum(a.getAccountBalance()) << endl;
+    a.saveToFile();
+    accountExit();
+}
+
 void accountInit()
 {
     cout << "Creating default account types..." << endl;
@@ -295,6 +309,7 @@ Account::Account(string acctTypeName, string userID, string acctFirstName, strin
 Account::Account(string acctNum) : AccountType("blank")
 {
     buildFromFile(acctNum);
+    interestCalc();
 }
 /**********************************************************
 / Setters
@@ -499,7 +514,10 @@ string Account::deposit(double amount)
 *//////////////////////////////////////////////////////////
 string Account::withdraw(double amount)
 {
-    if(!getRestrictedStatus())
+    // get current time
+    time_t currTime;
+    time(&currTime);
+    if(!getRestrictedStatus() && currTime > maturityDate)
     {
         double tempBalance = accountBalance - roundNum(amount, 2);
         if(tempBalance < getMinimumBalance())
@@ -523,6 +541,31 @@ string Account::withdraw(double amount)
     else
         return "Account Restricted.";
     return "Something else happened.";
+}
+
+/**********************************************************
+/ interestCalc (private) calculates the accululated interest
+/ since the account was last saved
+/
+/ parameters:
+/   none
+/
+/ returns:
+/   void
+*//////////////////////////////////////////////////////////
+void Account::interestCalc()
+{
+    //get number of days since last interest calculation
+    time_t currTime;
+    time(&currTime);
+    time_t timePassed = currTime - lastInterestCalculation;
+    int days = timePassed / 86400; //86400 seconds in a day, and the int type of day will round like a floor function
+    if(accountBalance > 0.0)
+    {
+        accountBalance += accountBalance * getInterestRate()/100 * days/365;
+    }
+    if(days)
+        time(&lastInterestCalculation); //save the new time interest was calculated if a day or more has passed
 }
 
 /**********************************************************
@@ -635,6 +678,7 @@ string Account::saveToFile()
         outFile << EncryptionBox::encrypt("True") << endl;
     else
         outFile << EncryptionBox::encrypt("False") << endl;
+    outFile << EncryptionBox::encrypt(to_string(lastInterestCalculation)) << endl;
     
     // Store accountType data (must use getters since inherited atributes are private)
     outFile << EncryptionBox::encrypt(getDisplayNum(getMonthlyFee())) << endl;
@@ -694,6 +738,9 @@ void Account::buildFromFile(string acctNum)
             openStatus = true;
         else
             openStatus = false;
+        
+        getline(inFile, line);
+        lastInterestCalculation = stoi(EncryptionBox::decrypt(line.substr(0,line.find("\r"))));
 
         // defind accountType attributes (must use setters since attributes are inaccessible)
         getline(inFile, line);
